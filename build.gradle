@@ -95,8 +95,8 @@ project.tasks['sonarqube'].dependsOn test, integration
 
 sonarqube {
   properties {
-    property "sonar.projectName", "Reform :: spring-boot-template"
-    property "sonar.projectKey", "uk.gov.hmcts.reform:spring-boot-template"
+    property "sonar.projectName", "Reform :: ccd-stub-callback-service"
+    property "sonar.projectKey", "uk.gov.hmcts.reform:ccd-stub-callback-service"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
 
@@ -166,6 +166,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version: '0.0.3'
+  compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
@@ -191,10 +192,10 @@ test {
   failFast = true
 }
 
-mainClassName = 'uk.gov.hmcts.reform.demo.Application'
+mainClassName = 'uk.gov.hmcts.reform.ccd.stub.callback.Application'
 
 bootJar {
-  archiveName = 'spring-boot-template.jar'
+  archiveName = 'ccd-stub-callback-service.jar'
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
