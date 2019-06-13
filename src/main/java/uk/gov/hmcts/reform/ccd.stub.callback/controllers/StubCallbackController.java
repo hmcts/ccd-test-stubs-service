@@ -39,8 +39,8 @@ public class StubCallbackController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/responseWithRequestDataAndStaticData/{jsonStubName}")
-    public ResponseEntity<JsonNode> responseWithRequestDataAndStaticData(@PathVariable String jsonStubName, @RequestBody JsonNode request) {
+    @PostMapping("/responseWithRequestDataAndStubbedData/{jsonStubName}")
+    public ResponseEntity<JsonNode> responseWithRequestDataAndStubbedData(@PathVariable String jsonStubName, @RequestBody JsonNode request) {
         LOG.info("Returning response with request data and static data :{}", jsonStubName);
         LOG.info("request: {}", request);
 
@@ -51,8 +51,8 @@ public class StubCallbackController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/responseWithStaticData/{jsonStubName}")
-    public ResponseEntity<JsonNode> responseWithStaticData(@PathVariable String jsonStubName, @RequestBody JsonNode request) {
+    @PostMapping("/responseWithStubbedData/{jsonStubName}")
+    public ResponseEntity<JsonNode> responseWithStubbedData(@PathVariable String jsonStubName, @RequestBody JsonNode request) {
         LOG.info("Returning response with static stubbed data :{}", jsonStubName);
 
         JsonNode response = StubResponseBuilder.create()
