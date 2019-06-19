@@ -1,0 +1,184 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/mid_event"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "CallbackText": "test1",
+        "PersonLastName": "LastName",
+        "PersonAddress": {
+          "AddressLine1": "AL1",
+          "AddressLine2": "AL2",
+          "AddressLine3": "AL3",
+          "Country": "UK",
+          "Postcode": "W4 5XR"
+        },
+        "DateOfBirth": "2010-10-10",
+        "ContectNumber": "07867876654",
+        "Age": "30",
+        "Alliases": [],
+        "amountToPay": null,
+        "PersonFirstName": "firstName",
+        "ContectEmail": "firstname@gmail.com",
+        "Bilingual": "No",
+        "MarritalStatus": "MARRIAGE",
+        "RegionalCentre": [
+          "OXFORD"
+        ],
+        "Group": [],
+        "CompanyDetails": {
+          "Name": null,
+          "BusinessAddress": {
+            "AddressLine1": null,
+            "AddressLine2": null,
+            "AddressLine3": null,
+            "Country": null,
+            "Postcode": null
+          },
+          "PostalAddress": {
+            "AddressLine1": null,
+            "AddressLine2": null,
+            "AddressLine3": null,
+            "Country": null,
+            "Postcode": null
+          }
+        },
+        "Wage": "200000",
+        "cDate": "2011-11-11",
+        "cTextArea": "text area test text",
+        "cNumber": 123456,
+        "cPhoneUK": "08787654431",
+        "cDateTime": "2001-10-10T10:10:10.000",
+        "cEmail": "abc@bbc.com",
+        "cCollection": [
+          {
+            "value": "text1"
+          },
+          {
+            "value": "text2"
+          }
+        ],
+        "cYesOrNo": "Yes",
+        "cMoneyGBP": "200",
+        "cFixedList": "FixedList1",
+        "cFixedRadioList": "FixedRadioList2",
+        "cMultiSelectList": [
+          "CARDIFF",
+          "MANCHESTER"
+        ],
+        "cCaseLink": {
+          "CaseReference": "1553121784015805"
+        },
+        "cDocument": {
+          "document_url": "http://dm-store:8080/documents/1ecfd3bd-728c-42f0-ad9f-3d0e297fa836",
+          "document_binary_url": "http://dm-store:8080/documents/1ecfd3bd-728c-42f0-ad9f-3d0e297fa836/binary",
+          "document_filename": "RCCD-262439680-100418-1023-12.pdf"
+        },
+        "cCompany": {
+          "BusinessAddress": {
+            "Postcode": "SW19 1QL",
+            "Country": "UK",
+            "AddressLine2": "AL1",
+            "AddressLine1": "AL2",
+            "AddressLine3": "AL3"
+          },
+          "Name": "XYZee Ltd",
+          "PostalAddress": {
+            "Postcode": "W4 5XR",
+            "Country": "UK",
+            "AddressLine2": "2",
+            "AddressLine1": "1",
+            "AddressLine3": "3"
+          }
+        },
+        "cCompanies": [
+          {
+            "value": {
+              "BusinessAddress": {
+                "Postcode": "SW19 1JJ",
+                "Country": "UK",
+                "AddressLine2": "Blenheim Tower",
+                "AddressLine1": "test1",
+                "AddressLine3": "test2"
+              },
+              "Name": "COmpany AAA",
+              "PostalAddress": {
+                "Postcode": "SW19 1JJ",
+                "Country": "UK",
+                "AddressLine2": null,
+                "AddressLine1": null,
+                "AddressLine3": null
+              }
+            }
+          },
+          {
+            "value": {
+              "BusinessAddress": {
+                "Postcode": "SW19 1JY",
+                "Country": "UK",
+                "AddressLine2": "Blenheim Court",
+                "AddressLine1": "1 test",
+                "AddressLine3": "2 test"
+              },
+              "Name": "COmpany BBB",
+              "PostalAddress": {
+                "Postcode": "SW19 1JJ",
+                "Country": "UK",
+                "AddressLine2": null,
+                "AddressLine1": "AL1",
+                "AddressLine3": null
+              }
+            }
+          }
+        ],
+        "cPerson": {
+          "Title": "Mr",
+          "FirstName": "G",
+          "MiddleName": "A",
+          "LastName": "B",
+          "DateOfBirth": "1980-01-01",
+          "NationalInsuranceNumber": "SG123456",
+          "CaseLinkRef": {
+            "CaseReference": "1553121784015805"
+          },
+          "FixedList": "FixedList3",
+          "Addresses": [
+            {
+              "id": null,
+              "value": {
+                "AddressLine1": "AL1",
+                "AddressLine2": "AL2",
+                "AddressLine3": "AL3",
+                "Country": "UK",
+                "Postcode": "W4 5XR"
+              }
+            },
+            {
+              "id": null,
+              "value": {
+                "AddressLine1": "AD1",
+                "AddressLine2": "AD2",
+                "AddressLine3": "AD3",
+                "Country": "UK",
+                "Postcode": "SW19 4YT"
+              }
+            }
+          ]
+        },
+        "cGroup": {
+          "Title": "Mr",
+          "Forenames": "G",
+          "LastName": "Ben",
+          "DateOfBirth": "2001-01-01",
+          "FixedList": "FixedList1"
+        }
+      }
+    }
+  }
+}

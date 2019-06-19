@@ -26,3 +26,9 @@ variable "capacity" {
 variable "common_tags" {
   type = "map"
 }
+
+variable "wiremock_server_mappings_path" {
+  description = "WireMock server mappings files path containing json response stubs"
+  type = "string"
+  default = "src/main/resources"
+}
