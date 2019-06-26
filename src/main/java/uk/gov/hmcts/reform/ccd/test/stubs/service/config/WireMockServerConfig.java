@@ -28,7 +28,9 @@ public class WireMockServerConfig {
 
         WireMockServer wireMockServer = new WireMockServer(options()
                                                                .port(port)
-                                                               .usingFilesUnderDirectory(mappingsPath));
+                                                               .usingFilesUnderDirectory(mappingsPath)
+                                                               .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+                                                                               + ".DynamicCaseDataResponseTransformer"));
 
         File mappingDirectory = new File(mappingsPath);
         LOG.info("Mappings directory path: {}", mappingDirectory.getAbsolutePath());

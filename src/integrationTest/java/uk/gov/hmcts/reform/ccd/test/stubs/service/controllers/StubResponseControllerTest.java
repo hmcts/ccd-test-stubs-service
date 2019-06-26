@@ -20,7 +20,7 @@ public class StubResponseControllerTest {
     @DisplayName("Should return wiremock stub response with 200")
     @Test
     public void forwardAllRequestEndpoint() throws Exception {
-        mockMvc.perform(post("/about_to_start").characterEncoding("UTF-8"))
+        mockMvc.perform(post("/aat/about_to_start").characterEncoding("UTF-8"))
             .andExpect(status().isOk());
     }
 

@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/aat/mid_event"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "case_data": {
+        "CallbackText": "test1",
+        "PersonLastName": "LastName"
+      }
+    }
+  }
+}

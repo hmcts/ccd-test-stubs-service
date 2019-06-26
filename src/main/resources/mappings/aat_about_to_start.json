@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/aat/about_to_start"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "case_data": {
+        "CallbackText": "test1",
+        "PersonLastName": "LastName"
+      }
+    }
+  }
+}

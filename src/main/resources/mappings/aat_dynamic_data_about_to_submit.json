@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/aat/dynamic/about_to_submit"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "case_data": {
+        "CallbackText": "test1",
+        "PersonLastName": "LastName"
+      }
+    },
+    "transformers": [
+      "dynamic-case-data-response-transformer"
+    ]
+  }
+}

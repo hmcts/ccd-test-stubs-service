@@ -7,7 +7,10 @@ The following environment variables are required:
 
 | Name | Default | Description |
 |------|---------|-------------|
-| WIREMOCK_SERVER_MAPPINGS_PATH | src/main/resources | Path to WireMock stubs |
+| WIREMOCK_SERVER_MAPPINGS_PATH | src/main/resources | Path to WireMock mappings |
+
+__Note__: For local docker instance, create a directory __mappings__ under the users home directory with the wiremock 
+stub mapping files. 
 
 ### Building the application
 
