@@ -1,0 +1,36 @@
+#!groovy
+properties(
+  [
+    [
+      $class       : 'GithubProjectProperty',
+      projectUrlStr: 'https://github.com/hmcts/ccd-test-stubs-service'
+    ],
+    pipelineTriggers([[$class: 'GitHubPushTrigger']])
+  ]
+)
+
+@Library("Infrastructure")
+
+def type = "java"
+def product = "ccd"
+def component = "test-stubs-service"
+
+def vaultOverrides = [
+  'preview': 'aat'
+]
+
+withPipeline(type, product, component) {
+  onMaster {
+    enableSlackNotifications('#ccd-master-builds')
+  }
+  onDemo {
+    enableSlackNotifications('#ccd-demo-builds')
+  }
+  onPR {
+    enableSlackNotifications('#ccd-pr-builds')
+  }
+
+  overrideVaultEnvironments(vaultOverrides)
+  enableDockerBuild()
+  installCharts()
+}
