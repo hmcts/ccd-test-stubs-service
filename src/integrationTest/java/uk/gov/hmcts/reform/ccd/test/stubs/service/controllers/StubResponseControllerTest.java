@@ -1,6 +1,9 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,16 +15,36 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class StubResponseControllerTest {
+class StubResponseControllerTest {
 
     @Autowired
     private transient MockMvc mockMvc;
 
     @DisplayName("Should return wiremock stub response with 200")
     @Test
-    public void forwardAllRequestEndpoint() throws Exception {
+    void forwardAllRequestEndpoint() throws Exception {
         mockMvc.perform(post("/aat/about_to_start").characterEncoding("UTF-8"))
             .andExpect(status().isOk());
     }
 
+    @DisplayName("Should return http client error for invalid get operation")
+    @Test
+    void invalidGetOperation() throws Exception {
+        mockMvc.perform(get("/aat/invalid_endpoint").characterEncoding("UTF-8"))
+            .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("Should return http client error for invalid put operation")
+    @Test
+    void invalidPutOperation() throws Exception {
+        mockMvc.perform(put("/aat/invalid_endpoint").characterEncoding("UTF-8"))
+            .andExpect(status().is4xxClientError());
+    }
+
+    @DisplayName("Should return http client error for invalid delete operation")
+    @Test
+    void invalidDeleteOperation() throws Exception {
+        mockMvc.perform(delete("/aat/invalid_endpoint").characterEncoding("UTF-8"))
+            .andExpect(status().is4xxClientError());
+    }
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
+import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +16,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DynamicCaseDataResponseTransformer extends AbstractDynamicResponseTransformer {
 
+    @VisibleForTesting
+    static final String DYNAMIC_CASE_DATA_RESPONSE_TRANSFORMER = "dynamic-case-data-response-transformer";
+
     private static final Logger LOG = LoggerFactory.getLogger(DynamicCaseDataResponseTransformer.class);
-    private static final String DYNAMIC_CASE_DATA_RESPONSE_TRANSFORMER = "dynamic-case-data-response-transformer";
     private static final String CASE_DATA = "case_data";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 

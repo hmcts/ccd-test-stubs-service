@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -34,7 +35,12 @@ public class StubResponseController {
     @Value("${wiremock.server.port}")
     private int mockHttpServerPort;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    @Autowired
+    public StubResponseController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
@@ -72,7 +78,7 @@ public class StubResponseController {
             return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
         } catch (IOException e) {
             return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
     }
