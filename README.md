@@ -92,3 +92,9 @@ There is no need to remove postgres and java or similar core images.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## Additional information
+
+_dynamic-case-data-response-transformer_: This transformer merges the case data from request payload with stubbed 
+case data in the response. To use this transformer, please define it in the wiremock response mapping for e.g. please
+ refer resources/mappings/aat_dynamic_data_about_to_submit.json
