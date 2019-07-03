@@ -23,9 +23,6 @@ services:
       - LOGBACK_REQUIRE_ALERT_LEVEL=false
       - LOGBACK_REQUIRE_ERROR_CODE=false
       # app environment variables
-      - WIREMOCK_SERVER_MAPPINGS_PATH=mappings
+      - WIREMOCK_SERVER_MAPPINGS_PATH=wiremock
     ports:
       - $SERVER_PORT:$SERVER_PORT
-    volumes:
-      - $WIREMOCK_SERVER_MAPPINGS_PATH:/opt/app/mappings
-
