@@ -23,28 +23,28 @@ class StubResponseControllerTest {
     @DisplayName("Should return wiremock stub response with 200")
     @Test
     void forwardAllRequestEndpoint() throws Exception {
-        mockMvc.perform(post("/aat/about_to_start").characterEncoding("UTF-8"))
+        mockMvc.perform(post("/case_type/aat/about_to_start").characterEncoding("UTF-8"))
             .andExpect(status().isOk());
     }
 
     @DisplayName("Should return http client error for invalid get operation")
     @Test
     void invalidGetOperation() throws Exception {
-        mockMvc.perform(get("/aat/invalid_endpoint").characterEncoding("UTF-8"))
+        mockMvc.perform(get("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
             .andExpect(status().is4xxClientError());
     }
 
     @DisplayName("Should return http client error for invalid put operation")
     @Test
     void invalidPutOperation() throws Exception {
-        mockMvc.perform(put("/aat/invalid_endpoint").characterEncoding("UTF-8"))
+        mockMvc.perform(put("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
             .andExpect(status().is4xxClientError());
     }
 
     @DisplayName("Should return http client error for invalid delete operation")
     @Test
     void invalidDeleteOperation() throws Exception {
-        mockMvc.perform(delete("/aat/invalid_endpoint").characterEncoding("UTF-8"))
+        mockMvc.perform(delete("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
             .andExpect(status().is4xxClientError());
     }
 }

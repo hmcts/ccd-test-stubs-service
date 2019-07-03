@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/aat/mid_event"
+    "urlPath": "/case_type/aat/mid_event"
   },
   "response": {
     "status": 200,

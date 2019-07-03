@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/aat/about_to_start"
+    "urlPath": "/case_type/aat/about_to_start"
   },
   "response": {
     "status": 200,

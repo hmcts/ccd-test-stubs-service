@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/aat/dynamic/about_to_submit"
+    "urlPath": "/case_type/aat/dynamic/about_to_submit"
   },
   "response": {
     "status": 200,
