@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
+  <suppress>
+    <notes>groovy latest version</notes>
+    <cve>CVE-2016-6497</cve>
+  </suppress>
+  <suppress>
+    <notes>We do not use: Spring Framework 5.0.5.RELEASE + Spring Security (any version), see
+      https://pivotal.io/security/cve-2018-1258
+    </notes>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+</suppressions>
