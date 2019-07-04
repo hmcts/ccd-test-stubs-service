@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,8 @@ class StubResponseControllerTest {
     @Test
     void forwardAllRequestEndpoint() throws Exception {
         mockMvc.perform(post("/case_type/aat/about_to_start").characterEncoding("UTF-8"))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.case_data.CallbackText").value("test"));
     }
 
     @DisplayName("Should return http client error for invalid get operation")
