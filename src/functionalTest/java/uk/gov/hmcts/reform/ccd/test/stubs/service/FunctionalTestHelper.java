@@ -2,9 +2,9 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service;
 
 import org.apache.commons.lang3.Validate;
 
-public class TestHelper {
+public class FunctionalTestHelper {
 
-    private TestHelper() {
+    private FunctionalTestHelper() {
     }
 
     public static String getTestUrl() {

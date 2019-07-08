@@ -8,18 +8,20 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 
-class StubFunctionalTest {
+class StubSmokeTest {
 
-    private static final String URL = "/case_type/aat/about_to_start";
+    private static final String URL = "/case_type/aat/dynamic/about_to_submit";
 
     @Test
     void stubTest() {
         withDefaultRequestSpec()
             .contentType(ContentType.JSON)
+            .body("{ \"case_data\":{ \"PersonFirstName\":\"FirstName\", \"PersonLastName\": \"Name\" }}")
             .post(URL)
             .then()
             .statusCode(200)
             .body("case_data.CallbackText", is("test"))
+            .body("case_data.PersonFirstName", is("FirstName"))
             .body("case_data.PersonLastName", is("LastName"))
             .log()
             .all();
@@ -27,7 +29,7 @@ class StubFunctionalTest {
 
     private RequestSpecification withDefaultRequestSpec() {
         return RestAssured.given(new RequestSpecBuilder()
-                                     .setBaseUri(FunctionalTestHelper.getTestUrl())
+                                     .setBaseUri(SmokeTestHelper.getTestUrl())
                                      .build());
     }
 

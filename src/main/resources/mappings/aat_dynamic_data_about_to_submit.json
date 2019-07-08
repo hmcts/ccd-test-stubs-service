@@ -10,7 +10,7 @@
     },
     "jsonBody": {
       "case_data": {
-        "CallbackText": "test1",
+        "CallbackText": "test",
         "PersonLastName": "LastName"
       }
     },
