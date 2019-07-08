@@ -10,4 +10,16 @@
     </notes>
     <cve>CVE-2018-1258</cve>
   </suppress>
+  <suppress>
+    <notes>We do not use: Spring Framework 5.0.5.RELEASE + Spring Security (any version), see
+      https://pivotal.io/security/cve-2018-1258
+    </notes>
+    <cve>CVE-2019-12814</cve>
+  </suppress>
+  <suppress>
+    <notes>We do not use: Spring Framework 5.0.5.RELEASE + Spring Security (any version), see
+      https://pivotal.io/security/cve-2018-1258
+    </notes>
+    <cve>CVE-2019-10072</cve>
+  </suppress>
 </suppressions>
