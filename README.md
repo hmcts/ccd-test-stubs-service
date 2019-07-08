@@ -9,8 +9,10 @@ The following environment variables are required:
 |------|---------|-------------|
 | WIREMOCK_SERVER_MAPPINGS_PATH | src/main/resources | Path to WireMock mappings |
 
-__Note__: For local docker instance, create a directory __mappings__ under the users home directory with the wiremock 
-stub mapping files. 
+__Note__: If the path to the WireMock mapping files is not set, it will use the default mappings from the project 
+resource repository. If setting the variable, please keep all WireMock json stub files in a directory named _mappings_ and exclude this directory in the path. For e.g. if you place the _mappings_ in /home/user/mappings then export WIREMOCK_SERVER_MAPPINGS_PATH=/home/user. 
+
+For more information on how to define wiremock stubs, please visit http://wiremock.org/docs/stubbing.
 
 ### Building the application
 
@@ -95,6 +97,34 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Additional information
 
-_dynamic-case-data-response-transformer_: This transformer merges the case data from request payload with stubbed 
-case data in the response. To use this transformer, please define it in the wiremock response mapping for e.g. please
- refer resources/mappings/aat_dynamic_data_about_to_submit.json
+**_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed 
+case data in the response. To use this transformer, please define it in the wiremock response mapping as configured 
+in _resources/mappings/aat_dynamic_data_about_to_submit.json_
+
+_Example:_
+If the request payload is:
+
+`{
+  "case_data": {
+    "firstName": "Test"
+  }
+}`
+
+And stubbed response payload is:
+
+`{
+  "case_data": {
+    "lastName": "Stub"
+  }
+}`
+
+Then using this transformer will produce the final response as:
+
+`{
+  "case_data": {
+    "firstName": "Test",
+    "lastName": "Stub"
+  }
+}`
+
+
