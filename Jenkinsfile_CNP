@@ -18,11 +18,11 @@ def component = "test-stubs-service"
 
 withPipeline(type, product, component) {
   onMaster {
-    sharedInfrastructurePipeline('ccd', 'ENVIRONMENT', 'sandbox')
+    sharedInfrastructurePipeline('ccd', 'sandbox', 'sandbox')
     enableSlackNotifications('#ccd-master-builds')
   }
   onDemo {
-    sharedInfrastructurePipeline('ccd', 'ENVIRONMENT', 'demo')
+    sharedInfrastructurePipeline('ccd', 'sandbox', 'demo')
     enableSlackNotifications('#ccd-demo-builds')
   }
   onPR {
