@@ -18,11 +18,14 @@ def component = "test-stubs-service"
 
 withPipeline(type, product, component) {
   onMaster {
-    sharedInfrastructurePipeline('ccd', 'sandbox', 'sandbox')
     enableSlackNotifications('#ccd-master-builds')
+    after('smoketest:aat') {
+      echo "Disabling prod build"
+      sh "rm -rf infrastructure/"
+    }
   }
   onDemo {
-    sharedInfrastructurePipeline('ccd', 'sandbox', 'demo')
+    sharedInfrastructurePipeline('ccd', 'demo', 'demo')
     enableSlackNotifications('#ccd-demo-builds')
   }
   onPR {
