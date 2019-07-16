@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import io.micrometer.core.instrument.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -33,10 +35,34 @@ public class StubResponseController {
     @Value("${wiremock.server.port}")
     private int mockHttpServerPort;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
-    @RequestMapping("**")
-    public ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
+    @Autowired
+    public StubResponseController(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    @RequestMapping(value = "**", method = RequestMethod.GET)
+    public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
+        return forwardAllRequests(request);
+    }
+
+    @RequestMapping(value = "**", method = RequestMethod.POST)
+    public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
+        return forwardAllRequests(request);
+    }
+
+    @RequestMapping(value = "**", method = RequestMethod.PUT)
+    public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
+        return forwardAllRequests(request);
+    }
+
+    @RequestMapping(value = "**", method = RequestMethod.DELETE)
+    public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
+        return forwardAllRequests(request);
+    }
+
+    private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             LOG.info("Request path: {}", requestPath);
@@ -52,7 +78,7 @@ public class StubResponseController {
             return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
         } catch (IOException e) {
             return ResponseEntity
-                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
     }

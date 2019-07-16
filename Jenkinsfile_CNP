@@ -15,22 +15,19 @@ def type = "java"
 def product = "ccd"
 def component = "test-stubs-service"
 
-def vaultOverrides = [
-  'preview': 'aat'
-]
-
 withPipeline(type, product, component) {
   onMaster {
+    sharedInfrastructurePipeline('ccd', 'sandbox', 'sandbox')
     enableSlackNotifications('#ccd-master-builds')
   }
   onDemo {
+    sharedInfrastructurePipeline('ccd', 'demo', 'demo')
     enableSlackNotifications('#ccd-demo-builds')
   }
   onPR {
     enableSlackNotifications('#ccd-pr-builds')
   }
 
-  overrideVaultEnvironments(vaultOverrides)
   enableDockerBuild()
   installCharts()
 }

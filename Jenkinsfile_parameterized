@@ -8,11 +8,7 @@ properties([
   pipelineTriggers([[$class: 'GitHubPushTrigger']])
 ])
 
-def vaultOverrides = [
-  'preview': 'aat'
-]
-
 withParameterizedPipeline('java', 'ccd', 'test-stubs-service', params.ENVIRONMENT, 'sandbox') {
   enableSlackNotifications('#ccd-param-builds')
-  overrideVaultEnvironments(vaultOverrides)
+  
 }

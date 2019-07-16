@@ -1,0 +1,5 @@
+java:
+  applicationPort: 5555
+  environment:
+    image: "https://hmcts.azurecr.io/hmcts/ccd-test-stubs-service:latest"
+    WIREMOCK_SERVER_MAPPINGS_PATH: "mappings"

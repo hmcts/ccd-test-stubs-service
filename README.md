@@ -7,7 +7,17 @@ The following environment variables are required:
 
 | Name | Default | Description |
 |------|---------|-------------|
-| WIREMOCK_SERVER_MAPPINGS_PATH | src/main/resources | Path to WireMock stubs |
+| WIREMOCK_SERVER_MAPPINGS_PATH | src/main/resources | Path to WireMock mappings |
+
+__Note__: If the path to the WireMock mapping files is not set, it will use the default mappings from the project 
+resource repository (https://github.com/hmcts/ccd-test-stubs-service/tree/master/src/main/resources/mappings). If 
+setting the variable, please keep all WireMock json stub files in a directory named 
+_mappings_ and exclude this directory in the path. For e.g. if you place the _mappings_ in /home/user/mappings then 
+export WIREMOCK_SERVER_MAPPINGS_PATH=/home/user. If you are running data-store-api in a docker container, please make 
+sure the callback URLs defined in the definition file use the host as **_host.docker.internal:5555_** and if running 
+the data-store-api on its own (non-docker), then the host should be **_localhost:5555_** 
+
+For more information on how to define wiremock stubs, please visit http://wiremock.org/docs/stubbing.
 
 ### Building the application
 
@@ -89,3 +99,37 @@ There is no need to remove postgres and java or similar core images.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+
+## Additional information
+
+**_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed 
+case data in the response. To use this transformer, please define it in the wiremock response mapping as configured 
+in _resources/mappings/aat_dynamic_data_about_to_submit.json_
+
+_Example:_
+If the request payload is:
+
+`{
+  "data": {
+    "firstName": "Test"
+  }
+}`
+
+And stubbed response payload is:
+
+`{
+  "data": {
+    "lastName": "Stub"
+  }
+}`
+
+Then using this transformer will produce the final response as:
+
+`{
+  "data": {
+    "firstName": "Test",
+    "lastName": "Stub"
+  }
+}`
+
+
