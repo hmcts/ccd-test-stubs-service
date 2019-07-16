@@ -15,13 +15,14 @@ def type = "java"
 def product = "ccd"
 def component = "test-stubs-service"
 
+
 withPipeline(type, product, component) {
   onMaster {
-    sharedInfrastructurePipeline('ccd', 'sandbox', 'sandbox')
+    sharedInfrastructurePipeline('ccd', 'ENVIRONMENT', 'sandbox')
     enableSlackNotifications('#ccd-master-builds')
   }
   onDemo {
-    sharedInfrastructurePipeline('ccd', 'demo', 'demo')
+    sharedInfrastructurePipeline('ccd', 'ENVIRONMENT', 'demo')
     enableSlackNotifications('#ccd-demo-builds')
   }
   onPR {
