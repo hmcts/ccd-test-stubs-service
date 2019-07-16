@@ -16,13 +16,13 @@ class StubSmokeTest {
     void stubTest() {
         withDefaultRequestSpec()
             .contentType(ContentType.JSON)
-            .body("{ \"case_data\":{ \"PersonFirstName\":\"FirstName\", \"PersonLastName\": \"Name\" }}")
+            .body("{ \"data\":{ \"PersonFirstName\":\"FirstName\", \"PersonLastName\": \"Name\" }}")
             .post(URL)
             .then()
             .statusCode(200)
-            .body("case_data.CallbackText", is("test"))
-            .body("case_data.PersonFirstName", is("FirstName"))
-            .body("case_data.PersonLastName", is("LastName"))
+            .body("data.CallbackText", is("test"))
+            .body("data.PersonFirstName", is("FirstName"))
+            .body("data.PersonLastName", is("LastName"))
             .log()
             .all();
     }

@@ -110,7 +110,7 @@ _Example:_
 If the request payload is:
 
 `{
-  "case_data": {
+  "data": {
     "firstName": "Test"
   }
 }`
@@ -118,7 +118,7 @@ If the request payload is:
 And stubbed response payload is:
 
 `{
-  "case_data": {
+  "data": {
     "lastName": "Stub"
   }
 }`
@@ -126,7 +126,7 @@ And stubbed response payload is:
 Then using this transformer will produce the final response as:
 
 `{
-  "case_data": {
+  "data": {
     "firstName": "Test",
     "lastName": "Stub"
   }

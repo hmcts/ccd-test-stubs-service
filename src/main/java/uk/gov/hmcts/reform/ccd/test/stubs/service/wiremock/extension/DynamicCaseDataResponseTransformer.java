@@ -20,7 +20,7 @@ public class DynamicCaseDataResponseTransformer extends AbstractDynamicResponseT
     static final String DYNAMIC_CASE_DATA_RESPONSE_TRANSFORMER = "dynamic-case-data-response-transformer";
 
     private static final Logger LOG = LoggerFactory.getLogger(DynamicCaseDataResponseTransformer.class);
-    private static final String CASE_DATA = "case_data";
+    private static final String CASE_DATA = "data";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Override

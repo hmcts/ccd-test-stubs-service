@@ -19,11 +19,11 @@ class DynamicCaseDataResponseTransformerTest {
     @DisplayName("Should add request case data to response")
     void shouldAddRequestDataToResponse() {
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"case_data\":{\"lastName\":\"Gates\"}}");
-        Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
+        when(request.getBodyAsString()).thenReturn("{\"data\":{\"lastName\":\"Gates\"}}");
+        Response response = Response.response().body("{\"data\":{\"firstName\":\"Bill\"}}").build();
 
         Response result = transformer.transform(request, response, null, null);
-        assertThat(result.getBodyAsString(), is("{\"case_data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
+        assertThat(result.getBodyAsString(), is("{\"data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
     }
 
     @Test
@@ -36,8 +36,8 @@ class DynamicCaseDataResponseTransformerTest {
     @DisplayName("Should return response as is on error")
     void shouldReturnResponseAsIsOnError() {
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"case_data\":{}");
-        Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
+        when(request.getBodyAsString()).thenReturn("{\"data\":{}");
+        Response response = Response.response().body("{\"data\":{\"firstName\":\"Bill\"}}").build();
 
         Response result = transformer.transform(request, response, null, null);
         assertThat(result.getBodyAsString(), is(response.getBodyAsString()));

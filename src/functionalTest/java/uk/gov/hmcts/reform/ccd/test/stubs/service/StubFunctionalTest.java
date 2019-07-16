@@ -19,8 +19,8 @@ class StubFunctionalTest {
             .post(URL)
             .then()
             .statusCode(200)
-            .body("case_data.CallbackText", is("test"))
-            .body("case_data.PersonLastName", is("LastName"))
+            .body("data.CallbackText", is("test"))
+            .body("data.PersonLastName", is("LastName"))
             .log()
             .all();
     }

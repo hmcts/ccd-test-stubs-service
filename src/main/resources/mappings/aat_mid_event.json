@@ -9,7 +9,7 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "case_data": {
+      "data": {
         "CallbackText": "test1",
         "PersonLastName": "LastName"
       }

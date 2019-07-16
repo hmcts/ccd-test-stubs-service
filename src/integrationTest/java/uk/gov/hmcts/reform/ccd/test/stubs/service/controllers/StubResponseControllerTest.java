@@ -26,7 +26,7 @@ class StubResponseControllerTest {
     void forwardAllRequestEndpoint() throws Exception {
         mockMvc.perform(post("/case_type/aat/about_to_start").characterEncoding("UTF-8"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.case_data.CallbackText").value("test"));
+            .andExpect(jsonPath("$.data.CallbackText").value("test"));
     }
 
     @DisplayName("Should return http client error for invalid get operation")
