@@ -60,6 +60,17 @@ task integration(type: Test, description: 'Runs the integration tests.', group: 
 task smoke(type: Test) {
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
+  useJUnitPlatform {
+    includeTags 'smoke'
+  }
+}
+
+task functional(type: Test) {
+  testClassesDirs = sourceSets.functionalTest.output.classesDirs
+  classpath = sourceSets.functionalTest.runtimeClasspath
+  useJUnitPlatform {
+    includeTags 'functional'
+  }
 }
 
 checkstyle {
@@ -88,9 +99,9 @@ sonarqube {
   properties {
     property "sonar.projectName", "Reform :: ccd-test-stubs-service"
     property "sonar.projectKey", "uk.gov.hmcts.reform:ccd-test-stubs-service"
-    property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/junitPlatformTest.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
-
+    property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
   }
 }
 
