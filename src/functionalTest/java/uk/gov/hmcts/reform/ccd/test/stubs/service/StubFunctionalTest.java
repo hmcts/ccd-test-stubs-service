@@ -6,8 +6,10 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("functional")
 class StubFunctionalTest {
 
     private static final String URL = "/case_type/aat/about_to_start";
