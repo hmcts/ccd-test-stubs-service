@@ -28,6 +28,7 @@ class StubFunctionalTest {
     }
 
     private RequestSpecification withDefaultRequestSpec() {
+        RestAssured.useRelaxedHTTPSValidation();
         return RestAssured.given(new RequestSpecBuilder()
                                      .setBaseUri(FunctionalTestHelper.getTestUrl())
                                      .build());

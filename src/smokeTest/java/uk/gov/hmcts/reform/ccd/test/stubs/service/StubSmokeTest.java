@@ -30,6 +30,7 @@ class StubSmokeTest {
     }
 
     private RequestSpecification withDefaultRequestSpec() {
+        RestAssured.useRelaxedHTTPSValidation();
         return RestAssured.given(new RequestSpecBuilder()
                                      .setBaseUri(SmokeTestHelper.getTestUrl())
                                      .build());
