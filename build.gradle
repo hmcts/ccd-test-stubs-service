@@ -223,6 +223,9 @@ bootJar {
     attributes('Implementation-Title': project.name)
     attributes('Implementation-Version': project.version.toString())
   }
+  from('src/main/resources/mappings') {
+    into 'wiremock/mappings'
+  }
 }
 
 // for cnp pipeline

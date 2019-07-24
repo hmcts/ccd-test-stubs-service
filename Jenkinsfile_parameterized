@@ -10,5 +10,5 @@ properties([
 
 withParameterizedPipeline('java', 'ccd', 'test-stubs-service', params.ENVIRONMENT, 'sandbox') {
   enableSlackNotifications('#ccd-param-builds')
-  
+  env.WIREMOCK_SERVER_MAPPINGS_PATH = "wiremock"
 }
