@@ -7,10 +7,10 @@ The following environment variables are required:
 
 | Name | Default | Description |
 |------|---------|-------------|
-| WIREMOCK_SERVER_MAPPINGS_PATH | src/main/resources | Path to WireMock mappings |
+| WIREMOCK_SERVER_MAPPINGS_PATH | wiremock | Path to WireMock mappings |
 
 __Note__: If the path to the WireMock mapping files is not set, it will use the default mappings from the project 
-resource repository (https://github.com/hmcts/ccd-test-stubs-service/tree/master/src/main/resources/mappings). If 
+resource repository (https://github.com/hmcts/ccd-test-stubs-service/tree/master/wiremock/mappings). If 
 setting the variable, please keep all WireMock json stub files in a directory named 
 _mappings_ and exclude this directory in the path. For e.g. if you place the _mappings_ in /home/user/mappings then 
 export WIREMOCK_SERVER_MAPPINGS_PATH=/home/user. If you are running data-store-api in a docker container, please make 
@@ -104,7 +104,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed 
 case data in the response. To use this transformer, please define it in the wiremock response mapping as configured 
-in _resources/mappings/aat_dynamic_data_about_to_submit.json_
+in _wiremock/mappings/aat_dynamic_data_about_to_submit.json_
 
 _Example:_
 If the request payload is:

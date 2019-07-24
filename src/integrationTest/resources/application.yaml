@@ -1,5 +1,5 @@
 server:
-  port: 5555
+  port: 5557
 
 management:
   endpoints:
@@ -13,11 +13,5 @@ spring:
 wiremock:
   server:
     host: localhost
-    port: 5560
+    port: 5558
     mappings-path: ${WIREMOCK_SERVER_MAPPINGS_PATH:wiremock}
-
-logging:
-  level:
-    root: INFO
-    org.springframework.web: WARN
-    com.github.tomakehurst: INFO

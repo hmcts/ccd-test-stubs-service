@@ -5,8 +5,10 @@ import java.io.File;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,25 +17,24 @@ import org.springframework.context.annotation.Configuration;
 public class WireMockServerConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(WireMockServerConfig.class);
+    private static final String MAPPINGS_DIRECTORY_NAME = "/mappings";
 
-    @Value("${wiremock.server.port}")
-    private int port;
+    private final int port;
+    private final String mappingsPath;
 
-    @Value("${wiremock.server.mappings-path}")
-    private String mappingsPath;
+    @Autowired
+    public WireMockServerConfig(@Value("${wiremock.server.port}") int port,
+                                @Value("${wiremock.server.mappings-path}") String mappingsPath) {
+        this.port = port;
+        this.mappingsPath = mappingsPath;
+    }
 
     @Bean
     public WireMockServer wireMockServer() {
         LOG.info("WireMock port: {}, mappings file path: {}", port, mappingsPath);
 
-        WireMockServer wireMockServer = new WireMockServer(options()
-                                                               .port(port)
-                                                               .usingFilesUnderDirectory(mappingsPath)
-                                                               .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                                                               + ".DynamicCaseDataResponseTransformer"));
-
-        File mappingDirectory = new File(mappingsPath);
-        LOG.info("Mappings directory path: {}", mappingDirectory.getAbsolutePath());
+        WireMockServer wireMockServer = new WireMockServer(getWireMockConfig());
+        wireMockServer.start();
 
         LOG.info("Stubs registered with wiremock");
         wireMockServer.getStubMappings().forEach(w -> LOG.info("\nRequest : {}, \nResponse: {}", w.getRequest(), w.getResponse()));
@@ -41,4 +42,23 @@ public class WireMockServerConfig {
         return wireMockServer;
     }
 
+    private WireMockConfiguration getWireMockConfig() {
+        File mappingDirectory = new File(mappingsPath + MAPPINGS_DIRECTORY_NAME);
+        LOG.info("Mappings directory path: {}", mappingDirectory.getAbsolutePath());
+
+        if (mappingDirectory.isDirectory()) {
+            return options()
+                .port(port)
+                .usingFilesUnderDirectory(mappingsPath)
+                .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+                                + ".DynamicCaseDataResponseTransformer");
+        } else {
+            LOG.info("using classpath resources to resolve mappings");
+            return options()
+                .port(port)
+                .usingFilesUnderClasspath(mappingsPath)
+                .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+                                + ".DynamicCaseDataResponseTransformer");
+        }
+    }
 }

@@ -24,7 +24,7 @@ public class WireMockHttpServer implements MockHttpServer {
     @PostConstruct
     @Override
     public void start() {
-        this.wireMockServer.start();
+        //this.wireMockServer.start();
         LOG.info("Started WireMock server on port {}", wireMockServer.port());
     }
 
