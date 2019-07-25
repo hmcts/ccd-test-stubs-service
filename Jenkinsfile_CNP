@@ -15,10 +15,10 @@ def type = "java"
 def product = "ccd"
 def component = "test-stubs-service"
 
-
 withPipeline(type, product, component) {
   onMaster {
     enableSlackNotifications('#ccd-master-builds')
+    env.WIREMOCK_SERVER_MAPPINGS_PATH = "wiremock"
     after('smoketest:aat') {
       echo "Disabling prod build"
       sh "rm -rf infrastructure/"
