@@ -23,7 +23,7 @@ class WireMockServerConfigTest {
 
     @Test
     void shouldSetWireMockPathWithResourcesDirectory() {
-        String resourcesDirectory = "src/main/resources";
+        String resourcesDirectory = "wiremock";
         WireMockServerConfig config = new WireMockServerConfig(9090, resourcesDirectory);
 
         WireMockServer wireMockServer = config.wireMockServer();
