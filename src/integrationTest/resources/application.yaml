@@ -1,0 +1,17 @@
+server:
+  port: 5557
+
+management:
+  endpoints:
+    web:
+      base-path: /
+
+spring:
+  application:
+    name: CCD Test Stubs Services
+
+wiremock:
+  server:
+    host: localhost
+    port: 5558
+    mappings-path: ${WIREMOCK_SERVER_MAPPINGS_PATH:wiremock}
