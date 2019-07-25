@@ -14,7 +14,7 @@ wiremock:
   server:
     host: localhost
     port: 5558
-    mappings-path:src/main/resources
+    mappings-path: src/main/resources
 
 logging:
   level:
