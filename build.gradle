@@ -223,7 +223,7 @@ bootJar {
     attributes('Implementation-Title': project.name)
     attributes('Implementation-Version': project.version.toString())
   }
-  from('src/main/resources/mappings') {
+  from('wiremock/mappings') {
     into 'wiremock/mappings'
   }
 }

@@ -30,5 +30,5 @@ variable "common_tags" {
 variable "wiremock_server_mappings_path" {
   description = "WireMock server mappings files path containing json response stubs"
   type = "string"
-  default = "src/main/resources"
+  default = "wiremock"
 }
