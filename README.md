@@ -104,7 +104,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed 
 case data in the response. To use this transformer, please define it in the wiremock response mapping as configured 
-in _resources/mappings/aat_dynamic_data_about_to_submit.json_
+in _wiremock/mappings/aat_dynamic_data_about_to_submit.json_
 
 _Example:_
 If the request payload is:
