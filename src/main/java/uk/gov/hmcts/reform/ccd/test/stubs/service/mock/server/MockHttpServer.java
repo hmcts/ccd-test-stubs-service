@@ -6,4 +6,5 @@ public interface MockHttpServer {
 
     void stop();
 
+    int portNumber();
 }

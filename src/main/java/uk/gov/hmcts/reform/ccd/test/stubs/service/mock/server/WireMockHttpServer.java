@@ -34,4 +34,8 @@ public class WireMockHttpServer implements MockHttpServer {
         this.wireMockServer.stop();
     }
 
+    @Override
+    public int portNumber() {
+        return wireMockServer.port();
+    }
 }
