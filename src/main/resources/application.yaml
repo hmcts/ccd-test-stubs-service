@@ -20,4 +20,4 @@ logging:
   level:
     root: INFO
     org.springframework.web: WARN
-    com.github.tomakehurst: WARN
+    com.github.tomakehurst: INFO
