@@ -34,7 +34,6 @@ public class WireMockServerConfig {
         LOG.info("WireMock port: {}, mappings file path: {}", port, mappingsPath);
 
         WireMockServer wireMockServer = new WireMockServer(getWireMockConfig());
-        wireMockServer.start();
 
         LOG.info("Stubs registered with wiremock");
         wireMockServer.getStubMappings().forEach(w -> LOG.info("\nRequest : {}, \nResponse: {}", w.getRequest(), w.getResponse()));
