@@ -8,7 +8,7 @@ services:
         - http_proxy
         - https_proxy
         - no_proxy
-    image: hmcts/ccd-test-stubs-service
+    image: hmctspublic.azurecr.io/ccd/ccd-test-stubs-service
     environment:
       # these environment variables are used by java-logging library
       - ROOT_APPENDER
