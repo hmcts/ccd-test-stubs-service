@@ -11,16 +11,13 @@ import static org.mockito.Mockito.mock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
 class StubResponseControllerTest {
-
-    @Mock
-    private RestTemplate restTemplate;
 
     private StubResponseController stubResponseController;
 
@@ -28,7 +25,7 @@ class StubResponseControllerTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        stubResponseController = new StubResponseController(restTemplate);
+        stubResponseController = new StubResponseController(mock(RestTemplate.class), mock(MockHttpServer.class));
     }
 
     @Test

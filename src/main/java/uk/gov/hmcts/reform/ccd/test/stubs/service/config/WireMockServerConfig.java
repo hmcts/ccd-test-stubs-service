@@ -19,19 +19,16 @@ public class WireMockServerConfig {
     private static final Logger LOG = LoggerFactory.getLogger(WireMockServerConfig.class);
     private static final String MAPPINGS_DIRECTORY_NAME = "/mappings";
 
-    private final int port;
     private final String mappingsPath;
 
     @Autowired
-    public WireMockServerConfig(@Value("${wiremock.server.port}") int port,
-                                @Value("${wiremock.server.mappings-path}") String mappingsPath) {
-        this.port = port;
+    public WireMockServerConfig(@Value("${wiremock.server.mappings-path}") String mappingsPath) {
         this.mappingsPath = mappingsPath;
     }
 
     @Bean
     public WireMockServer wireMockServer() {
-        LOG.info("WireMock port: {}, mappings file path: {}", port, mappingsPath);
+        LOG.info("WireMock mappings file path: {}", mappingsPath);
 
         WireMockServer wireMockServer = new WireMockServer(getWireMockConfig());
 
@@ -47,14 +44,16 @@ public class WireMockServerConfig {
 
         if (mappingDirectory.isDirectory()) {
             return options()
-                .port(port)
+                .dynamicHttpsPort()
+                .dynamicPort()
                 .usingFilesUnderDirectory(mappingsPath)
                 .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
                                 + ".DynamicCaseDataResponseTransformer");
         } else {
             LOG.info("using classpath resources to resolve mappings");
             return options()
-                .port(port)
+                .dynamicHttpsPort()
+                .dynamicPort()
                 .usingFilesUnderClasspath(mappingsPath)
                 .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
                                 + ".DynamicCaseDataResponseTransformer");

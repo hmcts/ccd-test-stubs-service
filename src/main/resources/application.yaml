@@ -13,7 +13,6 @@ spring:
 wiremock:
   server:
     host: localhost
-    port: 5560
     mappings-path: ${WIREMOCK_SERVER_MAPPINGS_PATH:wiremock}
 
 logging:

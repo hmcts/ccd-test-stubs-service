@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
 /**
  * Default endpoints per application.
@@ -32,14 +33,14 @@ public class StubResponseController {
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
 
-    @Value("${wiremock.server.port}")
-    private int mockHttpServerPort;
-
     private final RestTemplate restTemplate;
 
+    private final MockHttpServer mockHttpServer;
+
     @Autowired
-    public StubResponseController(RestTemplate restTemplate) {
+    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer) {
         this.restTemplate = restTemplate;
+        this.mockHttpServer = mockHttpServer;
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
@@ -84,6 +85,6 @@ public class StubResponseController {
     }
 
     private String getMockHttpServerUrl(String requestPath) {
-        return "http://" + mockHttpServerHost + ":" + mockHttpServerPort + requestPath;
+        return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
     }
 }
