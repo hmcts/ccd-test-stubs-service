@@ -18,6 +18,7 @@ public class WireMockServerConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(WireMockServerConfig.class);
     private static final String MAPPINGS_DIRECTORY_NAME = "/mappings";
+    private static final String DEFAULT_CLASSPATH_MAPPINGS = "wiremock/default";
 
     private final String mappingsPath;
 
@@ -50,11 +51,11 @@ public class WireMockServerConfig {
                 .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
                                 + ".DynamicCaseDataResponseTransformer");
         } else {
-            LOG.info("using classpath resources to resolve mappings");
+            LOG.info("using classpath resource {} to resolve mappings", DEFAULT_CLASSPATH_MAPPINGS);
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
-                .usingFilesUnderClasspath(mappingsPath)
+                .usingFilesUnderClasspath(DEFAULT_CLASSPATH_MAPPINGS)
                 .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
                                 + ".DynamicCaseDataResponseTransformer");
         }
