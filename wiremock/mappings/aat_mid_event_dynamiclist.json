@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/case_type/aat/mid_event_dynamic_list"
+    "urlPath": "/case_type/fe-functional-test/mid_event_dynamic_list"
   },
   "response": {
     "status": 200,
