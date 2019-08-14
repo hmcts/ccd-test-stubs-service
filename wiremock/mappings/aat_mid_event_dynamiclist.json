@@ -1,0 +1,45 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/case_type/fe-functional-test/mid_event_dynamic_list"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "DynamicList": {
+          "value": {
+            "code": "List1",
+            "label": " List 1"
+          },
+          "list_items": [{
+            "code": "List1",
+            "label": " List 1"
+          }, {
+            "code": "List2",
+            "label": " List 2"
+          }, {
+            "code": "List3",
+            "label": " List 3"
+          }, {
+            "code": "List4",
+            "label": " List 4"
+          }, {
+            "code": "List5",
+            "label": " List 5"
+          }, {
+            "code": "List6",
+            "label": " List 6"
+          }, {
+            "code": "List7",
+            "label": " List 7"
+          }
+          ]
+        }
+      }
+    }
+  }
+}
