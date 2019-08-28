@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/login"
+  },
+  "response": {
+    "status": 200,
+    "bodyFileName": "src/test/resources/files/login.htm"
+  }
+}
