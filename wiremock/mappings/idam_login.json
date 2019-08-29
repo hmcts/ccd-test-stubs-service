@@ -4,7 +4,6 @@
     "url": "/login"
   },
   "response": {
-    "status": 200,
-    "bodyFileName": "src/test/resources/files/login.htm"
+    "proxyBaseUrl": "http://hostname:port"
   }
 }
