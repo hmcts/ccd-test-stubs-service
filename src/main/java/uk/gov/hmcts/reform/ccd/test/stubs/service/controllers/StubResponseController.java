@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 
 import io.micrometer.core.instrument.util.IOUtils;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +44,14 @@ public class StubResponseController {
     public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer) {
         this.restTemplate = restTemplate;
         this.mockHttpServer = mockHttpServer;
+    }
+
+    @RequestMapping("/login")
+    public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
+        URI oauth2Endpoint = new URI("http://localhost:3451/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(oauth2Endpoint);
+        return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
