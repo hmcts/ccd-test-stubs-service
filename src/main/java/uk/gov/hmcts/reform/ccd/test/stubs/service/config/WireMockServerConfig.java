@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.config;
 import java.io.File;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -34,6 +35,9 @@ public class WireMockServerConfig {
 
         LOG.info("Stubs registered with wiremock");
         wireMockServer.getStubMappings().forEach(w -> LOG.info("\nRequest : {}, \nResponse: {}", w.getRequest(), w.getResponse()));
+
+        wireMockServer.stubFor(get(urlPathEqualTo("/login"))
+            .willReturn(permanentRedirect("http://localhost:3451/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0")));
 
         return wireMockServer;
     }
