@@ -1,4 +1,4 @@
-FROM hmcts/cnp-java-base:openjdk-8u191-jre-alpine3.9-2.0.1
+FROM hmctspublic.azurecr.io/base/java:openjdk-8-distroless-1.0
 
 ENV APPLICATION_TOTAL_MEMORY 128M
 ENV APPLICATION_SIZE_ON_DISK_IN_MB 41
