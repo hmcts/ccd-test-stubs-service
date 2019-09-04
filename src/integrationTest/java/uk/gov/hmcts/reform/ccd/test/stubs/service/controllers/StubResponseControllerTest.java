@@ -51,4 +51,11 @@ class StubResponseControllerTest {
         mockMvc.perform(delete("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
             .andExpect(status().is4xxClientError());
     }
+
+    @DisplayName("Should return http client error for invalid get operation")
+    @Test
+    void invalidGetOperation() throws Exception {
+        mockMvc.perform(get("/login"))
+            .andExpect(status().is2xxSuccessful());
+    }
 }
