@@ -32,4 +32,19 @@
     <cve>CVE-2019-14379</cve>
     <cve>CVE-2019-14439</cve>
   </suppress>
+  <suppress>
+    <notes>
+      Commons BeanUtils: has been updated to
+      http://commons.apache.org/proper/commons-beanutils/index.html
+    </notes>
+    <cve>CVE-2019-10086</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+           no fix available, not affected anyway
+           ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson-databind@.*$</packageUrl>
+    <cve>CVE-2019-12814</cve>
+    <cve>CVE-2019-12384</cve>
+  </suppress>
 </suppressions>
