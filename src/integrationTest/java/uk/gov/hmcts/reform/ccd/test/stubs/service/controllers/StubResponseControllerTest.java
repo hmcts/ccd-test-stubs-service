@@ -52,10 +52,10 @@ class StubResponseControllerTest {
             .andExpect(status().is4xxClientError());
     }
 
-    @DisplayName("Should return http client error for invalid get operation")
+    @DisplayName("Should redirect when calling login endpoint")
     @Test
-    void invalidGetOperation() throws Exception {
+    void testLoginRedirects() throws Exception {
         mockMvc.perform(get("/login"))
-            .andExpect(status().is2xxSuccessful());
+            .andExpect(status().is3xxRedirection());
     }
 }
