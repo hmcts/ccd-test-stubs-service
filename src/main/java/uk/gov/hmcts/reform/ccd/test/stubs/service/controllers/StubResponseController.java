@@ -49,7 +49,7 @@ public class StubResponseController {
         this.mockHttpServer = mockHttpServer;
     }
 
-    @RequestMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
         URI oauth2Endpoint = new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
         HttpHeaders httpHeaders = new HttpHeaders();
