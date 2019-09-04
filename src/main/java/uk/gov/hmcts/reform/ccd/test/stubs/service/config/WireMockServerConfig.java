@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.config;
 import java.io.File;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;

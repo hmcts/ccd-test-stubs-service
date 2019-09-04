@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/oauth2/token"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "expires_in": 28800,
+      "access_token": "eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJhdXRvLnRlc3QuY25wQGdtYWlsLmNvbSIsImF1dGhfbGV2ZWwiOjAsImF1ZGl0VHJhY2tpbmdJZCI6IjdlY2JjY2E4LWZlMWEtNGVkMS1hZDZhLWZkZTA2OGViOTQ5OCIsImlzcyI6Imh0dHA6Ly9mci1hbTo4MDgwL29wZW5hbS9vYXV0aDIvaG1jdHMiLCJ0b2tlbk5hbWUiOiJhY2Nlc3NfdG9rZW4iLCJ0b2tlbl90eXBlIjoiQmVhcmVyIiwiYXV0aEdyYW50SWQiOiIyYTUzNGU2YS0xMjJiLTRmNjctODViYy0zMjU2N2VmMGUxMjEiLCJhdWQiOiJjY2RfZ2F0ZXdheSIsIm5iZiI6MTU2NjkwNTgzMSwiZ3JhbnRfdHlwZSI6ImF1dGhvcml6YXRpb25fY29kZSIsInNjb3BlIjpbImFjciIsIm9wZW5pZCIsInByb2ZpbGUiLCJyb2xlcyIsImF1dGhvcml0aWVzIl0sImF1dGhfdGltZSI6MTU2NjkwNTgzMDAwMCwicmVhbG0iOiIvaG1jdHMiLCJleHAiOjE1NjY5MzQ2MzEsImlhdCI6MTU2NjkwNTgzMSwiZXhwaXJlc19pbiI6Mjg4MDAsImp0aSI6ImViMWEzOTY0LTI3ZjItNDcwMC1iNjZlLTY3NzBkNzYyMTE2YSJ9.Nh8ofSchptdHJt7yjq7D2mZwLAnALh1F_noyH5-04MnDP1H47jWX6CfmTMQXMp-e9QFgPwfNUvRl-BSNwf2UE3VmLr4RHHjd3ITr01HVI4Ah0x7PBdmM-ZrNjj4aDD0mVW-6wKpTpB8bUOpUQB3c8Yr8mymebL-hmtR1UFbu1Zlwms4QV3fxu_8qnqDQKz98KfqnSR09vOs7OgsXk3pXLv-sMdSfp38-P7ykUsYAxPK2WHKoexm-K1jkYehtqW-obeAv-2culfNXFMnbgfONKbDVS83HDwpIzOxl0Zi9KZhK6vLj6aih-fko6ZFkaMvB2rHpW3xMGjmppRU3mQrajw"
+    }
+  }
+}
