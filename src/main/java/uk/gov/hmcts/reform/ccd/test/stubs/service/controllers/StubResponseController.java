@@ -36,6 +36,9 @@ public class StubResponseController {
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
 
+    @Value("${app.management-web-url}")
+    private String managementWebUrl;
+
     private final RestTemplate restTemplate;
 
     private final MockHttpServer mockHttpServer;
@@ -48,7 +51,7 @@ public class StubResponseController {
 
     @RequestMapping("/login")
     public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
-        URI oauth2Endpoint = new URI("http://localhost:3451/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+        URI oauth2Endpoint = new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(oauth2Endpoint);
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
