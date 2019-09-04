@@ -188,6 +188,9 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy', version: groovyVersion
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
+  // CVE-2019-10086 force update of commons-beanutils.
+  compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
+  
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
