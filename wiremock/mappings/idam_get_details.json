@@ -15,6 +15,7 @@
       "id": "a1b59459-9c63-488d-9e6d-d40ffb4ed7ce",
       "roles": [
         "caseworker-autotest1",
+        "caseworker-autotest2",
         "caseworker",
         "ccd-import"
       ],
