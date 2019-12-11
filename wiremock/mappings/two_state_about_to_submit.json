@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/case_type/two/state/about_to_submit"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "state": "VALUE",
+      "data": {
+        "TextFieldFName": "Grabriela",
+        "TextFieldMName": "chau",
+        "TextFieldLName": "Michetti",
+        "state": "VALUE"
+      }
+    }
+  }
+}

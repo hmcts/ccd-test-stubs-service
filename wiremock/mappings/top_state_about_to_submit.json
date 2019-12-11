@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/case_type/top/state/about_to_submit"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "state": "VALUE",
+      "data": {
+        "TextFieldFName": "Macri",
+        "TextFieldMName": "Gato",
+        "TextFieldLName": "Chau"
+      }
+    }
+  }
+}
