@@ -188,6 +188,8 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy', version: groovyVersion
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
+  compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.2.10'
+
   // CVE-2019-10086 force update of commons-beanutils.
   compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
   
