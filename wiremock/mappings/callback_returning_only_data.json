@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/case_type/state/inside/about_to_submit"
+    "urlPath": "/callback_returning_only_data"
   },
   "response": {
     "status": 200,
@@ -10,10 +10,9 @@
     },
     "jsonBody": {
       "data": {
-        "TextFieldFName": "Pepe",
-        "TextFieldMName": "Grillo",
-        "TextFieldLName": "Grillo",
-        "state": "VALUE"
+        "TextFieldFName": "Carlota",
+        "TextFieldMName": "sucumdum",
+        "TextFieldLName": "Porreli"
       }
     }
   }

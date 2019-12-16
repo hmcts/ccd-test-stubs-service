@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/case_type/top/state/about_to_submit"
+    "urlPath": "/callback_overriding_state_as_top_level_property"
   },
   "response": {
     "status": 200,

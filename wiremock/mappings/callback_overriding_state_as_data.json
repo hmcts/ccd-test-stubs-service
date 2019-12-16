@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/case_type/two/state/about_to_submit"
+    "urlPath": "/callback_overriding_state_as_data"
   },
   "response": {
     "status": 200,
@@ -9,11 +9,10 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "state": "VALUE",
       "data": {
-        "TextFieldFName": "Grabriela",
-        "TextFieldMName": "chau",
-        "TextFieldLName": "Michetti",
+        "TextFieldFName": "Pepe",
+        "TextFieldMName": "Grillo",
+        "TextFieldLName": "Grillo",
         "state": "VALUE"
       }
     }
