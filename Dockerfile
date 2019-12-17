@@ -1,4 +1,4 @@
-FROM hmctspublic.azurecr.io/base/java:openjdk-8-distroless-1.0
+FROM hmctspublic.azurecr.io/base/java:openjdk-8-distroless-1.2
 
 ENV APPLICATION_TOTAL_MEMORY 128M
 ENV APPLICATION_SIZE_ON_DISK_IN_MB 41
