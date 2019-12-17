@@ -166,7 +166,7 @@ configurations.all {
   resolutionStrategy {
     eachDependency { DependencyResolveDetails details ->
       if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-        details.useVersion '2.10.0'
+        details.useVersion '2.9.9'
       }
     }
   }
@@ -187,8 +187,6 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy-json', version: groovyVersion
   compile group: 'org.codehaus.groovy', name: 'groovy', version: groovyVersion
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
-
-  compile group: 'com.sun.xml.bind', name: 'jaxb-osgi', version: '2.2.10'
 
   // CVE-2019-10086 force update of commons-beanutils.
   compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
