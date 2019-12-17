@@ -1,4 +1,4 @@
-FROM hmcts/cnp-java-base:openjdk-8u191-jre-alpine3.9-2.0.1
+FROM FROM mcr.microsoft.com/java/jdk:8u212-zulu-alpine
 
 ENV APPLICATION_TOTAL_MEMORY 128M
 ENV APPLICATION_SIZE_ON_DISK_IN_MB 41
