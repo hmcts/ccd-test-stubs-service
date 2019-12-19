@@ -30,7 +30,7 @@ class StubFunctionalTest {
     private RequestSpecification withDefaultRequestSpec() {
         RestAssured.useRelaxedHTTPSValidation();
         return RestAssured.given(new RequestSpecBuilder()
-                                     .setBaseUri("http://localhost:5555")
+                                     .setBaseUri("https://localhost:5555")
                                      .build());
     }
 
