@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_overriding_state_as_data"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "TextFieldFName": "Pepe",
+        "TextFieldMName": "Grillo",
+        "TextFieldLName": "Grillo",
+        "state": "VALUE"
+      }
+    }
+  }
+}
