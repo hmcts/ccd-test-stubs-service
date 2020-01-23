@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/case_type/aat/about_to_start"
+    "urlPath": "/callback_returning_errors"
   },
   "response": {
     "status": 200,
@@ -9,10 +9,11 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "data": {
-        "CallbackText": "test",
-        "PersonLastName": "LastName"
-      }
+      "data": {},
+      "errors": [
+        "Errors and warnings: E1",
+        "Errors and warnings: E2"
+      ]
     }
   }
 }
