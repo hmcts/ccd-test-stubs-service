@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 @Tag("functional")
 class StubFunctionalTest {
 
-    private static final String URL = "/case_type/aat/about_to_start";
+    private static final String URL = "/callback_about_to_start";
 
     @Test
     void stubTest() {
