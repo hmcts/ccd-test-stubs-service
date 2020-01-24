@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_submitted"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "CallbackText": "test submitted",
+        "PersonLastName": "LastName"
+      }
+    },
+    "transformers": [
+      "dynamic-case-data-response-transformer"
+    ]
+  }
+}
