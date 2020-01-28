@@ -136,4 +136,4 @@ Then using this transformer will produce the final response as:
 
 An example spreadsheet definition [CCD_CNP_27_With_Callbacks.xlsx] is available under root directory with configured callback urls. This can be used / tweaked to test various ccd callback scenarios. 
 
-Urls have to go under `CaseEvent` tab against various callback columns (CallBackURLAboutToStartEvent, CallBackURLAboutToSubmitEvent, CallBackURLSubmittedEvent).
+Urls have to go under `CaseEvent` `CaseEventToFields` tabs against various callback columns (CallBackURLAboutToStartEvent, CallBackURLAboutToSubmitEvent, CallBackURLSubmittedEvent and CallBackURLMidEvent).
