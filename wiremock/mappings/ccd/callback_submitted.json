@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/case_type/aat/mid_event"
+    "urlPath": "/callback_submitted"
   },
   "response": {
     "status": 200,
@@ -10,9 +10,12 @@
     },
     "jsonBody": {
       "data": {
-        "CallbackText": "test1",
+        "CallbackText": "test submitted",
         "PersonLastName": "LastName"
       }
-    }
+    },
+    "transformers": [
+      "dynamic-case-data-response-transformer"
+    ]
   }
 }

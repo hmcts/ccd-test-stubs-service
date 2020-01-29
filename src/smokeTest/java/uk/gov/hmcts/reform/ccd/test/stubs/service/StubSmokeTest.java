@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 @Tag("smoke")
 class StubSmokeTest {
 
-    private static final String URL = "/case_type/aat/dynamic/about_to_submit";
+    private static final String URL = "/callback_about_to_submit";
 
     @Test
     void stubTest() {

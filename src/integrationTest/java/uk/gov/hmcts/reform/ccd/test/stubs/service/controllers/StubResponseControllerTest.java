@@ -26,7 +26,7 @@ class StubResponseControllerTest {
     @DisplayName("Should return wiremock stub response with 200")
     @Test
     void forwardAllRequestEndpoint() throws Exception {
-        mockMvc.perform(post("/case_type/aat/about_to_start").characterEncoding("UTF-8"))
+        mockMvc.perform(post("/callback_about_to_start").characterEncoding("UTF-8"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.CallbackText").value("test"));
     }

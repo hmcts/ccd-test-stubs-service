@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_returning_errors"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {},
+      "errors": [
+        "Errors and warnings: E1",
+        "Errors and warnings: E2"
+      ]
+    }
+  }
+}
