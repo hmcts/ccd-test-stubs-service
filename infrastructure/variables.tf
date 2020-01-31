@@ -34,5 +34,5 @@ variable "wiremock_server_mappings_path" {
 }
 
 variable "enable_ase" {
-  default = true
+  default = false
 }
