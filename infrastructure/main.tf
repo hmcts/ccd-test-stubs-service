@@ -13,6 +13,7 @@ module "ccd-testing-support" {
   subscription        = "${var.subscription}"
   capacity            = "${var.capacity}"
   common_tags         = "${var.common_tags}"
+  enable_ase          = "${var.enable_ase}"
 
   app_settings = {
     WIREMOCK_SERVER_MAPPINGS_PATH = "${var.wiremock_server_mappings_path}"

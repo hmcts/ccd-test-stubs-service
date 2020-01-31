@@ -32,3 +32,7 @@ variable "wiremock_server_mappings_path" {
   type = "string"
   default = "wiremock"
 }
+
+variable "enable_ase" {
+  default = false
+}
