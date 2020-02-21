@@ -17,7 +17,7 @@ export WIREMOCK_SERVER_MAPPINGS_PATH=/home/user. If you are running data-store-a
 sure the callback URLs defined in the definition file use the host as **_host.docker.internal:5555_** and if running 
 the data-store-api on its own (non-docker), then the host should be **_localhost:5555_** 
 
-For more information on how to define wiremock stubs, please visit http://wiremock.org/docs/stubbing.
+For more information on how to define wiremock stubs, please visit http://wiremock.org/docs/stubbing
 
 ### Building the application
 
