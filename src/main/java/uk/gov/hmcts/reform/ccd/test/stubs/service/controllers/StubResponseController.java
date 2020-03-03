@@ -1,12 +1,14 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import io.micrometer.core.instrument.util.IOUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-
-import io.micrometer.core.instrument.util.IOUtils;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 
 /**
  * Default endpoints per application.
@@ -38,6 +41,15 @@ public class StubResponseController {
 
     @Value("${app.management-web-url}")
     private String managementWebUrl;
+
+    @Value("${app.jwt.secret}")
+    private String privateKeyFileName;
+
+    @Value("${app.jwt.issuer}")
+    private String issuer;
+
+    @Value("${app.jwt.expiration}")
+    private long expiration;
 
     private final RestTemplate restTemplate;
 
@@ -55,6 +67,18 @@ public class StubResponseController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(oauth2Endpoint);
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+    }
+
+    @RequestMapping(value = "/oauth2/token", method = RequestMethod.POST)
+    public ResponseEntity<Object> oauth2Token(HttpServletRequest request) {
+        HashMap<String, Object> claims = new HashMap<>();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("expires_in", 28800);
+        body.put("access_token", JWTokenGenerator.generateToken(privateKeyFileName,
+                                                                issuer, expiration,
+                                                                claims));
+        return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
