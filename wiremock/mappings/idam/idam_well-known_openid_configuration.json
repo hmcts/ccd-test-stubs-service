@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/.well-known/openid-configuration"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "issuer": "http://localhost:5555/idam/o",
+      "jwks_uri": "http://localhost:5555/idam/o/jwks"
+    },
+    "transformers": ["response-template"]
+  }
+}
