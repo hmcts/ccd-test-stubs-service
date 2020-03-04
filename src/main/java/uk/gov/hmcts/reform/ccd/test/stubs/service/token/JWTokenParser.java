@@ -6,6 +6,9 @@ import java.security.Key;
 
 public final class JWTokenParser {
 
+    private JWTokenParser() {
+    }
+
     public static Claims parseToken(String publicKeyFileName, String jwt) {
         final Key signingKey = KeyUtil.getPublicKey(publicKeyFileName);
         return Jwts.parserBuilder()

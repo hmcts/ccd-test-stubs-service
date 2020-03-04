@@ -10,6 +10,9 @@ import java.util.UUID;
 
 public final class JWTokenGenerator {
 
+    private JWTokenGenerator() {
+    }
+
     public static String generateToken(String privateKeyFileName,
                                        String issuer,
                                        long ttlMillis,
