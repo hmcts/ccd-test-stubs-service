@@ -9,8 +9,10 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "issuer": "http://localhost:5555/idam/o",
-      "jwks_uri": "http://localhost:5555/idam/o/jwks"
+      "issuer": "http://localhost:5555/o",
+      "jwks_uri": "http://localhost:5555/o/jwks",
+      "authorization_endpoint" : "http://localhost:5555/o/authorize",
+      "token_endpoint" : "http://localhost:5555/o/token"
     }
   }
 }

@@ -69,15 +69,24 @@ public class StubResponseController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
+    @RequestMapping(value = "/o/token", method = RequestMethod.POST)
+    public ResponseEntity<Object> openIdToken(HttpServletRequest request) {
+        return createToken();
+    }
+
     @RequestMapping(value = "/oauth2/token", method = RequestMethod.POST)
     public ResponseEntity<Object> oauth2Token(HttpServletRequest request) {
+        return createToken();
+    }
+
+    private ResponseEntity<Object> createToken() {
         HashMap<String, Object> claims = new HashMap<>();
         HttpHeaders httpHeaders = new HttpHeaders();
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("expires_in", 28800);
         body.put("access_token", JWTokenGenerator.generateToken(privateKeyFileName,
-                                                                issuer, expiration,
-                                                                claims));
+            issuer, expiration,
+            claims));
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 

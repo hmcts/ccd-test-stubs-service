@@ -1,7 +1,7 @@
 {
   "request": {
-    "method": "POST",
-    "urlPath": "/idam/o/jwks"
+    "method": "GET",
+    "urlPath": "/o/jwks"
   },
   "response": {
     "status": 200,
