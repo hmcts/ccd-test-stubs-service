@@ -10,8 +10,8 @@
     },
     "jsonBody": {
       "issuer": "http://localhost:5555/idam/o",
-      "jwks_uri": "http://localhost:5555/idam/o/jwks"
-    },
-    "transformers": ["response-template"]
+      "jwks_uri": "http://localhost:5555/idam/o/jwks",
+      "transformers": ["response-template"]
+    }
   }
 }
