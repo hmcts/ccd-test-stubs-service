@@ -5,7 +5,7 @@
     <gav regex="true">^com\.google\.guava:guava:.*$</gav>
     <cpe>cpe:/a:google:guava</cpe>
   </suppress>
-  
+
   <suppress>
     <notes><![CDATA[ slf4j only has a beta version released with the 'fix', looks like lots of changes in it... ]]></notes>
     <cve>CVE-2018-8088</cve>
@@ -38,5 +38,16 @@
     <gav regex="true">^org\.springframework\.security:spring-security-crypto:5.1.5.RELEASE</gav>
     <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     <cve>CVE-2018-1258</cve>
+  </suppress>
+
+  <suppress>
+    <notes>Temporary suppression for on-going developments</notes>
+    <cpe>cpe:2.3:a:checkstyle:checkstyle:*:*:*:*:*:*:*:*</cpe>
+    <cve>CVE-2019-10782</cve>
+  </suppress>
+
+  <suppress>
+    <notes>Temporary suppression for on-going developments</notes>
+    <cve>CVE-2020-1938</cve>
   </suppress>
 </suppressions>
