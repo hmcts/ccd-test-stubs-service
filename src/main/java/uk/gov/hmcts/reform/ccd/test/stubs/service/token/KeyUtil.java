@@ -16,7 +16,7 @@ public class KeyUtil {
 
     public static PublicKey getPublicKey(String filename) {
         try {
-            final byte[] keyBytes = Files.readAllBytes(Paths.get(filename));
+            final byte[] keyBytes = Files.readAllBytes(Paths.get(ClassLoader.getSystemResource(filename).toURI()));
             final X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
             return factory().generatePublic(spec);
         } catch (IOException ex) {
@@ -26,6 +26,10 @@ public class KeyUtil {
         } catch (final InvalidKeySpecException ex) {
             throw new RuntimeException(
                 "Error reading public key '" + filename + "'.", ex
+            );
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(
+                "Error reading public key '" + filename + "'.", e
             );
         }
     }
