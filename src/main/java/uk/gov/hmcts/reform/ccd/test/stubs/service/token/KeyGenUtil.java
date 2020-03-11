@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.token;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
-import java.security.PublicKey;
 
 public class KeyGenUtil {
 
@@ -20,11 +19,6 @@ public class KeyGenUtil {
                 .generate();
         }
         return rsaJWK;
-    }
-
-    public static PublicKey getPublicKey() throws JOSEException {
-        getRsaJWK();
-        return rsaJWK.toPublicKey();
     }
 
 }
