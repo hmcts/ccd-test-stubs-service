@@ -188,12 +188,10 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy', version: groovyVersion
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
+  compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
+
   // CVE-2019-10086 force update of commons-beanutils.
   compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-
-  compile 'io.jsonwebtoken:jjwt-api:0.11.0'
-  compile 'io.jsonwebtoken:jjwt-impl:0.11.0'
-  compile 'io.jsonwebtoken:jjwt-jackson:0.11.0'
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit

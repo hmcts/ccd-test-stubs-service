@@ -28,7 +28,5 @@ app:
   management-web-url: ${MANAGEMENT_WEB_URL:http://localhost:3451}
   secret-key: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   jwt:
-    secret: private_key.der
-    public: public_key.der
-    issuer: ccd
-    expiration: 2800
+    issuer: http://fr-am:8080/openam/oauth2/hmcts
+    expiration: 280000

@@ -1,42 +1,48 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.token;
 
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import java.security.Key;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
 
 public final class JWTokenGenerator {
+
 
     private JWTokenGenerator() {
     }
 
-    public static String generateToken(String privateKeyFileName,
-                                       String issuer,
-                                       long ttlMillis,
-                                       Map<String, Object> claims) {
-        final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
+    /**
+     * Generate JWT Signed Token.
+     * @param issuer    Issuer
+     * @param ttlMillis Time to live
+     * @return String
+     */
+    public static String generateToken(String issuer, long ttlMillis) {
+        try {
+            final long nowMillis = System.currentTimeMillis();
 
-        final long nowMillis = System.currentTimeMillis();
-        final Date now = new Date(nowMillis);
+            JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
+                .subject("CCD_Stub")
+                .issueTime(new Date())
+                .issuer(issuer);
 
-        final Key signingKey = KeyUtil.getPrivateKey(privateKeyFileName);
+            if (ttlMillis >= 0) {
+                long expMillis = nowMillis + ttlMillis;
+                Date exp = new Date(expMillis);
+                builder.expirationTime(exp);
+            }
 
-        final JwtBuilder builder = Jwts.builder()
-            .setId(UUID.randomUUID().toString())
-            .setIssuer(issuer)
-            .setIssuedAt(now)
-            .setClaims(claims)
-            .signWith(signingKey, signatureAlgorithm);
+            SignedJWT signedJWT = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.RS256)
+                                    .keyID(KeyGenUtil.getRsaJWK().getKeyID()).build(),
+                                    builder.build());
+            signedJWT.sign(new RSASSASigner(KeyGenUtil.getRsaJWK()));
 
-        if (ttlMillis >= 0) {
-            long expMillis = nowMillis + ttlMillis;
-            Date exp = new Date(expMillis);
-            builder.setExpiration(exp);
+            return signedJWT.serialize();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        return builder.compact();
+        return null;
     }
 }

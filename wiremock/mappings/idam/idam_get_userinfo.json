@@ -9,17 +9,19 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "active": true,
       "email": "auto.test.cnp@gmail.com",
-      "forename": "CCD",
-      "id": "a1b59459-9c63-488d-9e6d-d40ffb4ed7ce",
       "roles": [
         "caseworker-autotest1",
         "caseworker-autotest2",
         "caseworker",
         "ccd-import"
       ],
-      "surname": "Auto Test (Stub)"
+      "sub": "auto.test.cnp@gmail.com",
+      "uid": "7689",
+      "id": "7689",
+      "name": "CCD",
+      "given_name": "CCD",
+      "family_name": "Auto Test (Stub)"
     }
 
   }

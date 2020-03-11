@@ -1,14 +1,18 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.RSAKey;
 import io.micrometer.core.instrument.util.IOUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 
 /**
  * Default endpoints per application.
@@ -42,14 +47,12 @@ public class StubResponseController {
     @Value("${app.management-web-url}")
     private String managementWebUrl;
 
-    @Value("${app.jwt.secret}")
-    private String privateKeyFileName;
-
     @Value("${app.jwt.issuer}")
     private String issuer;
 
     @Value("${app.jwt.expiration}")
     private long expiration;
+
 
     private final RestTemplate restTemplate;
 
@@ -69,6 +72,22 @@ public class StubResponseController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
+    @RequestMapping(value = "/o/jwks", method = RequestMethod.GET)
+    public ResponseEntity<Object> jwkeys(HttpServletRequest request) throws JOSEException {
+        return getPublicKey();
+    }
+
+    private ResponseEntity<Object> getPublicKey() throws JOSEException {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        RSAKey rsaKey = KeyGenUtil.getRsaJWK();
+        Map<String, List<JSONObject>> body = new LinkedHashMap<>();
+        List<JSONObject> keyList = new ArrayList<>();
+        keyList.add(rsaKey.toJSONObject());
+        body.put("keys", keyList);
+
+        return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/o/token", method = RequestMethod.POST)
     public ResponseEntity<Object> openIdToken(HttpServletRequest request) {
         return createToken();
@@ -80,19 +99,20 @@ public class StubResponseController {
     }
 
     private ResponseEntity<Object> createToken() {
-        HashMap<String, Object> claims = new HashMap<>();
         HttpHeaders httpHeaders = new HttpHeaders();
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("expires_in", 28800);
-        body.put("access_token", JWTokenGenerator.generateToken(privateKeyFileName,
-            issuer, expiration,
-            claims));
+        String token = JWTokenGenerator.generateToken(issuer, expiration);
+        body.put("access_token", token);
+        body.put("token_type", "Bearer");
+        body.put("expires_in", expiration);
+        body.put("id_token", token);
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
+        ResponseEntity<Object> responseEntity = forwardAllRequests(request);
+        return responseEntity;
     }
 
     @RequestMapping(value = "**", method = RequestMethod.POST)
