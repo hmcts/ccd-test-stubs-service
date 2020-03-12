@@ -9,10 +9,10 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "issuer": "http://localhost:5555/o",
-      "jwks_uri": "http://localhost:5555/o/jwks",
-      "authorization_endpoint" : "http://localhost:5555/o/authorize",
-      "token_endpoint" : "http://localhost:5555/o/token"
+      "issuer": "http://ccd-test-stubs-service:5555/o",
+      "jwks_uri": "http://ccd-test-stubs-service:5555/o/jwks",
+      "authorization_endpoint" : "http://ccd-test-stubs-service:5555/o/authorize",
+      "token_endpoint" : "http://ccd-test-stubs-service:5555/o/token"
     }
   }
 }
