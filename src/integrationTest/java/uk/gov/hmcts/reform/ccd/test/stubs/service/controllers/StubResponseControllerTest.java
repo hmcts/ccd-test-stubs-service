@@ -64,7 +64,7 @@ class StubResponseControllerTest {
     void testTokenEndpoint() throws Exception {
         mockMvc.perform(post("/oauth2/token").characterEncoding("UTF-8"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.expires_in").value("28800"));
+            .andExpect(jsonPath("$.expires_in").value("14400000"));
     }
 
     @DisplayName("Should return user info with response code 200")
