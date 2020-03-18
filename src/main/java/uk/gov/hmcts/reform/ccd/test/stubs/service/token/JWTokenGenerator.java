@@ -23,10 +23,12 @@ public final class JWTokenGenerator {
         try {
             final long nowMillis = System.currentTimeMillis();
 
+
             JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
                 .subject("CCD_Stub")
                 .issueTime(new Date())
-                .issuer(issuer);
+                .issuer(issuer)
+                .claim("tokenName", "access_token");
 
             if (ttlMillis >= 0) {
                 long expMillis = nowMillis + ttlMillis;
