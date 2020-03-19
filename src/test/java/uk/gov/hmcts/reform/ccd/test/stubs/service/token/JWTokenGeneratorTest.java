@@ -10,7 +10,7 @@ class JWTokenGeneratorTest {
     @Test
     void generateTokenStoreDynamic() {
         Map<String, Object> map = new HashMap<>();
-        String token = JWTokenGenerator.generateToken( "http://localhost:5555/0", 50000);
+        String token = JWTokenGenerator.generateToken("http://localhost:5555/0", 50000);
         Assert.assertNotNull(token);
     }
 }

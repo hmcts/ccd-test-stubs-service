@@ -78,12 +78,12 @@ public class StubResponseController {
     }
 
     private ResponseEntity<Object> getPublicKey() throws JOSEException {
-        HttpHeaders httpHeaders = new HttpHeaders();
         RSAKey rsaKey = KeyGenUtil.getRsaJWK();
         Map<String, List<JSONObject>> body = new LinkedHashMap<>();
         List<JSONObject> keyList = new ArrayList<>();
         keyList.add(rsaKey.toJSONObject());
         body.put("keys", keyList);
+        HttpHeaders httpHeaders = new HttpHeaders();
 
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
@@ -99,13 +99,13 @@ public class StubResponseController {
     }
 
     private ResponseEntity<Object> createToken() {
-        HttpHeaders httpHeaders = new HttpHeaders();
         Map<String, Object> body = new LinkedHashMap<>();
         String token = JWTokenGenerator.generateToken(issuer, expiration);
         body.put("access_token", token);
         body.put("token_type", "Bearer");
         body.put("expires_in", expiration);
         body.put("id_token", token);
+        HttpHeaders httpHeaders = new HttpHeaders();
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
