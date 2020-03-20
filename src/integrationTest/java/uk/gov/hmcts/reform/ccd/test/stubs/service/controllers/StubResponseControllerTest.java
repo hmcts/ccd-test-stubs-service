@@ -67,6 +67,21 @@ class StubResponseControllerTest {
             .andExpect(jsonPath("$.expires_in").value("14400000"));
     }
 
+    @DisplayName("Should return random jw token with response code 200")
+    @Test
+    void testOpenIdTokenEndpoint() throws Exception {
+        mockMvc.perform(post("/o/token").characterEncoding("UTF-8"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.expires_in").value("14400000"));
+    }
+
+    @DisplayName("Should return random jw token with response code 200")
+    @Test
+    void testJWKSEndpoint() throws Exception {
+        mockMvc.perform(post("/o/jwks").characterEncoding("UTF-8"))
+            .andExpect(status().isOk());
+    }
+
     @DisplayName("Should return user info with response code 200")
     @Test
     void testUserInfoEndpoint() throws Exception {

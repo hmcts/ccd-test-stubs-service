@@ -89,16 +89,16 @@ public class StubResponseController {
     }
 
     @RequestMapping(value = "/o/token", method = RequestMethod.POST)
-    public ResponseEntity<Object> openIdToken(HttpServletRequest request) {
+    public ResponseEntity<Object> openIdToken(HttpServletRequest request) throws JOSEException {
         return createToken();
     }
 
     @RequestMapping(value = "/oauth2/token", method = RequestMethod.POST)
-    public ResponseEntity<Object> oauth2Token(HttpServletRequest request) {
+    public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
         return createToken();
     }
 
-    private ResponseEntity<Object> createToken() {
+    private ResponseEntity<Object> createToken() throws JOSEException {
         Map<String, Object> body = new LinkedHashMap<>();
         String token = JWTokenGenerator.generateToken(issuer, expiration);
         body.put("access_token", token);
