@@ -23,8 +23,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -64,7 +67,7 @@ public class StubResponseController {
         this.mockHttpServer = mockHttpServer;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
         URI oauth2Endpoint = new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -72,7 +75,7 @@ public class StubResponseController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
-    @RequestMapping(value = "/o/jwks", method = RequestMethod.GET)
+    @GetMapping(value = "/o/jwks")
     public ResponseEntity<Object> jwkeys(HttpServletRequest request) throws JOSEException {
         return getPublicKey();
     }
@@ -88,12 +91,12 @@ public class StubResponseController {
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/o/token", method = RequestMethod.POST)
+    @PostMapping(value = "/o/token")
     public ResponseEntity<Object> openIdToken(HttpServletRequest request) throws JOSEException {
         return createToken();
     }
 
-    @RequestMapping(value = "/oauth2/token", method = RequestMethod.POST)
+    @PostMapping(value = "/oauth2/token")
     public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
         return createToken();
     }
@@ -109,22 +112,22 @@ public class StubResponseController {
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.GET)
+    @GetMapping(value = "**")
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.POST)
+    @PostMapping(value = "**")
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.PUT)
+    @PutMapping(value = "**")
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }

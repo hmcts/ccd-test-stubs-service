@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,17 @@ class StubResponseControllerTest {
 
     private StubResponseController stubResponseController;
 
+    @Mock
+    RestTemplate restTemplate;
+
+    @Mock
+    MockHttpServer mockHttpServer;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        stubResponseController = new StubResponseController(mock(RestTemplate.class), mock(MockHttpServer.class));
+        stubResponseController = new StubResponseController(restTemplate, mockHttpServer);
     }
 
     @Test
@@ -53,6 +60,15 @@ class StubResponseControllerTest {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         ResponseEntity<Object> responseEntity = stubResponseController.openIdToken(request);
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    @DisplayName("Should return openid token")
+    void shouldReturnOauth2Token() throws JOSEException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        ResponseEntity<Object> responseEntity = stubResponseController.oauth2Token(request);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
     }
 }
