@@ -111,8 +111,7 @@ public class StubResponseController {
 
     @RequestMapping(value = "**", method = RequestMethod.GET)
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
-        ResponseEntity<Object> responseEntity = forwardAllRequests(request);
-        return responseEntity;
+        return forwardAllRequests(request);
     }
 
     @RequestMapping(value = "**", method = RequestMethod.POST)

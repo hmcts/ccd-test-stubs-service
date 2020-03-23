@@ -1,13 +1,8 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import com.nimbusds.jose.JOSEException;
 import java.io.IOException;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
+import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 class StubResponseControllerTest {
 
@@ -36,5 +36,23 @@ class StubResponseControllerTest {
 
         ResponseEntity<Object> responseEntity = stubResponseController.forwardGetRequests(request);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @Test
+    @DisplayName("Should return jwkeys")
+    void shouldReturnJwkeys() throws JOSEException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        ResponseEntity<Object> responseEntity = stubResponseController.jwkeys(request);
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    @DisplayName("Should return openid token")
+    void shouldReturnOpenIdToken() throws JOSEException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+
+        ResponseEntity<Object> responseEntity = stubResponseController.openIdToken(request);
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
     }
 }
