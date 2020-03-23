@@ -77,7 +77,7 @@ class StubResponseControllerTest {
 
     @DisplayName("Should return random jw token with response code 200")
     @Test
-    void testJWKSEndpoint() throws Exception {
+    void testJwksEndpoint() throws Exception {
         mockMvc.perform(get("/o/jwks").characterEncoding("UTF-8"))
             .andExpect(status().isOk());
     }
