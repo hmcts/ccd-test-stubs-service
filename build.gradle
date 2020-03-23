@@ -105,7 +105,7 @@ sonarqube {
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
     property "sonar.exclusions", "**/token/*.java"
-    property "sonar.coverage.exclusions", "**/token/*.java"
+    property "sonar.coverage.exclusions", "**/token/*.java,**/*Controller.java"
 
   }
 }
