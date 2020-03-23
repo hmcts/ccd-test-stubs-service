@@ -77,7 +77,7 @@ task functional(type: Test) {
 
 checkstyle {
   maxWarnings = 0
-  toolVersion = '8.30'
+  toolVersion = '8.18'
   // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
   configDir = new File(rootDir, 'config/checkstyle')
 }
