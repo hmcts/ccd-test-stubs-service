@@ -64,8 +64,8 @@ class StubResponseControllerTest {
             Matchers.anyString(),
             Matchers.any(HttpMethod.class),
             Matchers.any(),
-            Matchers.<Class<Object>> any(),
-            Matchers.<Map<String, String[]>> any()
+            Matchers.<Class<Object>>any(),
+            Matchers.<Map<String, String[]>>any()
             )
         ).thenReturn(responseEntity);
 
