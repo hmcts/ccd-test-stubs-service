@@ -1,12 +1,18 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.RSAKey;
+import io.micrometer.core.instrument.util.IOUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-
-import io.micrometer.core.instrument.util.IOUtils;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +23,17 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 
 /**
  * Default endpoints per application.
@@ -39,6 +50,13 @@ public class StubResponseController {
     @Value("${app.management-web-url}")
     private String managementWebUrl;
 
+    @Value("${app.jwt.issuer}")
+    private String issuer;
+
+    @Value("${app.jwt.expiration}")
+    private long expiration;
+
+
     private final RestTemplate restTemplate;
 
     private final MockHttpServer mockHttpServer;
@@ -49,7 +67,7 @@ public class StubResponseController {
         this.mockHttpServer = mockHttpServer;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
         URI oauth2Endpoint = new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -57,22 +75,59 @@ public class StubResponseController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.GET)
+    @GetMapping(value = "/o/jwks")
+    public ResponseEntity<Object> jwkeys(HttpServletRequest request) throws JOSEException {
+        return getPublicKey();
+    }
+
+    private ResponseEntity<Object> getPublicKey() throws JOSEException {
+        RSAKey rsaKey = KeyGenUtil.getRsaJWK();
+        Map<String, List<JSONObject>> body = new LinkedHashMap<>();
+        List<JSONObject> keyList = new ArrayList<>();
+        keyList.add(rsaKey.toJSONObject());
+        body.put("keys", keyList);
+        HttpHeaders httpHeaders = new HttpHeaders();
+
+        return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/o/token")
+    public ResponseEntity<Object> openIdToken(HttpServletRequest request) throws JOSEException {
+        return createToken();
+    }
+
+    @PostMapping(value = "/oauth2/token")
+    public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
+        return createToken();
+    }
+
+    private ResponseEntity<Object> createToken() throws JOSEException {
+        Map<String, Object> body = new LinkedHashMap<>();
+        String token = JWTokenGenerator.generateToken(issuer, expiration);
+        body.put("access_token", token);
+        body.put("token_type", "Bearer");
+        body.put("expires_in", expiration);
+        body.put("id_token", token);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "**")
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.POST)
+    @PostMapping(value = "**")
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.PUT)
+    @PutMapping(value = "**")
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
-    @RequestMapping(value = "**", method = RequestMethod.DELETE)
+    @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
