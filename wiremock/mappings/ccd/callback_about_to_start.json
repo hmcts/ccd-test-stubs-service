@@ -10,8 +10,8 @@
     },
     "jsonBody": {
       "data": {
-        "CallbackText": "test",
-        "PersonLastName": "LastName"
+        "StandardDate": "2020-07-01",
+        "StandardDateTime": "2004-01-01T12:00"
       }
     }
   }
