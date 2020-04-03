@@ -10,9 +10,30 @@
     },
     "jsonBody": {
       "data": {
-        "StandardDate": "2020-07-01",
-        "StandardDateTime": "2004-01-01T12:15:36.000"
+    "ComplexDateField": {
+      "TodayDate": "2016-12-09",
+      "TodayDateTime": "2017-12- 11T12:56:24.000",
+      "Name": null
+    },
+    "CollectionComplexDateField": [
+      {
+        "id": null,
+        "value": {
+          "TodayDate": "2016-05-23",
+          "TodayDateTime": "2016-08-16T15:36:00.000",
+          "Name": null
+        }
+      },
+      {
+        "id": null,
+        "value": {
+          "TodayDate": "2017-07-22",
+          "TodayDateTime": "2017-07-08T09:15:25.000",
+          "Name": null
+        }
       }
+    ]
+  }
     }
   }
 }
