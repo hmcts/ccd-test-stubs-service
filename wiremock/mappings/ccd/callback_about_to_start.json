@@ -11,7 +11,7 @@
     "jsonBody": {
       "data": {
         "StandardDate": "2020-07-01",
-        "StandardDateTime": "2004-01-01T12:00"
+        "StandardDateTime": "2004-01-01T12:15:36.000"
       }
     }
   }
