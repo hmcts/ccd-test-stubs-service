@@ -209,6 +209,8 @@ dependencies {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
 
+  testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
 
