@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
@@ -57,7 +56,7 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 public class StubResponseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
-    static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
+    static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mppings";
 
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
