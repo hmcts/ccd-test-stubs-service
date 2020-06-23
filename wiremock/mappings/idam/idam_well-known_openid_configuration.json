@@ -9,10 +9,165 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
+      "request_parameter_supported": true,
+      "claims_parameter_supported": false,
+      "scopes_supported": [
+        "acr",
+        "openid",
+        "profile",
+        "roles",
+        "authorities",
+        "email"
+      ],
       "issuer": "http://ccd-test-stubs-service:5555/o",
+      "id_token_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+      ],
+      "acr_values_supported": [
+
+      ],
+      "authorization_endpoint": "http://ccd-test-stubs-service:5555/o/authorize",
+      "request_object_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+      ],
+      "rcs_request_encryption_alg_values_supported": [
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "A128KW",
+        "RSA1_5",
+        "A256KW",
+        "dir",
+        "A192KW"
+      ],
+      "claims_supported": [
+
+      ],
+      "rcs_request_signing_alg_values_supported": [
+        "PS384",
+        "ES384",
+        "RS384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+      ],
+      "token_endpoint_auth_methods_supported": [
+        "client_secret_post",
+        "private_key_jwt",
+        "self_signed_tls_client_auth",
+        "tls_client_auth",
+        "none",
+        "client_secret_basic"
+      ],
+      "token_endpoint": "http://ccd-test-stubs-service:5555/o/token",
+      "response_types_supported": [
+        "code token id_token",
+        "code",
+        "code id_token",
+        "device_code",
+        "id_token",
+        "code token",
+        "token",
+        "token id_token"
+      ],
+      "request_uri_parameter_supported": true,
+      "rcs_response_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+      ],
+      "end_session_endpoint": "http://ccd-test-stubs-service:5555/o/endSession",
+      "rcs_request_encryption_enc_values_supported": [
+        "A256GCM",
+        "A192GCM",
+        "A128GCM",
+        "A128CBC-HS256",
+        "A192CBC-HS384",
+        "A256CBC-HS512"
+      ],
+      "version": "3.0",
+      "rcs_response_encryption_alg_values_supported": [
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "A128KW",
+        "A256KW",
+        "RSA1_5",
+        "dir",
+        "A192KW"
+      ],
+      "userinfo_endpoint": "http://ccd-test-stubs-service:5555/o/userinfo",
+      "id_token_encryption_alg_values_supported": [
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "A128KW",
+        "A256KW",
+        "RSA1_5",
+        "dir",
+        "A192KW"
+      ],
       "jwks_uri": "http://ccd-test-stubs-service:5555/o/jwks",
-      "authorization_endpoint" : "http://ccd-test-stubs-service:5555/o/authorize",
-      "token_endpoint" : "http://ccd-test-stubs-service:5555/o/token"
+      "subject_types_supported": [
+        "public"
+      ],
+      "id_token_signing_alg_values_supported": [
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512"
+      ],
+      "request_object_signing_alg_values_supported": [
+        "ES384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512"
+      ],
+      "request_object_encryption_alg_values_supported": [
+        "RSA-OAEP",
+        "RSA-OAEP-256",
+        "A128KW",
+        "RSA1_5",
+        "A256KW",
+        "dir",
+        "A192KW"
+      ],
+      "rcs_response_signing_alg_values_supported": [
+        "PS384",
+        "ES384",
+        "RS384",
+        "HS256",
+        "HS512",
+        "ES256",
+        "RS256",
+        "HS384",
+        "ES512",
+        "PS256",
+        "PS512",
+        "RS512"
+      ]
     }
   }
 }
