@@ -100,7 +100,7 @@ There is no need to remove postgres and java or similar core images.
 
 The service can be used to stub IDAM calls. It comes with a preconfigured stub IDAM user with some defaults IDAM roles.\
 When testing CCD it's very often needed to customise the roles list. For example to test how certain a feature behaves for a caseworker compared to a solicitor.\
-The following endpoint can be used to change the stubbed user info at runtime by posting the desired user info as json:
+The following endpoint can be used to change the stubbed user info at runtime by posting the desired user info as JSON:
 
 ```
   /idam-user
