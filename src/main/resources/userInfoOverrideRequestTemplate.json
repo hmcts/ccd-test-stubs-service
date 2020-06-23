@@ -1,6 +1,6 @@
 {
   "request": {
-    "url": "/details",
+    "url": "/o/userinfo",
     "method": "GET"
   },
   "response": {
