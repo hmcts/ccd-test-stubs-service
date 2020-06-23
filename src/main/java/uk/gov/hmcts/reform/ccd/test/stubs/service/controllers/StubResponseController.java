@@ -184,16 +184,15 @@ public class StubResponseController {
         String request = createWiremockRequestForUserInfo(asJson(userInfo));
         String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
 
-
         try {
             ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(requestUrl, request, String.class);
             stringResponseEntity.getStatusCodeValue();
             return ResponseEntity.ok().build();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
-            LOG.error("Error while...", e);
+            LOG.error("Error configuring stub IDAM user", e);
             return new ResponseEntity<>("Some error occurred", e.getStatusCode());
         } catch (Exception e) {
-            LOG.error("Error while...", e);
+            LOG.error("Error configuring stub IDAM user", e);
             return new ResponseEntity<>("Some unknown error occurred", HttpStatus.NO_CONTENT);
         }
     }
