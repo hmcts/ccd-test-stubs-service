@@ -103,16 +103,16 @@ When testing CCD it's very often needed to customise the roles list. For example
 The following endpoint can be used to change the stubbed user info at runtime by posting the desired user info as JSON:
 
 ```
-  /idam-user
+/idam-user
 ```
 
 Example:
 
 ```
-  curl -X POST \
-  --header 'content-type: application/json' \
-  --data '{"email":"auto.test.cnp@gmail.com","roles":["caseworker-autotest1","caseworker-autotest2","caseworker-autotest3","caseworker","ccd-import"],"sub":"auto.test.cnp@gmail.com","uid":"7689","name":"CCD Auto Test (Stub2)","given_name":"CCD","family_name":"Auto Test (Stub2)"}' \
-  http://localhost:5555/idam-user
+curl -X POST \
+--header 'content-type: application/json' \
+--data '{"email":"auto.test.cnp@gmail.com","roles":["caseworker-autotest1","caseworker-autotest2","caseworker-autotest3","caseworker","ccd-import"],"sub":"auto.test.cnp@gmail.com","uid":"7689","name":"CCD Auto Test (Stub2)","given_name":"CCD","family_name":"Auto Test (Stub2)"}' \
+http://localhost:5555/idam-user
 ```
 
 The changes are not persistent, i.e. they do not survive service restarts
