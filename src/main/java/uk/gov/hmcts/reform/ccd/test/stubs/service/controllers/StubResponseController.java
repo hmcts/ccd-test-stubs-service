@@ -56,7 +56,7 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 public class StubResponseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
-    static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mppings";
+    static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
 
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
