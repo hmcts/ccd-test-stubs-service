@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
 @Tag("integration")
@@ -104,10 +105,14 @@ class StubResponseControllerTest {
     @DisplayName("Should be able to configure at runtime stubbed IDAM user info")
     @Test
     void testChangeStubbedUserInfo() throws Exception {
-        mockMvc.perform(get("/o/userinfo").characterEncoding("UTF-8"))
+        MockHttpServletResponse response = mockMvc.perform(get("/o/userinfo").characterEncoding("UTF-8"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email").value("auto.test.cnp@gmail.com"))
-            .andExpect(jsonPath("$.roles", not(hasItem("role1"))));
+            .andExpect(jsonPath("$.roles", not(hasItem("role1"))))
+            .andReturn()
+            .getResponse();
+
+        String oldUserInfo = response.getContentAsString();
 
         String newEmail = "someemail@gmail.com";
         List<String> newRoles = Lists.newArrayList("role1");
@@ -122,6 +127,11 @@ class StubResponseControllerTest {
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email").value(newEmail))
             .andExpect(jsonPath("$.roles", hasItem("role1")));
+
+        mockMvc.perform(post("/idam-user")
+            .contentType(APPLICATION_JSON_VALUE)
+            .content(oldUserInfo))
+            .andExpect(status().isOk());
     }
 
     private String asJson(IdamUserInfo userInfo) throws JsonProcessingException {
