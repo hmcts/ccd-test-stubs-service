@@ -104,7 +104,7 @@ sonarqube {
     property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/junitPlatformTest.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
-    property "sonar.exclusions", "**/token/*.java"
+    property "sonar.exclusions", "**/token/*.java,**/ApplicationConfig.java,**/IdamUserInfo.java"
     property "sonar.coverage.exclusions", "**/token/*.java,**/*Controller.java"
 
   }
@@ -208,6 +208,8 @@ dependencies {
   testCompile(group: 'io.rest-assured', name: 'xml-path', version: '4.0.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
+
+  testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath

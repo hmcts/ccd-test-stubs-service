@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import java.io.IOException;
 import java.util.Map;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,9 @@ class StubResponseControllerTest {
 
     private StubResponseController stubResponseController;
 
+    @Autowired
+    ObjectMapper mapper;
+
     @Mock
     RestTemplate restTemplate;
 
@@ -38,7 +43,7 @@ class StubResponseControllerTest {
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        stubResponseController = new StubResponseController(restTemplate, mockHttpServer);
+        stubResponseController = new StubResponseController(restTemplate, mockHttpServer, mapper);
     }
 
     @Test

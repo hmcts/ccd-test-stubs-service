@@ -1,9 +1,10 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.RSAKey;
-import io.micrometer.core.instrument.util.IOUtils;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
@@ -11,25 +12,37 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.RSAKey;
+import io.micrometer.core.instrument.util.IOUtils;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
@@ -43,6 +56,7 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 public class StubResponseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
+    static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
 
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
@@ -56,15 +70,20 @@ public class StubResponseController {
     @Value("${app.jwt.expiration}")
     private long expiration;
 
+    @Value("classpath:userInfoOverrideRequestTemplate.json")
+    private Resource userInfoRequestTemplate;
+
 
     private final RestTemplate restTemplate;
 
     private final MockHttpServer mockHttpServer;
+    private final ObjectMapper mapper;
 
     @Autowired
-    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer) {
+    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
         this.restTemplate = restTemplate;
         this.mockHttpServer = mockHttpServer;
+        this.mapper = mapper;
     }
 
     @GetMapping(value = "/login")
@@ -150,6 +169,47 @@ public class StubResponseController {
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
+        }
+    }
+
+    @PostMapping(
+        path = "/idam-user",
+        consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo) throws JsonProcessingException {
+
+        LOG.info("setting stub user info to: {}", asJson(userInfo));
+
+        String request = createWiremockRequestForUserInfo(asJson(userInfo));
+        String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
+
+        try {
+            ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(requestUrl, request, String.class);
+            stringResponseEntity.getStatusCodeValue();
+            return ResponseEntity.ok().build();
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            LOG.error("Error configuring stub IDAM user", e);
+            return new ResponseEntity<>("Some error occurred", e.getStatusCode());
+        } catch (Exception e) {
+            LOG.error("Error configuring stub IDAM user", e);
+            return new ResponseEntity<>("Some unknown error occurred", HttpStatus.NO_CONTENT);
+        }
+    }
+
+    private String asJson(Object object) throws JsonProcessingException {
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    }
+
+    private String createWiremockRequestForUserInfo(String userInfoAsJson) {
+        String requestTemplate = asString(userInfoRequestTemplate);
+        return requestTemplate.replace("$USER_INFO_BODY_PLACEHOLDER", userInfoAsJson);
+    }
+
+    private static String asString(Resource resource) {
+        try (Reader reader = new InputStreamReader(resource.getInputStream(), UTF_8)) {
+            return FileCopyUtils.copyToString(reader);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

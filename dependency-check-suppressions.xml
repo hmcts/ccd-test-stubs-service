@@ -52,5 +52,9 @@
     <notes>Temporary suppression for on-going developments</notes>
     <cpe>cpe:2.3:a:checkstyle:checkstyle:*:*:*:*:*:*:*:*</cpe>
     <cve>CVE-2019-10782</cve>
+    <cve>CVE-2020-9488</cve>
+    <cve>CVE-2020-9484</cve>
+    <cve>CVE-2020-5407</cve>
+    <cve>CVE-2020-5408</cve>
   </suppress>
 </suppressions>
