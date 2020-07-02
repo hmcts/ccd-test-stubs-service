@@ -20,6 +20,7 @@ public final class JWTokenGenerator {
      * @param ttlMillis Time to live
      * @return String
      */
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     public static String generateToken(String issuer, long ttlMillis) throws JOSEException {
         final long nowMillis = System.currentTimeMillis();
 
