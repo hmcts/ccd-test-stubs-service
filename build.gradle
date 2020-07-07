@@ -83,9 +83,7 @@ checkstyle {
 }
 
 pmd {
-  toolVersion = "6.21.0"
-  ruleSetFiles = files("pmd.xml")
-  ruleSets = []
+  toolVersion = "6.9.0"
 }
 
 jacocoTestReport {
