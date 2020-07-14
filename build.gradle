@@ -13,8 +13,8 @@ plugins {
 group = 'uk.gov.hmcts.reform.ccd'
 version = '0.0.1'
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 
 sourceSets {
   integrationTest {
@@ -84,6 +84,7 @@ checkstyle {
 
 pmd {
   toolVersion = "6.9.0"
+  maxFailures = 12 // Failures need to be reviewed/fixed before removing this property
 }
 
 jacocoTestReport {
@@ -142,7 +143,7 @@ repositories {
 }
 
 ext {
-  groovyVersion = '2.5.7'
+  groovyVersion = '3.0.2'
 }
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
@@ -157,7 +158,7 @@ def versions = [
 dependencyManagement {
   dependencies {
     // CVE-2019-0232 - command line injections on windows - fixed on spring boot master but not released
-    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.31') {
+    dependencySet(group: 'org.apache.tomcat.embed', version: '9.0.36') {
       entry 'tomcat-embed-core'
       entry 'tomcat-embed-el'
       entry 'tomcat-embed-websocket'
@@ -201,11 +202,11 @@ dependencies {
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  testCompile(group: 'io.rest-assured', name: 'rest-assured', version: '4.0.0') {
+  testCompile(group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
-  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.0.0'
-  testCompile(group: 'io.rest-assured', name: 'xml-path', version: '4.0.0') {
+  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
+  testCompile(group: 'io.rest-assured', name: 'xml-path', version: '4.3.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
 
