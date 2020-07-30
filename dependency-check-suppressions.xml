@@ -54,15 +54,9 @@
     <cve>CVE-2019-10782</cve>
   </suppress>
   
-  <suppress>
+ <suppress>
    <notes>Temporary suppression for on-going developments</notes>
-   <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat-embed-core@.*$</packageUrl>
    <cve>CVE-2020-13934</cve>
-</suppress>
-  
-  <suppress>
-   <notes>Temporary suppression for on-going developments</notes>
-   <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat-embed-core@.*$</packageUrl>
    <cve>CVE-2020-13935</cve>
 </suppress>
 
