@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/refdata/external/v1/organisations/users"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "organisationIdentifier": "ORG1",
+      "users":    [
+        {
+          "userIdentifier": "7689",
+          "firstName": "CCD",
+          "lastName": "Auto Test (Stub)",
+          "email": "auto.test.cnp@gmail.com",
+          "idamStatus": "ACTIVE"
+        }
+      ]
+    }
+  }
+}
