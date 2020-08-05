@@ -9,13 +9,20 @@
       "Content-Type": "application/json"
     },
     "jsonBody": {
-      "organisationIdentifier": "ORG1",
-      "users":    [
+      "organisationIdentifier": "QUK822N",
+      "users": [
         {
-          "userIdentifier": "7689",
-          "firstName": "CCD",
-          "lastName": "Auto Test (Stub)",
-          "email": "auto.test.cnp@gmail.com",
+          "userIdentifier": "cc828f53-05cb-4534-b64f-1dfe30748b6c",
+          "firstName": "Benjamin",
+          "lastName": "Solicington",
+          "email": "befta.master.solicitor.benjamin@gmail.com",
+          "idamStatus": "ACTIVE"
+        },
+        {
+          "userIdentifier": "aecfec12-1f9a-40cb-bd8c-7a9f3506e67c",
+          "firstName": "Becky",
+          "lastName": "Solicington",
+          "email": "befta.master.solicitor.becky@gmail.com",
           "idamStatus": "ACTIVE"
         }
       ]
