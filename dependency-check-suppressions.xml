@@ -23,11 +23,6 @@
     <cve>CVE-2019-10072</cve>
   </suppress>
   <suppress>
-    <notes>Ignore until tomakehurst wiremock upgrades jetty version</notes>
-    <cve>CVE-2019-10241</cve>
-    <cve>CVE-2019-10247</cve>
-  </suppress>
-  <suppress>
     <notes>Temporary suppression while we investigate.</notes>
     <cve>CVE-2019-14379</cve>
     <cve>CVE-2019-14439</cve>
