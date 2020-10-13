@@ -57,6 +57,9 @@
    <notes>Temporary suppression for on-going developments</notes>
    <cve>CVE-2020-13934</cve>
    <cve>CVE-2020-13935</cve>
+   <cve>CVE-2020-10518</cve>
+   <cve>CVE-2020-10517</cve>
+   <cve>CVE-2017-18640</cve>
 </suppress>
 
 </suppressions>
