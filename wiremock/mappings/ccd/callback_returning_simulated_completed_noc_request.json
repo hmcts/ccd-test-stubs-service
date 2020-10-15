@@ -26,17 +26,22 @@
           "OrgPolicyReference": "RespondentPolicy",
           "OrgPolicyCaseAssignedRole": "[RespondentSolicitor]"
         },
-        "otherPartyOrganisationPolicy": {
-          "Organisation": null,
-          "OrgPolicyReference": "OtherPartyPolicy",
-          "OrgPolicyCaseAssignedRole": "[OtherPartySolicitor]"
-        },
 
         "changeOrganisationRequestField": {
+          "Reason": null,
           "CaseRoleId": null,
+          "NotesReason": null,
+          "ApprovalStatus": null,
           "RequestTimestamp": null,
-          "OrganisationToAdd": null,
-          "OrganisationToRemove": null
+          "OrganisationToAdd": {
+            "OrganisationID": null,
+            "OrganisationName": null
+          },
+          "OrganisationToRemove": {
+            "OrganisationID": null,
+            "OrganisationName": null
+          },
+          "ApprovalRejectionTimestamp": null
         }
       }
     },
