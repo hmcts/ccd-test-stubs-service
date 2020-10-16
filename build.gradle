@@ -1,6 +1,5 @@
 plugins {
   id 'application'
-  id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.7.RELEASE'
   id 'org.springframework.boot' version '2.2.9.RELEASE'
@@ -72,15 +71,6 @@ task functional(type: Test) {
   useJUnitPlatform {
     includeTags 'functional'
   }
-}
-
-
-pmd {
-  toolVersion = '6.18.0'
-  maxFailures = 3150 // Failures need to be reviewed/fixed before removing this property	    // https://github.com/pmd/pmd/issues/876
-  ruleSets = []
-  ruleSetFiles = files("config/pmd/ruleset.xml")
-  ignoreFailures = true
 }
 
 jacocoTestReport {
