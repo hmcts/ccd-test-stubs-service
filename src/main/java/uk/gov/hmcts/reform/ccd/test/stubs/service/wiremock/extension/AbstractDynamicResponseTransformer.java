@@ -21,7 +21,8 @@ public abstract class AbstractDynamicResponseTransformer extends ResponseTransfo
 
     @Override
     public boolean applyGlobally() {
-        // This flag will ensure this transformer is used only for those request mappings that have the transformer configured
+        // This flag will ensure this transformer is used only for those request mappings that have the transformer
+        // configured
         return false;
     }
 

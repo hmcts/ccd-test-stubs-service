@@ -88,7 +88,8 @@ public class StubResponseController {
 
     @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
-        URI oauth2Endpoint = new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+        URI oauth2Endpoint =
+                new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(oauth2Endpoint);
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
@@ -155,7 +156,8 @@ public class StubResponseController {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             LOG.info("Request path: {}", requestPath);
-            String requestBody = IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
+            String requestBody =
+                    IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
 
             return restTemplate.exchange(getMockHttpServerUrl(requestPath),
                                          HttpMethod.valueOf(request.getMethod()),

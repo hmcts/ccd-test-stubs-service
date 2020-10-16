@@ -1,13 +1,11 @@
 plugins {
   id 'application'
-  id 'checkstyle'
-  id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.7.RELEASE'
   id 'org.springframework.boot' version '2.2.9.RELEASE'
-  id 'org.owasp.dependencycheck' version '5.1.0'
   id 'com.github.ben-manes.versions' version '0.20.0'
   id 'org.sonarqube' version '2.6.2'
+  id 'uk.gov.hmcts.java' version '0.12.0'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
@@ -75,18 +73,6 @@ task functional(type: Test) {
   }
 }
 
-checkstyle {
-  maxWarnings = 0
-  toolVersion = '8.18'
-  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
-  configDir = new File(rootDir, 'config/checkstyle')
-}
-
-pmd {
-  toolVersion = "6.9.0"
-  maxFailures = 12 // Failures need to be reviewed/fixed before removing this property
-}
-
 jacocoTestReport {
   executionData(test, integration)
   reports {
@@ -124,16 +110,8 @@ dependencyUpdates.resolutionStrategy = {
   }
 }
 
-// https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
 dependencyCheck {
-  // Specifies if the build should be failed if a CVSS score above a specified level is identified.
-  // range of 0-10 fails the build, anything greater and it doesn't fail the build
-  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
   suppressionFile = 'dependency-check-suppressions.xml'
-  analyzers {
-    // Disable scanning of .NET related binaries
-    assemblyEnabled = false
-  }
 }
 
 repositories {
