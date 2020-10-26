@@ -1,0 +1,52 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_returning_simulated_completed_noc_request"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "applicantOrganisationPolicy": {
+          "Organisation": {
+            "OrganisationID": "QUK822N",
+            "OrganisationName": "BEFTA Organisation"
+          },
+          "OrgPolicyReference": "ApplicantPolicy",
+          "OrgPolicyCaseAssignedRole": "[ApplicantSolicitor]"
+        },
+        "respondentOrganisationPolicy": {
+          "Organisation":  {
+            "OrganisationID": "QUK822N",
+            "OrganisationName": "BEFTA Organisation"
+          },
+          "OrgPolicyReference": "RespondentPolicy",
+          "OrgPolicyCaseAssignedRole": "[RespondentSolicitor]"
+        },
+
+        "changeOrganisationRequestField": {
+          "Reason": null,
+          "CaseRoleId": null,
+          "NotesReason": null,
+          "ApprovalStatus": null,
+          "RequestTimestamp": null,
+          "OrganisationToAdd": {
+            "OrganisationID": null,
+            "OrganisationName": null
+          },
+          "OrganisationToRemove": {
+            "OrganisationID": null,
+            "OrganisationName": null
+          },
+          "ApprovalRejectionTimestamp": null
+        }
+      }
+    },
+    "transformers": [
+      "dynamic-case-data-response-transformer"
+    ]
+  }
+}
