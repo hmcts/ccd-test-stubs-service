@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.RSAKey;
+import io.micrometer.core.instrument.util.IOUtils;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -12,14 +16,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.RSAKey;
-import io.micrometer.core.instrument.util.IOUtils;
+import javax.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +37,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -47,6 +45,8 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Default endpoints per application.
@@ -60,9 +60,6 @@ public class StubResponseController {
 
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
-
-    @Value("${app.management-web-url}")
-    private String managementWebUrl;
 
     @Value("${app.jwt.issuer}")
     private String issuer;
@@ -87,9 +84,8 @@ public class StubResponseController {
     }
 
     @GetMapping(value = "/login")
-    public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
-        URI oauth2Endpoint =
-                new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+    public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri) throws URISyntaxException {
+        URI oauth2Endpoint = new URI(redirectUri + "?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(oauth2Endpoint);
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
