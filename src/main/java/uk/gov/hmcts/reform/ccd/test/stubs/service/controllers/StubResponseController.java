@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,8 +85,14 @@ public class StubResponseController {
     }
 
     @GetMapping(value = "/login")
-    public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri) throws URISyntaxException {
-        URI oauth2Endpoint = new URI(redirectUri + "?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+    public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
+                                                   @RequestParam(value = "scope", required = false) final String scope,
+                                                   @RequestParam(value = "state", required = false) final String state,
+                                                   @RequestParam(value = "client_id", required = false) final String clientId) throws URISyntaxException {
+        URIBuilder builder = new URIBuilder(redirectUri);
+        builder.addParameter("code", "54402a0b-e311-4788-b273-efc2c3fc53f0");
+        addUriParams(builder, scope, state, clientId);
+        URI oauth2Endpoint = builder.build();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(oauth2Endpoint);
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
@@ -213,5 +220,17 @@ public class StubResponseController {
 
     private String getMockHttpServerUrl(String requestPath) {
         return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
+    }
+
+    private void addUriParams(URIBuilder builder, final String scope,
+                                 final String state,
+                                 final String clientId) {
+        if ("xuiwebapp".equalsIgnoreCase(clientId)
+            || "xui_webapp".equalsIgnoreCase(clientId)) {
+            String localIss = "http://localhost:5555/o";
+            builder.addParameter("scope", scope);
+            builder.addParameter("state", state);
+            builder.addParameter("iss", localIss);
+        }
     }
 }
