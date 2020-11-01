@@ -124,8 +124,7 @@ public class StubResponseController {
 
 	private String bodyOf(HttpServletRequest request) {
 		try {
-			return IOUtils.toString(request.getInputStream(),
-					Charset.forName(request.getCharacterEncoding()));
+			return IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -146,11 +145,16 @@ public class StubResponseController {
 	}
 
 	private String getUsernameFrom(String body) {
+		LOG.info("Getting user from body: {}", body);
 		if (body == null)
 			return "no_username_in_request_body";
 		String[] parts = body.split("&");
-		String usernamePart = parts[parts.length - 2];
-		return usernamePart.substring(9);
+		for (String part : parts) {
+			if(part.toLowerCase().startsWith("username")){
+				return part.substring(9);
+			}
+		}
+		return "auto.test.cnp@gmail.com";
 	}
 
 	private void log(HttpServletRequest request) {
@@ -158,14 +162,15 @@ public class StubResponseController {
 			String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
 			String userToken = request.getHeader("Authorization");
 
-			LOG.info("\n\n\n------------------\nRequest: {} {} \nToken:{}\nuser:{}\n======\n",
-					request.getMethod(), requestPath, userToken, getUsernameFromToken(userToken));
+			LOG.info("\n\n\n------------------\nRequest: {} {} \nToken:{}\nuser:{}\n======\n", request.getMethod(),
+					requestPath, userToken, getUsernameFromToken(userToken));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	private String getUsernameFromToken(String userToken) {
+		LOG.info("Getting user from token >> {}", userToken);
 		try {
 			if (userToken != null) {
 				JWT jwt = JWTParser.parse(userToken.substring(7));
@@ -174,11 +179,12 @@ public class StubResponseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "no_user_in_token";
+		return "auto.test.cnp@gmail.com";
 	}
 
 	@PostMapping(value = "/oauth2/token")
 	public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
+		log(request);
 		String username = getUsernameFrom(bodyOf(request));
 		return createToken(username);
 	}
@@ -226,8 +232,9 @@ public class StubResponseController {
 			}
 			String requestBody = bodyOf(request);
 
-			ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath), HttpMethod.valueOf(request.getMethod()),
-					new HttpEntity<>(requestBody), Object.class, request.getParameterMap());
+			ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath),
+					HttpMethod.valueOf(request.getMethod()), new HttpEntity<>(requestBody), Object.class,
+					request.getParameterMap());
 			return response;
 		} catch (HttpClientErrorException e) {
 			return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
