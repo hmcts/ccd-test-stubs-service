@@ -11,7 +11,7 @@ class JWTokenGeneratorTest {
     @Test
     void generateTokenStoreDynamic() throws JOSEException {
         Map<String, Object> map = new HashMap<>();
-        String token = JWTokenGenerator.generateToken("http://localhost:5555/0", 50000);
+        String token = JWTokenGenerator.generateToken("http://localhost:5555/0", 50000, null);
         Assert.assertNotNull(token);
     }
 }

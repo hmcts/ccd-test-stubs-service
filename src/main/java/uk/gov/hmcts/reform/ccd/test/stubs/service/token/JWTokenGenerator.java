@@ -20,11 +20,11 @@ public final class JWTokenGenerator {
      * @param ttlMillis Time to live
      * @return String
      */
-    public static String generateToken(String issuer, long ttlMillis) throws JOSEException {
+    public static String generateToken(String issuer, long ttlMillis, String username) throws JOSEException {
         final long nowMillis = System.currentTimeMillis();
 
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder()
-            .subject("CCD_Stub")
+            .subject(username)
             .issueTime(new Date())
             .issuer(issuer)
             .claim("tokenName", "access_token");

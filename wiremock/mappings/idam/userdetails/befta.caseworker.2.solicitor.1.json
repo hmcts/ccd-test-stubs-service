@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/details/befta.caseworker.2.solicitor.1@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.caseworker.2.solicitor.1@gmail.com",
+      "forename": "CCD",
+      "id": "555",
+      "roles": [
+        "caseworker", "caseworker-befta_jurisdiction_2", "caseworker-befta_jurisdiction_2-solicitor_1"
+      ],
+      "surname": "Auto Test (Stub)"
+    }
+
+  }
+}

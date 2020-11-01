@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/userinfo/befta.pui.caa.1@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.pui.caa.1@gmail.com",
+      "sub": "befta.pui.caa.1@gmail.com",
+      "name":"CCD", "given_name": "CCD",
+      "uid": "111111",
+      "roles": [
+        "pui-caa"
+      ],
+      "family_name": "Auto Test (Stub)"
+    }
+
+  }
+}

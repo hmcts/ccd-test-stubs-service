@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/details/befta.caseworker.1.noprofile@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.caseworker.1.noprofile@gmail.com",
+      "forename": "testfirstname",
+      "id": "333",
+      "roles": [
+        "caseworker", "caseworker-befta_jurisdiction_1"
+      ],
+      "surname": "testsurname"
+    }
+
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/details/befta.citizen.3@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.citizen.3@gmail.com",
+      "forename": "CCD",
+      "id": "101010",
+      "roles": [
+        "citizen"
+      ],
+      "surname": "Auto Test (Stub)"
+    }
+
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/details/auto.test12.cnp+private@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "auto.test12.cnp+private@gmail.com",
+      "forename": "CCD",
+      "id": "232323",
+      "roles": [
+        "caseworker",
+        "caseworker-autotest1",
+        "caseworker-autotest1-private",
+        "caseworker-autotest2",
+        "caseworker-autotest2-private"
+      ],
+      "surname": "Auto Test (Stub)"
+    }
+
+  }
+}

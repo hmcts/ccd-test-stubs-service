@@ -9,6 +9,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +22,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.JWT;
+import com.nimbusds.jwt.JWTParser;
+
 import io.micrometer.core.instrument.util.IOUtils;
 import net.minidev.json.JSONObject;
 import org.slf4j.Logger;
@@ -55,167 +61,220 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 @RequestMapping("/")
 public class StubResponseController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
-    static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
+	private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
+	static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
 
-    @Value("${wiremock.server.host}")
-    private String mockHttpServerHost;
+	@Value("${wiremock.server.host}")
+	private String mockHttpServerHost;
 
-    @Value("${app.management-web-url}")
-    private String managementWebUrl;
+	@Value("${app.management-web-url}")
+	private String managementWebUrl;
 
-    @Value("${app.jwt.issuer}")
-    private String issuer;
+	@Value("${app.jwt.issuer}")
+	private String issuer;
 
-    @Value("${app.jwt.expiration}")
-    private long expiration;
+	@Value("${app.jwt.expiration}")
+	private long expiration;
 
-    @Value("classpath:userInfoOverrideRequestTemplate.json")
-    private Resource userInfoRequestTemplate;
+	@Value("classpath:userInfoOverrideRequestTemplate.json")
+	private Resource userInfoRequestTemplate;
 
+	private final RestTemplate restTemplate;
 
-    private final RestTemplate restTemplate;
+	private final MockHttpServer mockHttpServer;
+	private final ObjectMapper mapper;
 
-    private final MockHttpServer mockHttpServer;
-    private final ObjectMapper mapper;
+	@Autowired
+	public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+		this.restTemplate = restTemplate;
+		this.mockHttpServer = mockHttpServer;
+		this.mapper = mapper;
+	}
 
-    @Autowired
-    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
-        this.restTemplate = restTemplate;
-        this.mockHttpServer = mockHttpServer;
-        this.mapper = mapper;
-    }
+	@GetMapping(value = "/login")
+	public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
+		URI oauth2Endpoint = new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(oauth2Endpoint);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+	}
 
-    @GetMapping(value = "/login")
-    public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
-        URI oauth2Endpoint =
-                new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(oauth2Endpoint);
-        return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
-    }
+	@GetMapping(value = "/o/jwks")
+	public ResponseEntity<Object> jwkeys(HttpServletRequest request) throws JOSEException {
+		return getPublicKey();
+	}
 
-    @GetMapping(value = "/o/jwks")
-    public ResponseEntity<Object> jwkeys(HttpServletRequest request) throws JOSEException {
-        return getPublicKey();
-    }
+	private ResponseEntity<Object> getPublicKey() throws JOSEException {
+		RSAKey rsaKey = KeyGenUtil.getRsaJWK();
+		Map<String, List<JSONObject>> body = new LinkedHashMap<>();
+		List<JSONObject> keyList = new ArrayList<>();
+		keyList.add(rsaKey.toJSONObject());
+		body.put("keys", keyList);
+		HttpHeaders httpHeaders = new HttpHeaders();
 
-    private ResponseEntity<Object> getPublicKey() throws JOSEException {
-        RSAKey rsaKey = KeyGenUtil.getRsaJWK();
-        Map<String, List<JSONObject>> body = new LinkedHashMap<>();
-        List<JSONObject> keyList = new ArrayList<>();
-        keyList.add(rsaKey.toJSONObject());
-        body.put("keys", keyList);
-        HttpHeaders httpHeaders = new HttpHeaders();
+		return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
+	}
 
-        return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
-    }
+	@PostMapping(value = "/o/token")
+	public ResponseEntity<Object> openIdToken(HttpServletRequest request) throws JOSEException {
+		log(request);
+		String username = getUsernameFrom(bodyOf(request));
+		return createToken(username);
+	}
 
-    @PostMapping(value = "/o/token")
-    public ResponseEntity<Object> openIdToken(HttpServletRequest request) throws JOSEException {
-        return createToken();
-    }
+	private String bodyOf(HttpServletRequest request) {
+		try {
+			return IOUtils.toString(request.getInputStream(),
+					Charset.forName(request.getCharacterEncoding()));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @PostMapping(value = "/oauth2/token")
-    public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
-        return createToken();
-    }
+	@GetMapping(value = "/details")
+	public ResponseEntity<Object> getDetails(HttpServletRequest request) throws JOSEException {
+		log(request);
+		String username = getUsernameFromToken(request.getHeader("Authorization"));
+		return forwardAllRequests(request, username);
+	}
 
-    private ResponseEntity<Object> createToken() throws JOSEException {
-        Map<String, Object> body = new LinkedHashMap<>();
-        String token = JWTokenGenerator.generateToken(issuer, expiration);
-        body.put("access_token", token);
-        body.put("token_type", "Bearer");
-        body.put("expires_in", expiration);
-        body.put("id_token", token);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
-    }
+	@GetMapping(value = "/o/userinfo")
+	public ResponseEntity<Object> getUserInfo(HttpServletRequest request) throws JOSEException {
+		log(request);
+		String username = getUsernameFromToken(request.getHeader("Authorization"));
+		return forwardAllRequests(request, username);
+	}
 
-    @GetMapping(value = "**")
-    public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
+	private String getUsernameFrom(String body) {
+		if (body == null)
+			return "no_username_in_request_body";
+		String[] parts = body.split("&");
+		String usernamePart = parts[parts.length - 2];
+		return usernamePart.substring(9);
+	}
 
-    @PostMapping(value = "**")
-    public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
+	private void log(HttpServletRequest request) {
+		try {
+			String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+			String userToken = request.getHeader("Authorization");
 
-    @PutMapping(value = "**")
-    public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
+			LOG.info("\n\n\n------------------\nRequest: {} {} \nToken:{}\nuser:{}\n======\n",
+					request.getMethod(), requestPath, userToken, getUsernameFromToken(userToken));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
-    @DeleteMapping(value = "**")
-    public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
+	private String getUsernameFromToken(String userToken) {
+		try {
+			if (userToken != null) {
+				JWT jwt = JWTParser.parse(userToken.substring(7));
+				return jwt.getJWTClaimsSet().getSubject();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "no_user_in_token";
+	}
 
-    private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
-        try {
-            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-            LOG.info("Request path: {}", requestPath);
-            String requestBody =
-                    IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
+	@PostMapping(value = "/oauth2/token")
+	public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
+		String username = getUsernameFrom(bodyOf(request));
+		return createToken(username);
+	}
 
-            return restTemplate.exchange(getMockHttpServerUrl(requestPath),
-                                         HttpMethod.valueOf(request.getMethod()),
-                                         new HttpEntity<>(requestBody),
-                                         Object.class,
-                                         request.getParameterMap());
+	private ResponseEntity<Object> createToken(String username) throws JOSEException {
+		Map<String, Object> body = new LinkedHashMap<>();
+		String token = JWTokenGenerator.generateToken(issuer, expiration, username);
+		body.put("access_token", token);
+		body.put("token_type", "Bearer");
+		body.put("expires_in", expiration);
+		body.put("id_token", token);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
+	}
 
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
-        } catch (IOException e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
-        }
-    }
+	@GetMapping(value = "**")
+	public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
+		return forwardAllRequests(request);
+	}
 
-    @PostMapping(
-        path = "/idam-user",
-        consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo) throws JsonProcessingException {
+	@PostMapping(value = "**")
+	public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
+		return forwardAllRequests(request);
+	}
 
-        LOG.info("setting stub user info to: {}", asJson(userInfo));
+	@PutMapping(value = "**")
+	public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
+		return forwardAllRequests(request);
+	}
 
-        String request = createWiremockRequestForUserInfo(asJson(userInfo));
-        String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
+	@DeleteMapping(value = "**")
+	public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
+		return forwardAllRequests(request);
+	}
 
-        try {
-            ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(requestUrl, request, String.class);
-            stringResponseEntity.getStatusCodeValue();
-            return ResponseEntity.ok().build();
-        } catch (HttpClientErrorException | HttpServerErrorException e) {
-            LOG.error("Error configuring stub IDAM user", e);
-            return new ResponseEntity<>("Some error occurred", e.getStatusCode());
-        } catch (Exception e) {
-            LOG.error("Error configuring stub IDAM user", e);
-            return new ResponseEntity<>("Some unknown error occurred", HttpStatus.NO_CONTENT);
-        }
-    }
+	private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
+		return forwardAllRequests(request, null);
+	}
 
-    private String asJson(Object object) throws JsonProcessingException {
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
-    }
+	private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request, String username) {
+		try {
+			String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+			if (username != null) {
+				requestPath += "/" + username;
+			}
+			String requestBody = bodyOf(request);
 
-    private String createWiremockRequestForUserInfo(String userInfoAsJson) {
-        String requestTemplate = asString(userInfoRequestTemplate);
-        return requestTemplate.replace("$USER_INFO_BODY_PLACEHOLDER", userInfoAsJson);
-    }
+			ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath), HttpMethod.valueOf(request.getMethod()),
+					new HttpEntity<>(requestBody), Object.class, request.getParameterMap());
+			return response;
+		} catch (HttpClientErrorException e) {
+			return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
 
-    private static String asString(Resource resource) {
-        try (Reader reader = new InputStreamReader(resource.getInputStream(), UTF_8)) {
-            return FileCopyUtils.copyToString(reader);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+	@PostMapping(path = "/idam-user", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo) throws JsonProcessingException {
 
-    private String getMockHttpServerUrl(String requestPath) {
-        return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
-    }
+		LOG.info("setting stub user info to: {}", asJson(userInfo));
+
+		String request = createWiremockRequestForUserInfo(asJson(userInfo));
+		String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
+
+		try {
+			ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(requestUrl, request, String.class);
+			stringResponseEntity.getStatusCodeValue();
+			return ResponseEntity.ok().build();
+		} catch (HttpClientErrorException | HttpServerErrorException e) {
+			LOG.error("Error configuring stub IDAM user", e);
+			return new ResponseEntity<>("Some error occurred", e.getStatusCode());
+		} catch (Exception e) {
+			LOG.error("Error configuring stub IDAM user", e);
+			return new ResponseEntity<>("Some unknown error occurred", HttpStatus.NO_CONTENT);
+		}
+	}
+
+	private String asJson(Object object) throws JsonProcessingException {
+		return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+	}
+
+	private String createWiremockRequestForUserInfo(String userInfoAsJson) {
+		String requestTemplate = asString(userInfoRequestTemplate);
+		return requestTemplate.replace("$USER_INFO_BODY_PLACEHOLDER", userInfoAsJson);
+	}
+
+	private static String asString(Resource resource) {
+		try (Reader reader = new InputStreamReader(resource.getInputStream(), UTF_8)) {
+			return FileCopyUtils.copyToString(reader);
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
+		}
+	}
+
+	private String getMockHttpServerUrl(String requestPath) {
+		return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
+	}
 }

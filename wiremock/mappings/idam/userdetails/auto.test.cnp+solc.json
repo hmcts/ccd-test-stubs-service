@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/details/auto.test.cnp+solc@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "auto.test.cnp+solc@gmail.com",
+      "forename": "CCD",
+      "id": "212121",
+      "roles": [
+        "caseworker",
+        "caseworker-autotest1",
+        "caseworker-autotest1-solicitor"
+      ],
+      "surname": "Auto Test (Stub)"
+    }
+
+  }
+}

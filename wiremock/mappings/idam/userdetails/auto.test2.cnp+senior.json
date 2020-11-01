@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPath": "/details"
+    "urlPath": "/details/auto.test2.cnp+senior@gmail.com"
   },
   "response": {
     "status": 200,
@@ -10,14 +10,13 @@
     },
     "jsonBody": {
       "active": true,
-      "email": "auto.test.cnp@gmail.com",
+      "email": "auto.test2.cnp+senior@gmail.com",
       "forename": "CCD",
-      "id": "7689",
+      "id": "282828",
       "roles": [
-        "caseworker-autotest1",
-        "caseworker-autotest2",
         "caseworker",
-        "ccd-import"
+        "caseworker-autotest2",
+        "caseworker-autotest2-senior"
       ],
       "surname": "Auto Test (Stub)"
     }

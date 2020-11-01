@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/userinfo/befta.citizen.3@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.citizen.3@gmail.com",
+      "sub": "befta.citizen.3@gmail.com",
+      "name":"CCD", "given_name": "CCD",
+      "uid": "101010",
+      "roles": [
+        "citizen"
+      ],
+      "family_name": "Auto Test (Stub)"
+    }
+
+  }
+}

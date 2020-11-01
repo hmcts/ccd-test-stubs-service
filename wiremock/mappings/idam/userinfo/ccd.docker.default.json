@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/userinfo/ccd.docker.default@hmcts.net"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "ccd.docker.default@hmcts.net",
+      "sub": "ccd.docker.default@hmcts.net",
+      "name":"CCD", "given_name": "CCD",
+      "uid": "141414",
+      "roles": [
+        "ccd-import"
+      ],
+      "family_name": "Auto Test (Stub)"
+    }
+
+  }
+}

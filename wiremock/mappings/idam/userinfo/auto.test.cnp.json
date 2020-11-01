@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/userinfo/auto.test.cnp@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "auto.test.cnp@gmail.com",
+      "sub": "auto.test.cnp@gmail.com",
+      "name":"CCD", "given_name": "CCD",
+      "uid": "111",
+      "roles": [
+        "caseworker-autotest1",
+        "caseworker-autotest2",
+        "caseworker",
+        "ccd-import"
+      ],
+      "family_name": "Auto Test (Stub)"
+    }
+
+  }
+}

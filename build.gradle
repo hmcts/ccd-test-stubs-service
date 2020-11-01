@@ -65,6 +65,10 @@ task smoke(type: Test) {
   }
 }
 
+checkstyle {
+    sourceSets = []
+}
+
 task functional(type: Test) {
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
@@ -91,7 +95,7 @@ sonarqube {
     property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/junitPlatformTest.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
-    property "sonar.exclusions", "**/token/*.java,**/ApplicationConfig.java,**/IdamUserInfo.java"
+    property "sonar.exclusions", "**/token/*.java,**/ApplicationConfig.java,**/IdamUserInfo.java,**/StubResponseController.java"
     property "sonar.coverage.exclusions", "**/token/*.java,**/*Controller.java"
 
   }

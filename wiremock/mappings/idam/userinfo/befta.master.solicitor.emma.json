@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/userinfo/befta.master.solicitor.emma@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.master.solicitor.emma@gmail.com",
+      "sub": "befta.master.solicitor.emma@gmail.com",
+      "name":"CCD", "given_name": "CCD",
+      "uid": "134343411",
+      "roles": [
+        "caseworker-befta_master",
+        "caseworker-befta_master-solicitor",
+        "caseworker"
+      ],
+      "family_name": "Auto Test (Stub)"
+    }
+
+  }
+}

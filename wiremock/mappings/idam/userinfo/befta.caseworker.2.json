@@ -1,0 +1,24 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/o/userinfo/befta.caseworker.2@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "befta.caseworker.2@gmail.com",
+      "sub": "befta.caseworker.2@gmail.com",
+      "name":"CCD", "given_name": "CCD",
+      "uid": "444",
+      "roles": [
+        "caseworker", "caseworker-befta_jurisdiction_2"
+      ],
+      "family_name": "Auto Test (Stub)"
+    }
+
+  }
+}

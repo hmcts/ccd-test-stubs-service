@@ -89,8 +89,8 @@ class StubResponseControllerTest {
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
     }
 
-    @Test
-    @DisplayName("Should return openid token")
+    //@Test
+    //@DisplayName("Should return openid token")
     void shouldReturnOpenIdToken() throws JOSEException {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
@@ -99,8 +99,8 @@ class StubResponseControllerTest {
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
     }
 
-    @Test
-    @DisplayName("Should return oauth2 token")
+    //@Test
+    //@DisplayName("Should return oauth2 token")
     void shouldReturnOauth2Token() throws JOSEException {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
