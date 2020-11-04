@@ -12,16 +12,14 @@
       "data": {
         "applicantOrganisationPolicy": {
           "Organisation": {
-            "OrganisationID": "QUK822N",
-            "OrganisationName": "BEFTA Organisation"
+            "OrganisationID": "QUK822N"
           },
           "OrgPolicyReference": "ApplicantPolicy",
           "OrgPolicyCaseAssignedRole": "[ApplicantSolicitor]"
         },
         "respondentOrganisationPolicy": {
           "Organisation":  {
-            "OrganisationID": "QUK822N",
-            "OrganisationName": "BEFTA Organisation"
+            "OrganisationID": "QUK822N"
           },
           "OrgPolicyReference": "RespondentPolicy",
           "OrgPolicyCaseAssignedRole": "[RespondentSolicitor]"
@@ -34,12 +32,10 @@
           "ApprovalStatus": null,
           "RequestTimestamp": null,
           "OrganisationToAdd": {
-            "OrganisationID": null,
-            "OrganisationName": null
+            "OrganisationID": null
           },
           "OrganisationToRemove": {
-            "OrganisationID": null,
-            "OrganisationName": null
+            "OrganisationID": null
           },
           "ApprovalRejectionTimestamp": null
         }
