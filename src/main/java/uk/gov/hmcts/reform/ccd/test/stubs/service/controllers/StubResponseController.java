@@ -88,7 +88,8 @@ public class StubResponseController {
     public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
                                                    @RequestParam(value = "scope", required = false) final String scope,
                                                    @RequestParam(value = "state", required = false) final String state,
-                                                   @RequestParam(value = "client_id", required = false) final String clientId) throws URISyntaxException {
+                                                   @RequestParam(value = "client_id", required = false)
+                                                       final String clientId) throws URISyntaxException {
         URIBuilder builder = new URIBuilder(redirectUri);
         builder.addParameter("code", "54402a0b-e311-4788-b273-efc2c3fc53f0");
         addUriParams(builder, scope, state, clientId);
