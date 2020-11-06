@@ -67,7 +67,8 @@ class StubResponseControllerTest {
     @DisplayName("Should redirect when calling login endpoint")
     @Test
     void testLoginRedirects() throws Exception {
-        mockMvc.perform(get("/login"))
+        mockMvc.perform(get("/login")
+            .param("redirect_uri", "http://localhost:3451/oauth2"))
             .andExpect(status().is3xxRedirection());
     }
 

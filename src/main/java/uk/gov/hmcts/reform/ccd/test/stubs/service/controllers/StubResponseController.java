@@ -1,6 +1,10 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import javax.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.RSAKey;
+import io.micrometer.core.instrument.util.IOUtils;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -12,15 +16,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.RSAKey;
-import io.micrometer.core.instrument.util.IOUtils;
+import javax.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +38,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -47,6 +46,8 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Default endpoints per application.
@@ -60,9 +61,6 @@ public class StubResponseController {
 
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
-
-    @Value("${app.management-web-url}")
-    private String managementWebUrl;
 
     @Value("${app.jwt.issuer}")
     private String issuer;
@@ -87,9 +85,15 @@ public class StubResponseController {
     }
 
     @GetMapping(value = "/login")
-    public ResponseEntity<Object> redirectToOauth2() throws URISyntaxException {
-        URI oauth2Endpoint =
-                new URI(managementWebUrl + "/oauth2redirect?code=54402a0b-e311-4788-b273-efc2c3fc53f0");
+    public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
+                                                   @RequestParam(value = "scope", required = false) final String scope,
+                                                   @RequestParam(value = "state", required = false) final String state,
+                                                   @RequestParam(value = "client_id", required = false)
+                                                       final String clientId) throws URISyntaxException {
+        URIBuilder builder = new URIBuilder(redirectUri);
+        builder.addParameter("code", "54402a0b-e311-4788-b273-efc2c3fc53f0");
+        addUriParams(builder, scope, state, clientId);
+        URI oauth2Endpoint = builder.build();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(oauth2Endpoint);
         return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
@@ -217,5 +221,17 @@ public class StubResponseController {
 
     private String getMockHttpServerUrl(String requestPath) {
         return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
+    }
+
+    private void addUriParams(URIBuilder builder, final String scope,
+                                 final String state,
+                                 final String clientId) {
+        if ("xuiwebapp".equalsIgnoreCase(clientId)
+            || "xui_webapp".equalsIgnoreCase(clientId)) {
+            String localIss = "http://localhost:5555/o";
+            builder.addParameter("scope", scope);
+            builder.addParameter("state", state);
+            builder.addParameter("iss", localIss);
+        }
     }
 }
