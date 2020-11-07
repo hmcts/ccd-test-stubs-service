@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/divorce-solicitor@gmail.com"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "active": true,
+      "email": "divorce-solicitor@gmail.com",
+      "forename": "CCD",
+      "id": "9999",
+      "roles": [
+        "caseworker-divorce-solicitor",
+        "caseworker-divorce",
+        "caseworker"
+      ],
+      "surname": "Auto Test (Stub)"
+    }
+
+  }
+}

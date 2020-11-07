@@ -61,6 +61,7 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 @RequestMapping("/")
 public class StubResponseController {
 
+	private static final String DEFAULT_USER = "divorce-solicitor@gmail.com";
 	private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
 	static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
 
@@ -145,6 +146,9 @@ public class StubResponseController {
 	}
 
 	private String getUsernameFrom(String body) {
+		//Log output:
+		//Basic Y2NkX2dhdGV3YXk6Y2NkX2dhdGV3YXlfc2VjcmV0
+		//Equals: ccd_gateway:ccd_gateway_secret
 		LOG.info("Getting user from body: {}", body);
 		if (body == null)
 			return "no_username_in_request_body";
@@ -154,7 +158,7 @@ public class StubResponseController {
 				return part.substring(9);
 			}
 		}
-		return "auto.test.cnp@gmail.com";
+		return DEFAULT_USER;
 	}
 
 	private void log(HttpServletRequest request) {
@@ -179,7 +183,7 @@ public class StubResponseController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return "auto.test.cnp@gmail.com";
+		return DEFAULT_USER;
 	}
 
 	@PostMapping(value = "/oauth2/token")
