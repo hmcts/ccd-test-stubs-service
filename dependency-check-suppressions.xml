@@ -52,7 +52,7 @@
     <cve>CVE-2020-5407</cve>
     <cve>CVE-2020-5408</cve>
   </suppress>
-  
+
  <suppress>
    <notes>Temporary suppression for on-going developments</notes>
    <cve>CVE-2020-13934</cve>
@@ -61,7 +61,9 @@
    <cve>CVE-2020-10517</cve>
    <cve>CVE-2017-18640</cve>
    <cve>CVE-2020-5421</cve>
-   
+   <cve>CVE-2020-27216</cve>
+   <cve>CVE-2020-13943</cve>
+
 </suppress>
 
 </suppressions>
