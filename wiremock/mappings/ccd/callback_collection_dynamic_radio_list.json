@@ -1,0 +1,62 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/.*/collection_dynamic_radio_list"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "CollectionDynamicRadioList": [
+          {
+            "id": "RadioList1",
+            "value": {
+              "value": {
+                "code": "JUDGESMITH",
+                "label": "Judge Smith"
+              },
+              "list_items": [{
+                "code": "JUDGEJUDY",
+                "label": "Judge Judy"
+              }, {
+                "code": "JUDGERINDER",
+                "label": "Judge Rinder"
+              }, {
+                "code": "JUDGESMITH",
+                "label": "Judge Smith"
+              }, {
+                "code": "JUDGEDREDD",
+                "label": "Judge Dredd"
+              }]
+            }
+          },
+          {
+            "id": "RadioList2",
+            "value": {
+              "value": {
+                "code": "JUDGESMITH",
+                "label": "Judge Smith"
+              },
+              "list_items": [{
+                "code": "JUDGEJUDY",
+                "label": "Judge Judy"
+              }, {
+                "code": "JUDGERINDER",
+                "label": "Judge Rinder"
+              }, {
+                "code": "JUDGESMITH",
+                "label": "Judge Smith"
+              }, {
+                "code": "JUDGEDREDD",
+                "label": "Judge Dredd"
+              }]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

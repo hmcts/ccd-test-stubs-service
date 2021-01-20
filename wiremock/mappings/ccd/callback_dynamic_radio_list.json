@@ -1,0 +1,35 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/.*/dynamic_radio_list"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "DynamicRadioList": {
+          "value": {
+            "code": "JUDGESMITH",
+            "label": "Judge Smith"
+          },
+          "list_items": [{
+            "code": "JUDGEJUDY",
+            "label": "Judge Judy"
+          }, {
+            "code": "JUDGERINDER",
+            "label": "Judge Rinder"
+          }, {
+            "code": "JUDGESMITH",
+            "label": "Judge Smith"
+          }, {
+            "code": "JUDGEDREDD",
+            "label": "Judge Dredd"
+          }]
+        }
+      }
+    }
+  }
+}

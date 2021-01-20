@@ -1,0 +1,60 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/.*/complex_dynamic_lists"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "DynamicListsComplexField": {
+          "DynamicRadioListComplex": {
+            "value": {
+              "code": "JUDGESMITH",
+              "label": "Judge Smith"
+            },
+            "list_items": [{
+              "code": "JUDGEJUDY",
+              "label": "Judge Judy"
+            }, {
+              "code": "JUDGERINDER",
+              "label": "Judge Rinder"
+            }, {
+              "code": "JUDGESMITH",
+              "label": "Judge Smith"
+            }, {
+              "code": "JUDGEDREDD",
+              "label": "Judge Dredd"
+            }]
+          },
+          "DynamicMultiSelectComplex": {
+            "value": [{
+              "code": "MONDAYFIRSTOFMAY",
+              "label": "Monday, May 1st"
+            }, {
+
+              "code": "THURSDAYFOURTHOFMAY",
+              "label": "Thursday, May 4th"
+            }],
+            "list_items": [{
+              "code": "MONDAYFIRSTOFMAY",
+              "label": "Monday, May 1st"
+            }, {
+              "code": "TUESDAYSECONDOFMAY",
+              "label": "Tuesday, May 2nd"
+            }, {
+              "code": "WEDNESDAYTHIRDOFMAY",
+              "label": "Wednesday, May 3rd"
+            }, {
+              "code": "THURSDAYFOURTHOFMAY",
+              "label": "Thursday, May 4th"
+            }]
+          }
+        }
+      }
+    }
+  }
+}
