@@ -1,6 +1,5 @@
 server:
   port: 5555
-
 management:
   endpoint:
     health:
@@ -8,7 +7,11 @@ management:
   endpoints:
     web:
       base-path: /
-
+      exposure:
+        include: health, info
+  health:
+    probes:
+      enabled: true
 spring:
   application:
     name: CCD Test Stubs Services
