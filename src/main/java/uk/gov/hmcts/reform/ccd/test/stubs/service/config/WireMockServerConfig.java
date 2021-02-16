@@ -49,7 +49,9 @@ public class WireMockServerConfig {
                 .dynamicPort()
                 .usingFilesUnderDirectory(mappingsPath)
                 .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                + ".DynamicCaseDataResponseTransformer");
+                                + ".DynamicCaseDataResponseTransformer",
+                            "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+                                + ".DynamicRoleAssignmentsResponseTransformer");
         } else {
             LOG.info("using classpath resources to resolve mappings");
             return options()
@@ -57,7 +59,9 @@ public class WireMockServerConfig {
                 .dynamicPort()
                 .usingFilesUnderClasspath(mappingsPath)
                 .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                + ".DynamicCaseDataResponseTransformer");
+                                + ".DynamicCaseDataResponseTransformer",
+                            "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+                                + ".DynamicRoleAssignmentsResponseTransformer");
         }
     }
 }
