@@ -123,7 +123,7 @@ repositories {
 ext {
   groovyVersion = '3.0.7'
   tomcatVersion = '9.0.43!!'
-  jettyVersion = '9.4.38.v20210224'
+  jettyVersion = '10.0.1'
 }
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
@@ -178,7 +178,7 @@ dependencies {
 
   compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: '9.4.38.v20210224'
   compile group: 'org.eclipse.jetty', name: 'jetty-util', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-xml', version: jettyVersion
