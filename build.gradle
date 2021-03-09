@@ -169,7 +169,7 @@ dependencies {
   }
 
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-  compile (group: 'com.github.tomakehurst', name: 'wiremock', version: '2.27.2')
+  compile (group: 'com.github.tomakehurst', name: 'wiremock-standalone', version: '2.27.2')
     {
       exclude group: 'com.github.jknack', module: 'handlebars'
     }
