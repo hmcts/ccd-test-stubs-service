@@ -122,8 +122,8 @@ repositories {
 
 ext {
   groovyVersion = '3.0.7'
-  tomcatVersion = '9.0.40!!'
-  jettyVersion = '9.4.36.v20210114'
+  tomcatVersion = '9.0.43!!'
+  jettyVersion = '9.4.37.v20210219'
 }
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
@@ -168,11 +168,17 @@ dependencies {
     exclude group: 'org.springframework.security', module: 'spring-security-rsa'
   }
 
-  compile group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.1'
+  // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
+  compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2')
+    {
+      exclude group: 'com.github.jknack', module: 'handlebars'
+    }
+// https://mvnrepository.com/artifact/com.github.jknack/handlebars
+  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.2.0'
 
   compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: '9.4.38.v20210224'
   compile group: 'org.eclipse.jetty', name: 'jetty-util', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-xml', version: jettyVersion
