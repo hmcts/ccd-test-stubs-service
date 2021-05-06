@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/am/role-assignments/actors/0359819a-aab6-477e-9d9c-24afdf4573b7"
+    "urlPattern": "/am/role-assignments/actors/463ad707-7b4b-451e-bb7d-934d6a165b4b"
   },
   "response": {
     "status": 200,
@@ -20,8 +20,8 @@
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
           "readOnly": false,
-          "beginTime": "2021-01-01T00:00:00Z",
-          "endTime": "2022-01-01T00:00:00Z",
+          "beginTime": "2019-01-01T00:00:00Z",
+          "endTime": "2020-01-01T00:00:00Z",
           "created": "2020-12-23T06:37:58.096065Z",
           "attributes": {
             "contractType": "SALARIED",
@@ -41,8 +41,8 @@
           "grantType": "STANDARD",
           "roleCategory": "JUDICIAL",
           "readOnly": false,
-          "beginTime": "2021-02-01T00:00:00Z",
-          "endTime": "2022-01-01T00:00:00Z",
+          "beginTime": "2019-02-01T00:00:00Z",
+          "endTime": "2020-01-01T00:00:00Z",
           "created": "2020-12-23T06:37:58.096065Z",
           "attributes": {
             "contractType": "SALARIED",
