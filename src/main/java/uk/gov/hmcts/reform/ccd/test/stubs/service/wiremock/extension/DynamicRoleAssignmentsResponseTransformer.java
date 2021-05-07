@@ -26,7 +26,6 @@ public class DynamicRoleAssignmentsResponseTransformer extends AbstractDynamicRe
             LOG.info("Adding dynamic userId to response for request: {}", request.getUrl());
             var userId = request.getUrl().substring(GET_ROLE_ASSIGNMENTS_URL.length());
             LOG.info("Extracted userId path parameter: {}", userId);
-
             return response.getBodyAsString().replace(USER_ID_PLACEHOLDER, userId);
         } else {
             return response.getBodyAsString();
