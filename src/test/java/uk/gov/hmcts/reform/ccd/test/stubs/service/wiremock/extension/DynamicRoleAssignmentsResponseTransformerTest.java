@@ -15,6 +15,8 @@ import static uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension.Dyna
 class DynamicRoleAssignmentsResponseTransformerTest {
 
     public static final String USER_ID = "cc828f53-05cb-4534-b64f-1dfe30748b6c";
+    public static final String USER_ID_LABEL = "{{userId}}";
+
     private final DynamicRoleAssignmentsResponseTransformer transformer =
         new DynamicRoleAssignmentsResponseTransformer();
 
@@ -28,6 +30,18 @@ class DynamicRoleAssignmentsResponseTransformerTest {
 
         Response result = transformer.transform(request, response, null, null);
         assertThat(result.getBodyAsString(), is("{\"actorId\" : \"" + USER_ID + "\"}"));
+    }
+
+    @Test
+    @DisplayName("Should NOT add url userId to response")
+    void shouldNotAddUrlUserIdToResponse() {
+        Request request = mock(Request.class);
+        when(request.getMethod()).thenReturn(RequestMethod.POST);
+        when(request.getUrl()).thenReturn(GET_ROLE_ASSIGNMENTS_URL + USER_ID);
+        Response response = Response.response().body("{\"actorId\" : \"{{userId}}\"}").build();
+
+        Response result = transformer.transform(request, response, null, null);
+        assertThat(result.getBodyAsString(), is("{\"actorId\" : \"" + USER_ID_LABEL + "\"}"));
     }
 
 }
