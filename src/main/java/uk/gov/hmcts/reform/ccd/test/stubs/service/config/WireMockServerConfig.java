@@ -1,9 +1,5 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.config;
 
-import java.io.File;
-
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import org.slf4j.Logger;
@@ -12,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.io.File;
+
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 @Configuration
 public class WireMockServerConfig {
@@ -30,7 +30,7 @@ public class WireMockServerConfig {
     public WireMockServer wireMockServer() {
         LOG.info("WireMock mappings file path: {}", mappingsPath);
 
-        WireMockServer wireMockServer = new WireMockServer(getWireMockConfig());
+        var wireMockServer = new WireMockServer(getWireMockConfig());
 
         LOG.info("Stubs registered with wiremock");
         wireMockServer.getStubMappings().forEach(w -> LOG.info("\nRequest : {}, \nResponse: {}", w.getRequest(),
@@ -40,28 +40,26 @@ public class WireMockServerConfig {
     }
 
     private WireMockConfiguration getWireMockConfig() {
-        File mappingDirectory = new File(mappingsPath + MAPPINGS_DIRECTORY_NAME);
+        var mappingDirectory = new File(mappingsPath + MAPPINGS_DIRECTORY_NAME);
         LOG.info("Mappings directory path: {}", mappingDirectory.getAbsolutePath());
+        var extension1 = "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+            + ".DynamicCaseDataResponseTransformer";
+        var extension2 = "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
+            + ".DynamicRoleAssignmentsResponseTransformer";
 
         if (mappingDirectory.isDirectory()) {
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderDirectory(mappingsPath)
-                .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                + ".DynamicCaseDataResponseTransformer",
-                            "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                + ".DynamicRoleAssignmentsResponseTransformer");
+                .extensions(extension1, extension2);
         } else {
             LOG.info("using classpath resources to resolve mappings");
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderClasspath(mappingsPath)
-                .extensions("uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                + ".DynamicCaseDataResponseTransformer",
-                            "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-                                + ".DynamicRoleAssignmentsResponseTransformer");
+                .extensions(extension1, extension2);
         }
     }
 }
