@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPattern": "/am/role-assignments/00aae020-2372-4b40-8f9c-5069af452d61"
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "errorCode": "404",
+      "status": "RESOURCE_NOT_FOUND",
+      "errorMessage": "Resource Not found",
+      "timeStamp": "2019-05-28 14:02:47.071"
+    }
+  }
+}
