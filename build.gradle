@@ -202,7 +202,7 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
   compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
-  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.3.8.RELEASE'
+  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.3.9.RELEASE'
 
 
   // CVE-2019-10086 force update of commons-beanutils.
