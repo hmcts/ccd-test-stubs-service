@@ -1,0 +1,40 @@
+  {
+  "request": {
+    "method": "GET",
+    "urlPattern": "/am/role-assignments/actors/4d11e562-c043-4237-8b04-d6e761003171"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "roleAssignmentResponse": [
+        {
+          "id": "4d96923f-891a-4cb1-863e-9bec44d1689d",
+          "actorIdType": "IDAM",
+          "actorId": "4d11e562-c043-4237-8b04-d6e761003171",
+          "roleType": "CASE",
+          "roleName": "judge",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "JUDICIAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1621941815540762",
+            "region": ""
+          },
+          "authorisations": ["auth1"]
+        }
+      ]
+    },
+    "transformers": [
+      "dynamic-role-assignments-response-transformer"
+    ]
+  }
+}
