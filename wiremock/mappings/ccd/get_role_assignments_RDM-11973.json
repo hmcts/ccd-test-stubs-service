@@ -1,7 +1,7 @@
   {
   "request": {
     "method": "GET",
-    "urlPattern": "/am/role-assignments/actors/7689"
+    "urlPattern": "/am/role-assignments/actors/.*"
   },
   "response": {
     "status": 200,
@@ -13,7 +13,7 @@
         {
           "id": "4d96923f-891a-4cb1-863e-9bec44d1689d",
           "actorIdType": "IDAM",
-          "actorId": "7689",
+          "actorId": "{{userId}}",
           "roleType": "CASE",
           "roleName": "judge",
           "classification": "PUBLIC",
