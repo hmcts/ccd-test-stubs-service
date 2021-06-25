@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-  <suppress until="2021-07-25">
-    <notes>We do not use: Spring Framework 5.0.5.RELEASE + Spring Security (any version), see
-      https://pivotal.io/security/cve-2018-1258
-    </notes>
-    <cve>CVE-2018-1258</cve>
-  </suppress>
+<suppressions
+	xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 
-  <suppress until="2021-07-25">
-   <notes>WireMock 2.27.2 JRE 8 embeds jquery-3.4.1.min.js
-     https://github.com/tomakehurst/wiremock/issues/1417
-   </notes>
-   <cve>CVE-2020-11023</cve>
-   <cve>CVE-2020-11022</cve>
-  </suppress>
+	<suppress until="2021-07-25">
+		<notes>We do not use: Spring Framework 5.0.5.RELEASE + Spring Security
+			(any version), see
+			https://pivotal.io/security/cve-2018-1258
+		</notes>
+		<cve>CVE-2018-1258</cve>
+	</suppress>
+
+	<suppress until="2021-07-25">
+		<notes>WireMock 2.27.2 JRE 8 embeds jquery-3.4.1.min.js
+			https://github.com/tomakehurst/wiremock/issues/1417
+		</notes>
+		<cve>CVE-2020-11023</cve>
+		<cve>CVE-2020-11022</cve>
+	</suppress>
+
+	<suppress until="2021-07-25">
+		<cve>CVE-2021-28169</cve>
+	</suppress>
 
 </suppressions>
