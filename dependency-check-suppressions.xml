@@ -11,15 +11,8 @@
 	</suppress>
 
 	<suppress until="2021-07-25">
-		<notes>WireMock 2.27.2 JRE 8 embeds jquery-3.4.1.min.js
-			https://github.com/tomakehurst/wiremock/issues/1417
-		</notes>
-		<cve>CVE-2020-11023</cve>
-		<cve>CVE-2020-11022</cve>
-	</suppress>
-
-	<suppress until="2021-07-25">
 		<cve>CVE-2021-28169</cve>
+    <cve>CVE-2021-34428</cve>
 	</suppress>
 
 </suppressions>
