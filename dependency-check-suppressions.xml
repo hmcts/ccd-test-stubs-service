@@ -12,7 +12,6 @@
 
 	<suppress until="2021-07-25">
     <cve>CVE-2021-28169</cve>
-    <cve>CVE-2021-27568</cve>
 	</suppress>
 
 </suppressions>
