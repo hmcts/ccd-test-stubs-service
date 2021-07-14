@@ -123,7 +123,7 @@ repositories {
 ext {
   groovyVersion = '3.0.7'
   tomcatVersion = '9.0.43!!'
-  jettyVersion = '9.4.39.v20210325'
+  jettyVersion = '9.4.43.v20210629'
 }
 
 ext['spring-framework.version'] = '5.3.7'
@@ -239,6 +239,8 @@ dependencies {
   functionalTestCompile sourceSets.test.runtimeClasspath
 
   compile group: 'junit', name: 'junit', version: '4.13.1'
+
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
 }
 
 test {
