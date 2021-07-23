@@ -228,7 +228,7 @@ dependencies {
   }
 
   testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-
+  testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
 
@@ -270,3 +270,9 @@ dependencyManagement {
 
 // for cnp pipeline
 task dependencyCheck(dependsOn: dependencyCheckAnalyze)
+
+task fortifyScan(type: JavaExec)  {
+  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+  classpath += sourceSets.test.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}
