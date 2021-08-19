@@ -1,0 +1,53 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPath": "/refdata/location/building-locations"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "building_location_id": "123",
+        "building_location_name": "54 HAGLEY ROAD (BIRMINGHAM OFFICES)",
+        "epims_id": "815833",
+        "building_location_status": "LIVE",
+        "area": "North",
+        "region": "Midlands",
+        "region_id": "1",
+        "cluster_name": "NBC",
+        "cluster_id": "1",
+        "court_finder_url": "",
+        "postcode": "B168PE",
+        "address": "HAGLEY ROAD",
+        "court_venues": [
+          {
+            "court_venue_id": "123",
+            "site_name": "54 HAGLEY ROAD (BIRMINGHAM OFFICES)",
+            "court_name": "54 HAGLEY ROAD (BIRMINGHAM OFFICES)",
+            "epims_id": "815833",
+            "open_for_public": "YES",
+            "court_type_id": "1",
+            "court_type": "North",
+            "region_id": "1",
+            "region": "Midlands",
+            "cluster_id": "1",
+            "cluster_name": "NBC",
+            "court_status": "Open",
+            "Court_open_date": "",
+            "closed_date": "",
+            "postcode": "B168PE",
+            "court_address": "HAGLEY ROAD",
+            "phone_number": "B168PE",
+            "court_location_code": "",
+            "dx_address": "HAGLEY ROAD",
+            "welsh_site_name": "",
+            "welsh_court_address": ""
+          }
+        ]
+      }
+    ]
+  }
+}
