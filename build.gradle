@@ -165,6 +165,8 @@ dependencies {
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.10.3'
   compile "com.fasterxml.jackson.core:jackson-databind:2.11.1"
 
+  // CVE-2021-28170
+  compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
 
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
