@@ -11,7 +11,7 @@ import com.github.tomakehurst.wiremock.http.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DynamicCaseDataResponseTransformerTest {
+class DynamicCaseAbstractDataResponseTransformerTest {
 
     private final DynamicCaseDataResponseTransformer transformer = new DynamicCaseDataResponseTransformer();
 
