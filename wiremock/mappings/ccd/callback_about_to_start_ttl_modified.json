@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_about_to_start_ttl_modified"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "TTL": {
+          "SystemTTL": "2021-05-04",
+          "OverrideTTL": "2021-06-05",
+          "Suspended": "No"
+        }
+      }
+    }
+  }
+}

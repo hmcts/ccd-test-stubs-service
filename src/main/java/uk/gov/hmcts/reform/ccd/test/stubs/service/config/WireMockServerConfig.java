@@ -18,6 +18,8 @@ public class WireMockServerConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(WireMockServerConfig.class);
     private static final String MAPPINGS_DIRECTORY_NAME = "/mappings";
+    private static final String WIREMOCK_EXTENSION_PREFIX =
+            "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension";
 
     private final String mappingsPath;
 
@@ -42,24 +44,23 @@ public class WireMockServerConfig {
     private WireMockConfiguration getWireMockConfig() {
         var mappingDirectory = new File(mappingsPath + MAPPINGS_DIRECTORY_NAME);
         LOG.info("Mappings directory path: {}", mappingDirectory.getAbsolutePath());
-        var extension1 = "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-            + ".DynamicCaseDataResponseTransformer";
-        var extension2 = "uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension"
-            + ".DynamicRoleAssignmentsResponseTransformer";
+        var extension1 = WIREMOCK_EXTENSION_PREFIX + ".DynamicCaseDataResponseTransformer";
+        var extension2 = WIREMOCK_EXTENSION_PREFIX + ".DynamicRoleAssignmentsResponseTransformer";
+        var extension3 = WIREMOCK_EXTENSION_PREFIX + ".DynamicCaseCaseDataResponseTransformer";
 
         if (mappingDirectory.isDirectory()) {
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderDirectory(mappingsPath)
-                .extensions(extension1, extension2);
+                .extensions(extension1, extension2, extension3);
         } else {
             LOG.info("using classpath resources to resolve mappings");
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderClasspath(mappingsPath)
-                .extensions(extension1, extension2);
+                .extensions(extension1, extension2, extension3);
         }
     }
 }
