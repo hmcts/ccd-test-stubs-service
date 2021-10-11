@@ -1,17 +1,17 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension;
 
+import com.github.tomakehurst.wiremock.http.Request;
+import com.github.tomakehurst.wiremock.http.Response;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension.DynamicCaseDataResponseTransformer.DYNAMIC_CASE_DATA_RESPONSE_TRANSFORMER;
 
-import com.github.tomakehurst.wiremock.http.Request;
-import com.github.tomakehurst.wiremock.http.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-class DynamicCaseAbstractDataResponseTransformerTest {
+class DynamicCaseDataResponseTransformerTest {
 
     private final DynamicCaseDataResponseTransformer transformer = new DynamicCaseDataResponseTransformer();
 
