@@ -27,6 +27,17 @@ class DynamicCaseCaseDataResponseTransformerTest {
     }
 
     @Test
+    @DisplayName("Should add request case data to response using dynamiseResponse method call")
+    void shouldAddRequestDataToResponseUsingDynamiseMethod() {
+        Request request = mock(Request.class);
+        when(request.getBodyAsString()).thenReturn("{\"case_data\":{\"lastName\":\"Gates\"}}");
+        Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
+
+        String result = transformer.dynamiseResponse(request, response, null);
+        assertThat(result, is("{\"case_data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
+    }
+
+    @Test
     @DisplayName("Should not apply the transformer globally")
     void shouldNotApplyTransformerGlobally() {
         assertThat(transformer.applyGlobally(), is(false));
@@ -39,8 +50,8 @@ class DynamicCaseCaseDataResponseTransformerTest {
         when(request.getBodyAsString()).thenReturn("{\"case_data\":{}");
         Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
 
-        Response result = transformer.transform(request, response, null, null);
-        assertThat(result.getBodyAsString(), is(response.getBodyAsString()));
+        String result = transformer.dynamiseResponse(request, response, null, null);
+        assertThat(result, is(response.getBodyAsString()));
     }
 
     @Test
