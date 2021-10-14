@@ -9,33 +9,32 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension.DynamicCaseDataResponseTransformer.DYNAMIC_CASE_DATA_RESPONSE_TRANSFORMER;
+import static uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension.DynamicCaseCaseDataResponseTransformer.DYNAMIC_CASE_CASE_DATA_RESPONSE_TRANSFORMER;
 
-class DynamicCaseDataResponseTransformerTest {
+class DynamicCaseCaseDataResponseTransformerTest {
 
-    private final DynamicCaseDataResponseTransformer transformer = new DynamicCaseDataResponseTransformer();
+    private final DynamicCaseCaseDataResponseTransformer transformer = new DynamicCaseCaseDataResponseTransformer();
 
     @Test
     @DisplayName("Should add request case data to response")
     void shouldAddRequestDataToResponse() {
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"data\":{\"lastName\":\"Gates\"}}");
-        Response response = Response.response().body("{\"data\":{\"firstName\":\"Bill\"}}").build();
+        when(request.getBodyAsString()).thenReturn("{\"case_data\":{\"lastName\":\"Gates\"}}");
+        Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
 
         Response result = transformer.transform(request, response, null, null);
-        assertThat(result.getBodyAsString(), is("{\"data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
+        assertThat(result.getBodyAsString(), is("{\"case_data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
     }
-
 
     @Test
     @DisplayName("Should add request case data to response using dynamiseResponse method call")
     void shouldAddRequestDataToResponseUsingDynamiseMethod() {
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"data\":{\"lastName\":\"Gates\"}}");
-        Response response = Response.response().body("{\"data\":{\"firstName\":\"Bill\"}}").build();
+        when(request.getBodyAsString()).thenReturn("{\"case_data\":{\"lastName\":\"Gates\"}}");
+        Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
 
         String result = transformer.dynamiseResponse(request, response, null);
-        assertThat(result, is("{\"data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
+        assertThat(result, is("{\"case_data\":{\"firstName\":\"Bill\",\"lastName\":\"Gates\"}}"));
     }
 
     @Test
@@ -48,17 +47,17 @@ class DynamicCaseDataResponseTransformerTest {
     @DisplayName("Should return response as is on error")
     void shouldReturnResponseAsIsOnError() {
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"data\":{}");
-        Response response = Response.response().body("{\"data\":{\"firstName\":\"Bill\"}}").build();
+        when(request.getBodyAsString()).thenReturn("{\"case_data\":{}");
+        Response response = Response.response().body("{\"case_data\":{\"firstName\":\"Bill\"}}").build();
 
-        Response result = transformer.transform(request, response, null, null);
-        assertThat(result.getBodyAsString(), is(response.getBodyAsString()));
+        String result = transformer.dynamiseResponse(request, response, null, null);
+        assertThat(result, is(response.getBodyAsString()));
     }
 
     @Test
     @DisplayName("Should return name of the transformer")
     void shouldReturnName() {
-        assertThat(transformer.getName(), is(DYNAMIC_CASE_DATA_RESPONSE_TRANSFORMER));
+        assertThat(transformer.getName(), is(DYNAMIC_CASE_CASE_DATA_RESPONSE_TRANSFORMER));
     }
 
 }

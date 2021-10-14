@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_about_to_start_ttl_unmodified"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "case_data": {}
+    },
+    "transformers": [
+      "dynamic-case-case-data-response-transformer"
+    ]
+  }
+}
