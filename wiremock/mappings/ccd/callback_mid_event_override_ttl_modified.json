@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_mid_event_override_ttl_modified"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "TTL": {
+          "Suspended": "Yes",
+          "OverrideTTL": "2021-03-05",
+          "SystemTTL": "2010-04-30"
+        }
+      }
+    }
+  }
+}
