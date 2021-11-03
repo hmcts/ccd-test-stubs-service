@@ -129,7 +129,7 @@ ext {
   jettyVersion = '9.4.43.v20210629'
 }
 
-ext['spring-framework.version'] = '5.3.7'
+ext['spring-framework.version'] = '5.3.12'
 ext['spring-security.version'] = '5.4.5'
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
