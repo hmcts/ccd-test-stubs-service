@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/callback_about_to_start_ttl_unmodified"
+    "urlPath": "/callback_unmodified"
   },
   "response": {
     "status": 200,
