@@ -14,6 +14,7 @@ properties(
 def type = "java"
 def product = "ccd"
 def component = "test-stubs-service"
+def branchesToSync = ['demo', 'ithc', 'perftest']
 
 withPipeline(type, product, component) {
   onMaster {
@@ -32,6 +33,7 @@ withPipeline(type, product, component) {
     enableSlackNotifications('#ccd-pr-builds')
   }
 
+  syncBranchesWithMaster(branchesToSync)
   enableAksStagingDeployment()
   disableLegacyDeploymentOnAAT()
 }
