@@ -12,8 +12,9 @@ def product = "ccd"
 def component = "ccd-test-stubs-service"
 
 withNightlyPipeline(type, product, component) {
-  enableFortifyScan();
-  after('fortify-scan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-  }
+  // Temporarily disable fortify scan stage until fortify access re-enabled
+  //enableFortifyScan();
+  //after('fortify-scan') {
+  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+  //}
 }
