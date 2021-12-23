@@ -131,7 +131,7 @@ ext {
 
 ext['spring-framework.version'] = '5.3.12'
 ext['spring-security.version'] = '5.4.5'
-ext['log4j2.version'] = '2.16.0'
+ext['log4j2.version'] = '2.17.0'
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
 // enforces it's own (older) version which is not recommended.
