@@ -120,7 +120,6 @@ repositories {
   maven {
     url 'https://jitpack.io'
   }
-  jcenter()
 }
 
 ext {
@@ -137,7 +136,7 @@ ext['log4j2.version'] = '2.17.0'
 // enforces it's own (older) version which is not recommended.
 def versions = [
   junit           : '5.3.2',
-  reformLogging   : '5.0.1',
+  reformLogging   : '6.0.0',
   springBoot      : springBoot.class.package.implementationVersion,
   springfoxSwagger: '3.0.0'
 ]
@@ -174,16 +173,16 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'java-logging', version: versions.reformLogging
+  compile group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
   compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE') {
     exclude group: 'org.springframework.security', module: 'spring-security-rsa'
   }
 
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
   compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2')
-    {
-      exclude group: 'com.github.jknack', module: 'handlebars'
-    }
+          {
+            exclude group: 'com.github.jknack', module: 'handlebars'
+          }
 // https://mvnrepository.com/artifact/com.github.jknack/handlebars
   implementation group: 'com.github.jknack', name: 'handlebars', version: '4.2.0'
 
