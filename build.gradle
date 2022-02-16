@@ -124,13 +124,13 @@ repositories {
 
 ext {
   groovyVersion = '3.0.7'
-  tomcatVersion = '9.0.54!!'
+  tomcatVersion = '9.0.58!!'
   jettyVersion = '9.4.43.v20210629'
 }
 
-ext['spring-framework.version'] = '5.3.12'
+ext['spring-framework.version'] = '5.3.15'
 ext['spring-security.version'] = '5.4.5'
-ext['log4j2.version'] = '2.17.0'
+ext['log4j2.version'] = '2.17.1'
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
 // enforces it's own (older) version which is not recommended.
@@ -167,6 +167,9 @@ dependencies {
 
   // CVE-2021-28170
   compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+  // CVE-2021-42550
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
+  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
 
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
