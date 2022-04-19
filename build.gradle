@@ -142,16 +142,6 @@ def versions = [
   springfoxSwagger: '3.0.0'
 ]
 
-configurations.all {
-  resolutionStrategy {
-    eachDependency { DependencyResolveDetails details ->
-      if (details.requested.group in ['com.fasterxml.jackson.core', 'com.fasterxml.jackson.module', 'com.fasterxml.jackson.datatype']) {
-        details.useVersion '2.13.2'
-      }
-    }
-  }
-}
-
 
 dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.1'
@@ -166,6 +156,7 @@ dependencies {
   compile "com.fasterxml.jackson.core:jackson-databind:2.13.2.2"
   compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.2'
   compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+  compile "com.fasterxml.jackson:jackson-bom:2.13.2"
 
   // CVE-2021-28170
   compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
