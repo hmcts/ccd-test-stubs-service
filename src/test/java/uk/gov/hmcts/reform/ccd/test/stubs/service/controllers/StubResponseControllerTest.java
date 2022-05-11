@@ -1,10 +1,14 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +25,8 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -86,6 +91,14 @@ class StubResponseControllerTest {
 
         ResponseEntity<Object> responseEntity = stubResponseController.jwkeys(request);
         assertNotNull(responseEntity);
+        try {
+            JSONObject keys = new JSONObject(responseEntity.getBody().toString());
+            assertNull(keys.get("p"));
+            assertNull(keys.get("d"));
+            assertNull(keys.get("privateOnly"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
     }
 
