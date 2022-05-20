@@ -2,7 +2,7 @@
 <suppressions
 	xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 
-	<suppress until="2022-05-25">
+	<suppress until="2022-06-25">
 		<notes>We do not use: Spring Framework 5.0.5.RELEASE + Spring Security
 			(any version), see
 			https://pivotal.io/security/cve-2018-1258
@@ -16,11 +16,17 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-beans@.*$</packageUrl>
     <vulnerabilityName>CVE-2022-22965</vulnerabilityName>
   </suppress>
-  <suppress until="2022-05-25">
+  <suppress until="2022-06-25">
     <notes><![CDATA[
    file name: spring-core-5.3.18.jar
    ]]></notes>
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
     <cve>CVE-2022-22968</cve>
+  </suppress>
+  <suppress until="2022-06-25">
+    <notes><![CDATA[
+   file name: spring-core-5.3.18.jar
+   ]]></notes>
+    <cve>CVE-2016-1000027</cve>
   </suppress>
 </suppressions>
