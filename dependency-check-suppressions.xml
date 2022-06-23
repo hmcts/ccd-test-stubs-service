@@ -16,6 +16,7 @@
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-beans@.*$</packageUrl>
     <vulnerabilityName>CVE-2022-22965</vulnerabilityName>
   </suppress>
+
   <suppress>
     <notes><![CDATA[
    file name: spring-core-5.3.18.jar
@@ -24,21 +25,6 @@
     <cve>CVE-2022-22968</cve>
   </suppress>
 
-  <suppress>
-    <notes><![CDATA[
-   file name: tomcat-embed-core-9.0.58.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-core@.*$</packageUrl>
-    <cve>CVE-2022-29885</cve>
-  </suppress>
-
-  <suppress>
-    <notes><![CDATA[
-   file name: tomcat-embed-websocket-9.0.58.jar
-   ]]></notes>
-    <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed/tomcat\-embed\-websocket@.*$</packageUrl>
-    <cve>CVE-2022-29885</cve>
-  </suppress>
   <suppress>
     <notes><![CDATA[
    file name: spring-core-5.3.19.jar
