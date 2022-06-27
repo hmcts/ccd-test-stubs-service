@@ -15,8 +15,10 @@
 
   <suppress>
     <notes><![CDATA[
-   file name: spring-core-5.3.18.jar
-   ]]></notes>
+      file name: spring-core-5.3.18.jar
+      ]]>
+      https://tools.hmcts.net/jira/browse/CCD-3415
+    </notes>
     <packageUrl regex="true">^pkg:maven/org\.springframework/spring\-core@.*$</packageUrl>
     <cve>CVE-2022-22968</cve>
   </suppress>
