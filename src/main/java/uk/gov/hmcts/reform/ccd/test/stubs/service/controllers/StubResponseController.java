@@ -108,7 +108,7 @@ public class StubResponseController {
         RSAKey rsaKey = KeyGenUtil.getRsaJWK();
         Map<String, List<JSONObject>> body = new LinkedHashMap<>();
         List<JSONObject> keyList = new ArrayList<>();
-        keyList.add(rsaKey.toJSONObject());
+        keyList.add(rsaKey.toPublicJWK().toJSONObject());
         body.put("keys", keyList);
         HttpHeaders httpHeaders = new HttpHeaders();
 
