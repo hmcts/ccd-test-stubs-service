@@ -1,0 +1,103 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/cases/(\\d{16})"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type" : "application/vnd.uk.gov.hmcts.ccd-data-store-api.case.v2+json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "data": {
+        "_links" : {
+          "self" : {
+            "href" : "https://ccd-data-store-api-staging.service.core-compute-aat.internal/cases/{{request.path.[1]}}"
+          }
+        },
+        "id" : "{{request.path.[1]}}",
+        "jurisdiction" : "AUTOTEST1",
+        "case_type" : "AAT_AUTH_15",
+        "created_on" : "2022-07-01T15:08:58.566524",
+        "last_modified_on" : "2022-07-01T15:08:58.567438",
+        "last_state_modified_on" : "2022-07-01T15:08:58.566524",
+        "state" : "TODO",
+        "security_classification" : "PUBLIC",
+        "data" : {
+          "MoneyGBPField" : "4200",
+          "FixedListField" : "VALUE3",
+          "AddressUKField" : {
+            "County" : "Greater London",
+            "Country" : "UK",
+            "PostCode" : "SW1H 9AJ",
+            "PostTown" : "Westminster",
+            "AddressLine1" : "102 Petty France",
+            "AddressLine2" : "CCD",
+            "AddressLine3" : "c/o HMCTS Reform"
+          },
+          "ComplexField" : {
+            "ComplexTextField" : "Nested text",
+            "ComplexFixedListField" : "VALUE2"
+          },
+          "DateTimeField" : "1988-07-07T22:20:00",
+          "PhoneUKField" : "07123456789",
+          "NumberField" : "164528",
+          "MultiSelectListField" : [ "OPTION2", "OPTION4" ],
+          "YesOrNoField" : "Yes",
+          "EmailField" : "ccd@hmcts.net",
+          "TextField" : "Some Text",
+          "DateField" : "2017-02-13",
+          "TextAreaField" : "Line1\nLine2",
+          "CollectionField" : [ {
+            "id" : "CollectionField1",
+            "value" : "Alias 1"
+          }, {
+            "id" : "CollectionField2",
+            "value" : "Alias 2"
+          } ]
+        },
+        "data_classification" : {
+          "MoneyGBPField" : "PUBLIC",
+          "FixedListField" : "PUBLIC",
+          "AddressUKField" : {
+            "value" : {
+              "County" : "PUBLIC",
+              "Country" : "PUBLIC",
+              "PostCode" : "PUBLIC",
+              "PostTown" : "PUBLIC",
+              "AddressLine1" : "PUBLIC",
+              "AddressLine2" : "PUBLIC",
+              "AddressLine3" : "PUBLIC"
+            },
+            "classification" : "PUBLIC"
+          },
+          "DateTimeField" : "PUBLIC",
+          "PhoneUKField" : "PUBLIC",
+          "NumberField" : "PUBLIC",
+          "MultiSelectListField" : "PUBLIC",
+          "YesOrNoField" : "PUBLIC",
+          "EmailField" : "PUBLIC",
+          "TextField" : "PUBLIC",
+          "DateField" : "PUBLIC",
+          "TextAreaField" : "PUBLIC",
+          "CollectionField" : {
+            "value" : [ {
+              "id" : "CollectionField1",
+              "classification" : "PUBLIC"
+            }, {
+              "id" : "CollectionField2",
+              "classification" : "PUBLIC"
+            } ],
+            "classification" : "PUBLIC"
+          }
+        },
+        "after_submit_callback_response" : null,
+        "callback_response_status_code" : null,
+        "callback_response_status" : null,
+        "delete_draft_response_status_code" : null,
+        "delete_draft_response_status" : null
+      }
+      },
+    "transformers": ["response-template"]
+    }
+}
