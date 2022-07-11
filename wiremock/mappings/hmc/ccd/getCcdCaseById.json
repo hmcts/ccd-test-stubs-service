@@ -1,0 +1,39 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/cases/(\\d{16})"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type" : "application/vnd.uk.gov.hmcts.ccd-data-store-api.case.v2+json;charset=UTF-8"
+    },
+    "jsonBody": {
+      "_links" : {
+        "self" : {
+          "href" : "https://ccd-data-store-api-staging.service.core-compute-aat.internal/cases/{{request.path.[1]}}"
+        }
+      },
+      "id" : "{{request.path.[1]}}",
+      "jurisdiction" : "BEFTA_MASTER",
+      "case_type" : "FT_CRUD",
+      "created_on" : "2022-07-01T15:08:58.566524",
+      "last_modified_on" : "2022-07-01T15:08:58.567438",
+      "last_state_modified_on" : "2022-07-01T15:08:58.566524",
+      "state" : "TODO",
+      "security_classification" : "PUBLIC",
+      "data" : {
+        "TextAreaField" : "Line1\nLine2"
+      },
+      "data_classification" : {
+        "TextAreaField" : "PUBLIC"
+      },
+      "after_submit_callback_response" : null,
+      "callback_response_status_code" : null,
+      "callback_response_status" : null,
+      "delete_draft_response_status_code" : null,
+      "delete_draft_response_status" : null
+      },
+    "transformers": ["response-template"]
+    }
+}

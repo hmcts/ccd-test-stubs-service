@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "DELETE",
+    "urlPattern": "/hmi/hearings/([a-zA-Z0-9]{1,10})"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "response code": 200,
+      "description": "The request was deleted successfully."
+    }
+  }
+}

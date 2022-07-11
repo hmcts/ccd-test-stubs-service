@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "/hmi/resources/linked-hearing-group/(\\d{1,})"
+  },
+  "response": {
+    "status": 201,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "hearingGroupRequestId": 12345
+    }
+  }
+}
