@@ -167,7 +167,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
   compile group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
-  compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE') {
+  compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE') {
     exclude group: 'org.springframework.security', module: 'spring-security-rsa'
   }
 
