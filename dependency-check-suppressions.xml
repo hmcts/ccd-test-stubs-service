@@ -27,6 +27,8 @@
     <cve>CVE-2022-22971</cve>
     <cve>CVE-2022-34305</cve>
     <cve>CVE-2022-31569</cve>
+    <cve>CVE-2022-2047</cve>
+    <cve>CVE-2022-2048</cve>
   </suppress>
   <!--End of temporary suppression section -->
 
