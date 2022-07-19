@@ -1,0 +1,32 @@
+{
+  "data": {
+    "TTL": {
+      {{#if (jsonPath request.body '$.case_data[?(@.TTL)]')}}
+        {{#if (jsonPath request.body '$.case_data.TTL[?(@.SystemTTL)]')}}
+          {{#if (jsonPath request.body '$.case_data.TTL.SystemTTL')}}
+          "SystemTTL": "{{jsonPath request.body '$.case_data.TTL.SystemTTL'}}",
+          {{/if}}
+        {{/if}}
+
+        {{#if (jsonPath request.body '$.case_data.TTL[?(@.OverrideTTL)]')}}
+          {{#if (jsonPath request.body '$.case_data.TTL.OverrideTTL')}}
+          "OverrideTTL": "{{jsonPath request.body '$.case_data.TTL.OverrideTTL'}}",
+          {{/if}}
+        {{/if}}
+
+        {{#if (jsonPath request.body '$.case_data.TTL[?(@.Suspended)]')}}
+          {{#if (jsonPath request.body '$.case_data.TTL.Suspended')}}
+          "Suspended": "{{upper (jsonPath request.body '$.case_data.TTL.Suspended')}}"
+          {{else}}
+          "Suspended": null
+          {{/if}}
+        {{else}}
+        "Suspended": null
+        {{/if}}
+      {{/if}}
+    }
+    {{#if (jsonPath request.body '$.case_data[?(@.TextField)]')}}
+      ,"TextField": "{{jsonPath request.body '$.case_data.TextField'}}"
+    {{/if}}
+  }
+}
