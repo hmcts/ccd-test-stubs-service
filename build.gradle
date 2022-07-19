@@ -258,6 +258,9 @@ bootJar {
   from('wiremock/mappings') {
     into 'wiremock/mappings'
   }
+  from('wiremock/__files') {
+    into 'wiremock/__files'
+  }
 }
 
 dependencyManagement {
