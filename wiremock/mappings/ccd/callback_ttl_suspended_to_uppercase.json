@@ -8,7 +8,7 @@
     "headers": {
       "Content-Type": "application/json"
     },
-    "bodyFileName": "callbacks/callback_ttl_suspended_to_uppercase.json.hbs",
+    "body": "{\n  \"data\": {\n    \"TTL\": {\n      {{#if (jsonPath request.body '$.case_data[?(@.TTL)]')}}\n        {{#if (jsonPath request.body '$.case_data.TTL[?(@.SystemTTL)]')}}\n          {{#if (jsonPath request.body '$.case_data.TTL.SystemTTL')}}\n          \"SystemTTL\": \"{{jsonPath request.body '$.case_data.TTL.SystemTTL'}}\",\n          {{/if}}\n        {{/if}}\n\n        {{#if (jsonPath request.body '$.case_data.TTL[?(@.OverrideTTL)]')}}\n          {{#if (jsonPath request.body '$.case_data.TTL.OverrideTTL')}}\n          \"OverrideTTL\": \"{{jsonPath request.body '$.case_data.TTL.OverrideTTL'}}\",\n          {{/if}}\n        {{/if}}\n\n        {{#if (jsonPath request.body '$.case_data.TTL[?(@.Suspended)]')}}\n          {{#if (jsonPath request.body '$.case_data.TTL.Suspended')}}\n          \"Suspended\": \"{{upper (jsonPath request.body '$.case_data.TTL.Suspended')}}\"\n          {{else}}\n          \"Suspended\": null\n          {{/if}}\n        {{else}}\n        \"Suspended\": null\n        {{/if}}\n      {{/if}}\n    }\n    {{#if (jsonPath request.body '$.case_data[?(@.TextField)]')}}\n      ,\"TextField\": \"{{jsonPath request.body '$.case_data.TextField'}}\"\n    {{/if}}\n  }\n}",
     "transformers": ["response-template"]
   }
 }
