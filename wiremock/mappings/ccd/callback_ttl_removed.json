@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/callback_ttl_suspended_to_uppercase"
+    "urlPath": "/callback_ttl_removed"
   },
   "response": {
     "status": 200,
@@ -12,7 +12,7 @@
       "data": {}
     },
     "transformers": [
-      "dynamic-ttl-uppercase-response-transformer"
+      "dynamic-ttl-remove-response-transformer"
     ]
   }
 }
