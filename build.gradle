@@ -9,7 +9,6 @@ plugins {
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
-version = '0.0.1'
 
 sourceCompatibility = 11
 targetCompatibility = 11
