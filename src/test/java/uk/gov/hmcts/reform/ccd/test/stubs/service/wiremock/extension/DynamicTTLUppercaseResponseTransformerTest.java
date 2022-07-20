@@ -4,6 +4,8 @@ import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -119,16 +121,34 @@ class DynamicTTLUppercaseResponseTransformerTest {
         assertThat(result.getBodyAsString(), is("{\"case_data\":{\"OtherField\":\"value\"}}"));
     }
 
-    @Test
-    @DisplayName("Should not fail if no TTL Suspended in request")
-    void shouldNotFailIfNoTTLSuspendedInRequest() {
+    @ParameterizedTest(
+        name = "Should not fail if TTL field missing in request"
+    )
+    @ValueSource(
+        strings = {
+            // missing Suspended
+            "{\"data\":{\"TTL\":{"
+                + "\"SystemTTL\":\"2022-07-18\","
+                + "\"OverrideTTL\":\"2025-01-02\""
+                + "},\"OtherField\":\"value\"}}",
+
+            // missing SystemTTL
+            "{\"data\":{\"TTL\":{"
+                + "\"OverrideTTL\":\"2025-01-02\","
+                + "\"Suspended\":\"\""
+                + "},\"OtherField\":\"value\"}}",
+
+            // missing OverrideTTL
+            "{\"data\":{\"TTL\":{"
+                + "\"SystemTTL\":\"2022-07-18\","
+                + "\"Suspended\":\"\""
+                + "},\"OtherField\":\"value\"}}"
+        }
+    )
+    void shouldNotFailIfTTLFieldMissingInRequest(String data) {
 
         // GIVEN
         Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
-            + "\"SystemTTL\":\"2022-07-18\","
-            + "\"OverrideTTL\":\"2025-01-02\""
-            + "},\"OtherField\":\"value\"}}";
         when(request.getBodyAsString()).thenReturn(data);
         Response response = Response.response().body("{\"data\":{}}").build();
 
@@ -136,47 +156,7 @@ class DynamicTTLUppercaseResponseTransformerTest {
         Response result = transformer.transform(request, response, null, null);
 
         // THEN
-        assertThat(result.getBodyAsString(), is(data));
-    }
-
-    @Test
-    @DisplayName("Should not fail if no SystemTTL in request")
-    void shouldNotFailIfNoSystemTTLInRequest() {
-
-        // GIVEN
-        Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
-            + "\"OverrideTTL\":\"2025-01-02\","
-            + "\"Suspended\":\"\""
-            + "},\"OtherField\":\"value\"}}";
-        when(request.getBodyAsString()).thenReturn(data);
-        Response response = Response.response().body("{\"data\":{}}").build();
-
-        // WHEN
-        Response result = transformer.transform(request, response, null, null);
-
-        // THEN
-        assertThat(result.getBodyAsString(), is(data));
-    }
-
-    @Test
-    @DisplayName("Should not fail if no OverrideTTL in request")
-    void shouldNotFailIfNoOverrideTTLInRequest() {
-
-        // GIVEN
-        Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
-            + "\"SystemTTL\":\"2022-07-18\","
-            + "\"Suspended\":\"\""
-            + "},\"OtherField\":\"value\"}}";
-        when(request.getBodyAsString()).thenReturn(data);
-        Response response = Response.response().body("{\"data\":{}}").build();
-
-        // WHEN
-        Response result = transformer.transform(request, response, null, null);
-
-        // THEN
-        assertThat(result.getBodyAsString(), is(data));
+        assertThat(result.getBodyAsString(), is(data)); // i.e. unchanged (NB: Suspended is empty)
     }
 
     @Test
