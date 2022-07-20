@@ -23,14 +23,14 @@ class DynamicTTLUppercaseResponseTransformerTest {
 
         // GIVEN
         Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
+        String data = "{\"case_details\":{\"case_data\":{\"TTL\":{"
             + "\"SystemTTL\":\"2022-07-18\","
             + "\"OverrideTTL\":\"2025-01-02\","
             + "\"Suspended\":\"lowercase_value\""
-            + "},\"OtherField\":\"value\"}}";
+            + "},\"OtherField\":\"value\"}}}";
         when(request.getBodyAsString()).thenReturn(data);
         Response response = Response.response().body("{\"data\":{}}").build();
-        String expectedData = data.replace("lowercase_value", "LOWERCASE_VALUE");
+        String expectedData = stripCaseDetails(data).replace("lowercase_value", "LOWERCASE_VALUE");
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
@@ -45,14 +45,14 @@ class DynamicTTLUppercaseResponseTransformerTest {
 
         // GIVEN
         Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
+        String data = "{\"case_details\":{\"case_data\":{\"TTL\":{"
             + "\"SystemTTL\":\"2022-07-18\","
             + "\"OverrideTTL\":\"2025-01-02\","
             + "\"Suspended\":null"
-            + "},\"OtherField\":\"value\"}}";
+            + "},\"OtherField\":\"value\"}}}";
         when(request.getBodyAsString()).thenReturn(data);
         Response response = Response.response().body("{\"data\":{}}").build();
-        String expectedData = data.replace(",\"Suspended\":null", "");
+        String expectedData = stripCaseDetails(data).replace(",\"Suspended\":null", "");
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
@@ -67,14 +67,14 @@ class DynamicTTLUppercaseResponseTransformerTest {
 
         // GIVEN
         Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
+        String data = "{\"case_details\":{\"case_data\":{\"TTL\":{"
             + "\"SystemTTL\":null,"
             + "\"OverrideTTL\":\"2025-01-02\","
             + "\"Suspended\":\"\""
-            + "},\"OtherField\":\"value\"}}";
+            + "},\"OtherField\":\"value\"}}}";
         when(request.getBodyAsString()).thenReturn(data);
         Response response = Response.response().body("{\"data\":{}}").build();
-        String expectedData = data.replace("\"SystemTTL\":null,", "");
+        String expectedData = stripCaseDetails(data).replace("\"SystemTTL\":null,", "");
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
@@ -89,14 +89,14 @@ class DynamicTTLUppercaseResponseTransformerTest {
 
         // GIVEN
         Request request = mock(Request.class);
-        String data = "{\"data\":{\"TTL\":{"
+        String data = "{\"case_details\":{\"case_data\":{\"TTL\":{"
             + "\"SystemTTL\":\"2022-07-18\","
             + "\"OverrideTTL\":null,"
             + "\"Suspended\":\"\""
-            + "},\"OtherField\":\"value\"}}";
+            + "},\"OtherField\":\"value\"}}}";
         when(request.getBodyAsString()).thenReturn(data);
         Response response = Response.response().body("{\"data\":{}}").build();
-        String expectedData = data.replace("\"OverrideTTL\":null,", "");
+        String expectedData = stripCaseDetails(data).replace("\"OverrideTTL\":null,", "");
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
@@ -111,14 +111,14 @@ class DynamicTTLUppercaseResponseTransformerTest {
 
         // GIVEN
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"data\":{\"OtherField\":\"value\"}}");
-        Response response = Response.response().body("{\"case_data\":{}}").build();
+        when(request.getBodyAsString()).thenReturn("{\"case_details\":{\"case_data\":{\"OtherField\":\"value\"}}}");
+        Response response = Response.response().body("{\"data\":{}}").build();
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
 
         // THEN
-        assertThat(result.getBodyAsString(), is("{\"case_data\":{\"OtherField\":\"value\"}}"));
+        assertThat(result.getBodyAsString(), is("{\"data\":{\"OtherField\":\"value\"}}"));
     }
 
     @ParameterizedTest(
@@ -127,22 +127,22 @@ class DynamicTTLUppercaseResponseTransformerTest {
     @ValueSource(
         strings = {
             // missing Suspended
-            "{\"data\":{\"TTL\":{"
+            "{\"case_details\":{\"case_data\":{\"TTL\":{"
                 + "\"SystemTTL\":\"2022-07-18\","
                 + "\"OverrideTTL\":\"2025-01-02\""
-                + "},\"OtherField\":\"value\"}}",
+                + "},\"OtherField\":\"value\"}}}",
 
             // missing SystemTTL
-            "{\"data\":{\"TTL\":{"
+            "{\"case_details\":{\"case_data\":{\"TTL\":{"
                 + "\"OverrideTTL\":\"2025-01-02\","
                 + "\"Suspended\":\"\""
-                + "},\"OtherField\":\"value\"}}",
+                + "},\"OtherField\":\"value\"}}}",
 
             // missing OverrideTTL
-            "{\"data\":{\"TTL\":{"
+            "{\"case_details\":{\"case_data\":{\"TTL\":{"
                 + "\"SystemTTL\":\"2022-07-18\","
                 + "\"Suspended\":\"\""
-                + "},\"OtherField\":\"value\"}}"
+                + "},\"OtherField\":\"value\"}}}"
         }
     )
     void shouldNotFailIfTTLFieldMissingInRequest(String data) {
@@ -156,7 +156,7 @@ class DynamicTTLUppercaseResponseTransformerTest {
         Response result = transformer.transform(request, response, null, null);
 
         // THEN
-        assertThat(result.getBodyAsString(), is(data)); // i.e. unchanged (NB: Suspended is empty)
+        assertThat(result.getBodyAsString(), is(stripCaseDetails(data))); // i.e. unchanged (NB: Suspended is empty)
     }
 
     @Test
@@ -171,20 +171,45 @@ class DynamicTTLUppercaseResponseTransformerTest {
         assertThat(transformer.getName(), is(DYNAMIC_TTL_UPPERCASE_RESPONSE_TRANSFORMER));
     }
 
-    @Test
-    @DisplayName("Should not throw exception for malformed request json")
-    void shouldNotThrowExceptionForMalformedRequestJson() {
+
+    @ParameterizedTest(name = "Should not throw exception for malformed or missing case_data or json")
+    @ValueSource(
+        strings = {
+            // with case_data null
+            "{\"case_details\": null}",
+
+            // with null case_data
+            "{\"case_details\":{\"case_data\": null}}",
+
+            // with missing case_data
+            "{\"case_details\": {}}",
+
+            // with missing case_details
+            "{\"other_element\": {}}",
+
+            // bad json
+            "{\"bad-json\"}"
+        }
+    )
+    void shouldNotThrowExceptionForMalformedOrMissingCaseData(String requestJson) {
 
         // GIVEN
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"bad-json\"}");
-        Response response = Response.response().body("{\"data\":{}}").build();
+        when(request.getBodyAsString()).thenReturn(requestJson);
+        String responseTemplate = "{\"data\":{}}";
+        Response response = Response.response().body(responseTemplate).build();
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
 
         // THEN
-        assertThat(result.getBodyAsString(), is("{\"data\":{}}"));
+        assertThat(result.getBodyAsString(), is(responseTemplate));
     }
 
+    private String stripCaseDetails(String caseDetailsJson) {
+        return caseDetailsJson
+            .replace("\"case_details\":{", "")
+            .replace("\"case_data\":{", "\"data\":{")
+            .replace("}}}", "}}");
+    }
 }

@@ -16,6 +16,7 @@ public abstract class AbstractTTLResponseTransformer extends AbstractDynamicResp
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    private static final String CASE_DETAILS = "case_details";
     private static final String CASE_DATA = "case_data";
     private static final String DATA = "data";
 
@@ -29,17 +30,20 @@ public abstract class AbstractTTLResponseTransformer extends AbstractDynamicResp
 
         try {
             ObjectNode requestNode = OBJECT_MAPPER.readValue(request.getBodyAsString(), ObjectNode.class);
-            String requestDataNodeName =  requestNode.has(CASE_DATA) ? CASE_DATA : DATA;
-
             ObjectNode responseNode = OBJECT_MAPPER.readValue(response.getBodyAsString(), ObjectNode.class);
-            String responseDataNodeName =  responseNode.has(CASE_DATA) ? CASE_DATA : DATA;
 
-            if (requestNode.has(requestDataNodeName)) {
-                ObjectNode requestNodeNode = (ObjectNode) requestNode.get(requestDataNodeName);
-                adjustTTLInCaseData(requestNodeNode);
+            ObjectNode requestDataNode = null;
 
-                responseNode.set(responseDataNodeName, requestNodeNode);
-                return responseNode.toString();
+            if (requestNode.hasNonNull(CASE_DETAILS)) {
+                var requestCaseDetailsNode = requestNode.get(CASE_DETAILS);
+                if (requestCaseDetailsNode.hasNonNull(CASE_DATA)) {
+                    requestDataNode = (ObjectNode) requestCaseDetailsNode.get(CASE_DATA);
+
+                    adjustTTLInCaseData(requestDataNode);
+
+                    responseNode.set(DATA, requestDataNode);
+                    return responseNode.toString();
+                }
             }
 
         } catch (IOException e) {

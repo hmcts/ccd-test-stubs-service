@@ -21,10 +21,10 @@ class DynamicTTLRemoveResponseTransformerTest {
     @ValueSource(
         strings = {
             // with TTL
-            "{\"data\":{\"TTL\":{}, \"OtherField\":\"value\"}}",
+            "{\"case_details\":{\"case_data\":{\"TTL\":{},\"OtherField\":\"value\"}}}",
 
             // without TTL
-            "{\"data\":{\"OtherField\":\"value\"}}"
+            "{\"case_details\":{\"case_data\":{\"OtherField\":\"value\"}}}"
         }
     )
     void shouldRemoveTTLFromResponse(String requestJson) {
@@ -53,20 +53,38 @@ class DynamicTTLRemoveResponseTransformerTest {
         assertThat(transformer.getName(), is(DYNAMIC_TTL_REMOVE_RESPONSE_TRANSFORMER));
     }
 
-    @Test
-    @DisplayName("Should not throw exception for malformed request json")
-    void shouldNotThrowExceptionForMalformedRequestJson() {
+    @ParameterizedTest(name = "Should not throw exception for malformed or missing case_data or json")
+    @ValueSource(
+        strings = {
+            // with case_data null
+            "{\"case_details\": null}",
+
+            // with null case_data
+            "{\"case_details\":{\"case_data\": null}}",
+
+            // with missing case_data
+            "{\"case_details\": {}}",
+
+            // with missing case_details
+            "{\"other_element\": {}}",
+
+            // bad json
+            "{\"bad-json\"}"
+        }
+    )
+    void shouldNotThrowExceptionForMalformedOrMissingCaseData(String requestJson) {
 
         // GIVEN
         Request request = mock(Request.class);
-        when(request.getBodyAsString()).thenReturn("{\"bad-json\"}");
-        Response response = Response.response().body("{\"data\":{}}").build();
+        when(request.getBodyAsString()).thenReturn(requestJson);
+        String responseTemplate = "{\"data\":{}}";
+        Response response = Response.response().body(responseTemplate).build();
 
         // WHEN
         Response result = transformer.transform(request, response, null, null);
 
         // THEN
-        assertThat(result.getBodyAsString(), is("{\"data\":{}}"));
+        assertThat(result.getBodyAsString(), is(responseTemplate));
     }
 
 }
