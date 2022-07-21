@@ -12,7 +12,6 @@ public class DynamicTTLUppercaseResponseTransformer extends AbstractTTLResponseT
     @VisibleForTesting
     static final String DYNAMIC_TTL_UPPERCASE_RESPONSE_TRANSFORMER = "dynamic-ttl-uppercase-response-transformer";
 
-
     @Override
     protected void adjustTTLInCaseData(ObjectNode responseCaseDataNode) {
 

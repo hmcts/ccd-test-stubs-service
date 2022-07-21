@@ -11,7 +11,6 @@ public class DynamicTTLRemoveResponseTransformer extends AbstractTTLResponseTran
     @VisibleForTesting
     static final String DYNAMIC_TTL_REMOVE_RESPONSE_TRANSFORMER = "dynamic-ttl-remove-response-transformer";
 
-
     @Override
     protected void adjustTTLInCaseData(ObjectNode responseCaseDataNode) {
 
