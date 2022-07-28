@@ -48,6 +48,9 @@ public class WireMockServerConfig {
         var extension1 = WIREMOCK_EXTENSION_PREFIX + ".DynamicCaseDataResponseTransformer";
         var extension2 = WIREMOCK_EXTENSION_PREFIX + ".DynamicRoleAssignmentsResponseTransformer";
         var extension3 = WIREMOCK_EXTENSION_PREFIX + ".DynamicCaseCaseDataResponseTransformer";
+        var extension4 = WIREMOCK_EXTENSION_PREFIX + ".DynamicTTLNullResponseTransformer";
+        var extension5 = WIREMOCK_EXTENSION_PREFIX + ".DynamicTTLRemoveResponseTransformer";
+        var extension6 = WIREMOCK_EXTENSION_PREFIX + ".DynamicTTLUppercaseResponseTransformer";
         var responseTemplating = new ResponseTemplateTransformer(true);
 
         if (mappingDirectory.isDirectory()) {
@@ -55,7 +58,7 @@ public class WireMockServerConfig {
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderDirectory(mappingsPath)
-                .extensions(extension1, extension2, extension3)
+                .extensions(extension1, extension2, extension3, extension4, extension5, extension6)
                 .extensions(responseTemplating);
         } else {
             LOG.info("using classpath resources to resolve mappings");
@@ -63,7 +66,7 @@ public class WireMockServerConfig {
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderClasspath(mappingsPath)
-                .extensions(extension1, extension2, extension3)
+                .extensions(extension1, extension2, extension3, extension4, extension5, extension6)
                 .extensions(responseTemplating);
         }
     }
