@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_nextHearingDate"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "NextHearingDetails": {
+          "hearingId": "123456",
+          "hearingDateTime": "2030-04-23T19:24:32.511Z"
+        }
+      }
+    }
+  }
+}
