@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.config;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,20 +48,26 @@ public class WireMockServerConfig {
         var extension1 = WIREMOCK_EXTENSION_PREFIX + ".DynamicCaseDataResponseTransformer";
         var extension2 = WIREMOCK_EXTENSION_PREFIX + ".DynamicRoleAssignmentsResponseTransformer";
         var extension3 = WIREMOCK_EXTENSION_PREFIX + ".DynamicCaseCaseDataResponseTransformer";
+        var extension4 = WIREMOCK_EXTENSION_PREFIX + ".DynamicTTLNullResponseTransformer";
+        var extension5 = WIREMOCK_EXTENSION_PREFIX + ".DynamicTTLRemoveResponseTransformer";
+        var extension6 = WIREMOCK_EXTENSION_PREFIX + ".DynamicTTLUppercaseResponseTransformer";
+        var responseTemplating = new ResponseTemplateTransformer(true);
 
         if (mappingDirectory.isDirectory()) {
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderDirectory(mappingsPath)
-                .extensions(extension1, extension2, extension3);
+                .extensions(extension1, extension2, extension3, extension4, extension5, extension6)
+                .extensions(responseTemplating);
         } else {
             LOG.info("using classpath resources to resolve mappings");
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
                 .usingFilesUnderClasspath(mappingsPath)
-                .extensions(extension1, extension2, extension3);
+                .extensions(extension1, extension2, extension3, extension4, extension5, extension6)
+                .extensions(responseTemplating);
         }
     }
 }

@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_ttl_suspended_to_uppercase"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {}
+    },
+    "transformers": [
+      "dynamic-ttl-uppercase-response-transformer"
+    ]
+  }
+}

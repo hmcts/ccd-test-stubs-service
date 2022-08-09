@@ -5,7 +5,7 @@ plugins {
   id 'org.springframework.boot' version '2.4.4'
   id 'com.github.ben-manes.versions' version '0.20.0'
   id 'org.sonarqube' version '2.6.2'
-  id 'uk.gov.hmcts.java' version '0.12.0'
+  id 'uk.gov.hmcts.java' version '0.12.27'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
@@ -47,6 +47,18 @@ tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
+tasks.withType(Test) {
+  useJUnitPlatform()
+
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
+
+test {
+  failFast = true
+}
+
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
@@ -82,18 +94,18 @@ jacocoTestReport {
   }
 }
 
-project.tasks['sonarqube'].dependsOn test, integration
+check.dependsOn integration
+
+project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 
 sonarqube {
   properties {
     property "sonar.projectName", "Reform :: ccd-test-stubs-service"
     property "sonar.projectKey", "uk.gov.hmcts.reform:ccd-test-stubs-service"
-    property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/junitPlatformTest.exec"
+    property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
-    property "sonar.exclusions", "**/token/*.java,**/ApplicationConfig.java,**/IdamUserInfo.java,**/ReadinessHealthIndicator.java,**/WireMockServerConfig.java,**/DynamicRoleAssignmentsResponseTransformer.java"
-    property "sonar.coverage.exclusions", "**/token/*.java,**/*Controller.java,**/wiremock/extension/*.java"
-
+    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
   }
 }
 
@@ -124,12 +136,12 @@ repositories {
 
 ext {
   groovyVersion = '3.0.7'
-  tomcatVersion = '9.0.58!!'
-  jettyVersion = '9.4.43.v20210629'
+  tomcatVersion = '9.0.63!!'
+  jettyVersion = '9.4.48.v20220622'
 }
 
-ext['spring-framework.version'] = '5.3.18'
-ext['spring-security.version'] = '5.4.5'
+ext['spring-framework.version'] = '5.3.20'
+ext['spring-security.version'] = '5.4.7'
 ext['log4j2.version'] = '2.17.1'
 ext['jackson.version'] = '2.13.2'
 
@@ -170,7 +182,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
 
   compile group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
-  compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE') {
+  compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE') {
     exclude group: 'org.springframework.security', module: 'spring-security-rsa'
   }
 
@@ -208,7 +220,7 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
   compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
-  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.4.5'
+  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.5.7'
 
 
   // CVE-2019-10086 force update of commons-beanutils.
@@ -242,6 +254,9 @@ dependencies {
   compile group: 'junit', name: 'junit', version: '4.13.1'
 
   implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+
+  // CCD-3511 CVE-2020-15522
+  implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
 }
 
 test {
