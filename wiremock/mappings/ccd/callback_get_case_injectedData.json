@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPathPattern": "/.*/callback_get_case_gs"
+    "urlPathPattern": "/.*/callback_get_case_injectedData"
   },
   "response": {
     "status": 200,
@@ -11,10 +11,10 @@
     "jsonBody": {
       "metadataFields": [
         {
-          "id": "[INJECTED_DATA.gsData]",
-          "label": "getCaseCallback metadata FieldA",
+          "id": "[INJECTED_DATA.injectedData]",
+          "label": "getCaseCallback metadata Fields",
           "hidden": false,
-          "value": "GS Value",
+          "value": "Injected Data",
           "metadata": true,
           "hint_text": null,
           "field_type": {
