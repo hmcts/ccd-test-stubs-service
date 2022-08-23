@@ -13,7 +13,7 @@ services:
       # these environment variables are used by java-logging library
       - ROOT_APPENDER
       - JSON_CONSOLE_PRETTY_PRINT
-      - ROOT_LOGGING_LEVEL=debug
+      - ROOT_LOGGING_LEVEL
       - REFORM_SERVICE_TYPE
       - REFORM_SERVICE_NAME
       - REFORM_TEAM

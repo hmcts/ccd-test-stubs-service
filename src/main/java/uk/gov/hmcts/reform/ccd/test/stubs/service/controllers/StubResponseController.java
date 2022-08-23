@@ -220,7 +220,7 @@ public class StubResponseController {
     }
 
     private String getMockHttpServerUrl(String requestPath) {
-        return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
+        return "https://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
     }
 
     private void addUriParams(URIBuilder builder, final String scope,
