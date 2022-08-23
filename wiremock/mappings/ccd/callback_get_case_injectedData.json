@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPathPattern": "/.*/callback_get_case_injectedData"
+    "urlPathPattern": "/callback_get_case_injectedData"
   },
   "response": {
     "status": 200,
