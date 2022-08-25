@@ -10,9 +10,9 @@
     },
     "jsonBody": {
       "data": {
-        "NextHearingDetails": {
-          "hearingId": "123456",
-          "hearingDateTime": "2020-04-23T19:24:32.511Z"
+        "nextHearingDetails": {
+          "hearingID": 123456,
+          "hearingDateTime": "2020-04-23T10:00:00.000"
         }
       }
     }
