@@ -143,7 +143,9 @@ public class StubResponseController {
 
     @PostMapping(value = "**")
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
+        var result = forwardAllRequests(request);
+        var resultBody = result.getBody();
+        return new ResponseEntity<>(resultBody, result.getStatusCode());
     }
 
     @PutMapping(value = "**")
@@ -171,7 +173,8 @@ public class StubResponseController {
 
         } catch (HttpClientErrorException e) {
             return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
-        } catch (IOException e) {
+        } catch (Exception e) {
+            LOG.error("Error occurred", e);
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
