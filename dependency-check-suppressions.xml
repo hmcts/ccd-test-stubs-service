@@ -16,9 +16,7 @@
   <!--Please add all the temporary suppression under the below section -->
   <suppress>
     <notes>Temporary Suppression
-      CVE-2022-25857 refer https://tools.hmcts.net/jira/browse/CCD-3658
     </notes>
-    <cve>CVE-2022-25857</cve>
   </suppress>
   <!--End of temporary suppression section -->
 
