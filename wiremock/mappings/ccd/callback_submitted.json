@@ -4,7 +4,7 @@
     "urlPath": "/callback_submitted"
   },
   "response": {
-    "status": 200,
+    "status": 502,
     "headers": {
       "Content-Type": "application/json"
     },
