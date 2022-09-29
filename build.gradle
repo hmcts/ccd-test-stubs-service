@@ -144,7 +144,7 @@ ext['spring-framework.version'] = '5.3.20'
 ext['spring-security.version'] = '5.4.7'
 ext['log4j2.version'] = '2.17.1'
 ext['jackson.version'] = '2.13.2'
-ext['snakeyaml.version'] = '1.31'
+ext['snakeyaml.version'] = '1.32'
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
 // enforces it's own (older) version which is not recommended.
