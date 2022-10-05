@@ -1,4 +1,6 @@
 #!groovy
+import uk.gov.hmcts.contino.GithubAPI
+
 properties(
   [
     [
@@ -31,6 +33,11 @@ withPipeline(type, product, component) {
   }
   onPR {
     enableSlackNotifications('#ccd-pr-builds')
+
+    def githubApi = new GithubAPI(this)
+    if (!githubApi.getLabelsbyPattern(env.BRANCH_NAME, "keep-helm")) {
+      enableCleanupOfHelmReleaseOnSuccess()
+    }
   }
 
   syncBranchesWithMaster(branchesToSync)
