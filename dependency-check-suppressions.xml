@@ -16,9 +16,11 @@
  		<notes>Temporary Suppression
  			CVE-2022-42003 refer https://tools.hmcts.net/jira/browse/CCD-3776
  			CVE-2022-42004 refer https://tools.hmcts.net/jira/browse/CCD-3776
+      CVE-2022-42889 refer https://tools.hmcts.net/jira/browse/CCD-3820
  		</notes>
  		<cve>CVE-2022-42003</cve>
  		<cve>CVE-2022-42004</cve>
+ 		<cve>CVE-2022-42889</cve>
  	</suppress>
   <!--End of temporary suppression section -->
 
