@@ -12,12 +12,10 @@
   <!--End of false positives section -->
 
   <!--Please add all the temporary suppression under the below section -->
-  <suppress>
- 		<notes>Temporary Suppression
-      CVE-2022-42889 refer https://tools.hmcts.net/jira/browse/CCD-3820
- 		</notes>
- 		<cve>CVE-2022-42889</cve>
- 	</suppress>
+<!--  <suppress>-->
+<!-- 		<notes>Temporary Suppression-->
+<!-- 		</notes>-->
+<!-- 	</suppress>-->
   <!--End of temporary suppression section -->
 
 </suppressions>
