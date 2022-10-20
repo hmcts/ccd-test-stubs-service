@@ -193,7 +193,7 @@ dependencies {
             exclude group: 'com.github.jknack', module: 'handlebars'
           }
 // https://mvnrepository.com/artifact/com.github.jknack/handlebars
-  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.2.0'
+  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.3.1'
 
   compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
