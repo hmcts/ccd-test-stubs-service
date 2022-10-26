@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPattern": "/cases/(\\d{16})"
+    "urlPath": "/cases/1666700932163855"
   },
   "response": {
     "status": 200,
@@ -14,7 +14,7 @@
           "href" : "https://ccd-data-store-api-staging.service.core-compute-aat.internal/cases/{{request.path.[1]}}"
         }
       },
-      "id" : "{{request.path.[1]}}",
+      "id" : "1666700932163855",
       "jurisdiction" : "BEFTA_MASTER",
       "case_type" : "FT_CRUD",
       "created_on" : "2022-07-01T15:08:58.566524",
@@ -33,7 +33,6 @@
       "callback_response_status" : null,
       "delete_draft_response_status_code" : null,
       "delete_draft_response_status" : null
-      },
-    "transformers": ["response-template"]
+      }
     }
 }
