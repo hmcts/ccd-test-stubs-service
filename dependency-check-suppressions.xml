@@ -12,10 +12,18 @@
   <!--End of false positives section -->
 
   <!--Please add all the temporary suppression under the below section -->
-<!--  <suppress>-->
-<!-- 		<notes>Temporary Suppression-->
-<!-- 		</notes>-->
-<!-- 	</suppress>-->
-  <!--End of temporary suppression section -->
+ <suppress>
+		<notes>Temporary Suppression
+		</notes>
+    <cve>CVE-2021-34428</cve>
+    <cve>CVE-2021-28165</cve>
+    <cve>CVE-2021-28169</cve>
+    <cve>CVE-2022-2047</cve>
+    <cve>CVE-2022-2048</cve>
+    <cve>CVE-2021-28163</cve>
+    <cve>CVE-2021-28164</cve>
+    <cve>CVE-2021-34429</cve>
+	</suppress>
+  <!-- End of temporary suppression section
 
 </suppressions>
