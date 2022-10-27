@@ -24,6 +24,6 @@
     <cve>CVE-2021-28164</cve>
     <cve>CVE-2021-34429</cve>
 	</suppress>
-  <!-- End of temporary suppression section
+  <!-- End of temporary suppression section-->
 
 </suppressions>
