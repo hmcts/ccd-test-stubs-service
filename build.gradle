@@ -136,7 +136,7 @@ repositories {
 ext {
   groovyVersion = '3.0.7'
   tomcatVersion = '9.0.65!!'
-  jettyVersion = '9.4.49.v20220914'
+  jettyVersion = '9.4.48.v20220622'
 }
 
 ext['spring-framework.version'] = '5.3.20'
