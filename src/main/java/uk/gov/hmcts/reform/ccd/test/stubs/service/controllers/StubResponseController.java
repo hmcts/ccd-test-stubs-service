@@ -89,6 +89,11 @@ public class StubResponseController {
         this.mapper = mapper;
     }
 
+    @GetMapping(value = "/jctest")
+    public ResponseEntity<String> jctest() {
+        return new ResponseEntity<>("JCTEST", HttpStatus.OK);
+    }
+
     @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
                                                    @RequestParam(value = "scope", required = false) final String scope,
