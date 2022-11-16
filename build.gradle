@@ -197,6 +197,10 @@ dependencies {
 
   compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-client', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-openjdk8-client', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-openjdk8-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-util', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: jettyVersion
@@ -207,6 +211,7 @@ dependencies {
   compile group: 'org.eclipse.jetty', name: 'jetty-io', version: jettyVersion
   compile group: 'org.eclipse.jetty.http2', name: 'http2-server', version: jettyVersion
   compile group: 'org.eclipse.jetty.http2', name: 'http2-common', version: jettyVersion
+  compile group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
   compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jettyVersion
