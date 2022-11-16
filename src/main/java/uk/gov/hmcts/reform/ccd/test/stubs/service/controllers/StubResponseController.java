@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -90,7 +89,7 @@ public class StubResponseController {
     }
 
     @GetMapping(value = "/jctest")
-    public ResponseEntity<String> jctest() {
+    public ResponseEntity<Object> jctest() {
         return new ResponseEntity<>("JCTEST", HttpStatus.OK);
     }
 
@@ -181,12 +180,18 @@ public class StubResponseController {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             LOG.info("Request path: {}", requestPath);
-            String requestBody =
+            final String requestBody =
                     IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
 
+            jcdebug("forwardAllRequests requestBody.length = " + requestBody.length());
+            jcdebug("forwardAllRequests requestBody = " + requestBody);
+            jcdebug("forwardAllRequests url = " + getMockHttpServerUrl(requestPath));
+            jcdebug("forwardAllRequests method = " + HttpMethod.valueOf(request.getMethod()));
+            jcdebug("forwardAllRequests variables.size = " + (request.getParameterMap() == null ? "NULL" :
+                request.getParameterMap().size()));
             ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath),
                 HttpMethod.valueOf(request.getMethod()),
-                new HttpEntity<>(requestBody),
+                new ResponseEntity<>(requestBody, HttpStatus.OK),
                 Object.class,
                 request.getParameterMap());
             jcdebug("forwardAllRequests OK: " + response.toString());
