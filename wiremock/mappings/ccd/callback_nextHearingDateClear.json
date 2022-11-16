@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/callback_nextHearingDate"
+    "urlPath": "/callback_nextHearingDateClear"
   },
   "response": {
     "status": 200,
@@ -11,8 +11,8 @@
     "jsonBody": {
       "data": {
         "nextHearingDetails": {
-          "hearingID": 123456,
-          "hearingDateTime": "{{now offset='8 years' format='yyyy'}}-04-23T10:00:00.000"
+          "hearingID": null,
+          "hearingDateTime": null
         }
       }
     }
