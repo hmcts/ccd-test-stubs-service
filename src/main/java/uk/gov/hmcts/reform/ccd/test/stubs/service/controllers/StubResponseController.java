@@ -77,8 +77,13 @@ public class StubResponseController {
     private final MockHttpServer mockHttpServer;
     private final ObjectMapper mapper;
 
+    private void jcdebug(String log) {
+        LOG.info("JCDEBUG: StubResponseController: " + log);
+    }
+
     @Autowired
     public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+        jcdebug("constructor");
         this.restTemplate = restTemplate;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
@@ -90,6 +95,7 @@ public class StubResponseController {
                                                    @RequestParam(value = "state", required = false) final String state,
                                                    @RequestParam(value = "client_id", required = false)
                                                        final String clientId) throws URISyntaxException {
+        jcdebug("redirectToOauth2");
         URIBuilder builder = new URIBuilder(redirectUri);
         builder.addParameter("code", "54402a0b-e311-4788-b273-efc2c3fc53f0");
         addUriParams(builder, scope, state, clientId);
@@ -101,6 +107,7 @@ public class StubResponseController {
 
     @GetMapping(value = "/o/jwks")
     public ResponseEntity<Object> jwkeys(HttpServletRequest request) throws JOSEException {
+        jcdebug("jwkeys");
         return getPublicKey();
     }
 
@@ -117,11 +124,13 @@ public class StubResponseController {
 
     @PostMapping(value = "/o/token")
     public ResponseEntity<Object> openIdToken(HttpServletRequest request) throws JOSEException {
+        jcdebug("openIdToken");
         return createToken();
     }
 
     @PostMapping(value = "/oauth2/token")
     public ResponseEntity<Object> oauth2Token(HttpServletRequest request) throws JOSEException {
+        jcdebug("oauth2Token");
         return createToken();
     }
 
@@ -138,11 +147,13 @@ public class StubResponseController {
 
     @GetMapping(value = "**")
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
+        jcdebug("forwardGetRequests");
         return forwardAllRequests(request);
     }
 
     @PostMapping(value = "**")
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
+        jcdebug("forwardPostRequests");
         var result = forwardAllRequests(request);
         var resultBody = result.getBody();
         return new ResponseEntity<>(resultBody, result.getStatusCode());
@@ -150,30 +161,37 @@ public class StubResponseController {
 
     @PutMapping(value = "**")
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
+        jcdebug("forwardPutRequests");
         return forwardAllRequests(request);
     }
 
     @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
+        jcdebug("forwardDeleteRequests");
         return forwardAllRequests(request);
     }
 
     private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
+        jcdebug("forwardAllRequests");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             LOG.info("Request path: {}", requestPath);
             String requestBody =
                     IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
 
-            return restTemplate.exchange(getMockHttpServerUrl(requestPath),
-                                         HttpMethod.valueOf(request.getMethod()),
-                                         new HttpEntity<>(requestBody),
-                                         Object.class,
-                                         request.getParameterMap());
+            ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath),
+                HttpMethod.valueOf(request.getMethod()),
+                new HttpEntity<>(requestBody),
+                Object.class,
+                request.getParameterMap());
+            jcdebug("forwardAllRequests OK: " + response.toString());
+            return response;
 
         } catch (HttpClientErrorException e) {
+            jcdebug("forwardAllRequests HttpClientErrorException: " + e.getMessage());
             return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
         } catch (Exception e) {
+            jcdebug("forwardAllRequests Exception: " + e.getMessage());
             LOG.error("Error occurred", e);
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -186,7 +204,7 @@ public class StubResponseController {
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo) throws JsonProcessingException {
-
+        jcdebug("configureUser");
         LOG.info("setting stub user info to: {}", asJson(userInfo));
 
         String request = createWiremockRequestForUserInfo(asJson(userInfo));
