@@ -88,9 +88,24 @@ public class StubResponseController {
         this.mapper = mapper;
     }
 
-    @GetMapping(value = "/jctest")
-    public ResponseEntity<Object> jctest() {
-        return new ResponseEntity<>("JCTEST", HttpStatus.OK);
+    @GetMapping(value = "/jctest1")
+    public ResponseEntity<Object> jctest1(HttpServletRequest request) {
+        jcdebug("jctest1");
+        return new ResponseEntity<>("JCTEST1 OK", HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/jctest2")
+    public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException {
+        jcdebug("jctest2");
+        String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+        final String requestBody =
+            IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
+        ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath),
+            HttpMethod.valueOf(request.getMethod()),
+            new ResponseEntity<>(requestBody, HttpStatus.OK),
+            Object.class,
+            request.getParameterMap());
+        return response;
     }
 
     @GetMapping(value = "/login")

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/jctest2"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type" : "text/plain"
+    },
+    "jsonBody": {
+      "jctest2": "jctest2"
+    }
+  }
+}
