@@ -188,10 +188,10 @@ dependencies {
   }
 
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-  compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2')
-          {
-            exclude group: 'com.github.jknack', module: 'handlebars'
-          }
+  compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.0')
+          //{
+          //  exclude group: 'com.github.jknack', module: 'handlebars'
+          //}
 // https://mvnrepository.com/artifact/com.github.jknack/handlebars
   implementation group: 'com.github.jknack', name: 'handlebars', version: '4.3.1'
 

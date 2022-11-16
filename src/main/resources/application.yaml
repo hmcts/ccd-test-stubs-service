@@ -25,7 +25,8 @@ logging:
   level:
     root: INFO
     org.springframework.web: WARN
-    com.github.tomakehurst: INFO
+    com.github.tomakehurst: DEBUG
+    com.github.tomakehurst.wiremock: DEBUG
 
 app:
   management-web-url: ${MANAGEMENT_WEB_URL:http://localhost:3451}
