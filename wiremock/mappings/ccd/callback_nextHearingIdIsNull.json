@@ -15,6 +15,7 @@
           "hearingDateTime": "{{now offset='8 years' format='yyyy'}}-04-23T10:00:00.000"
         }
       }
-    }
+    },
+    "transformers": ["response-template"]
   }
 }
