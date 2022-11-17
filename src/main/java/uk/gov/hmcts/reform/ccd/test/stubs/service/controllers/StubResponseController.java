@@ -83,6 +83,15 @@ public class StubResponseController {
         this.mapper = mapper;
     }
 
+    @GetMapping(value = "/jctest2")
+    public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException {
+        return restTemplate.exchange(getMockHttpServerUrl("/jctest2"),
+            HttpMethod.valueOf(request.getMethod()),
+            new ResponseEntity<>("requestBody", HttpStatus.OK),
+            Object.class,
+            request.getParameterMap());
+    }
+
     @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
                                                    @RequestParam(value = "scope", required = false) final String scope,
