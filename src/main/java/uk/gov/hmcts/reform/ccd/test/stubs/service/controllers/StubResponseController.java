@@ -147,7 +147,7 @@ public class StubResponseController {
     /**
      * Forward GET requests to Wiremock Server and return GET responses to Test Stub Client.
      */
-    @GetMapping(value = "**")
+    @GetMapping(value = "**", produces = "application/json")
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
         // TODO: Remove logging.
         LOG.info("JCDEBUG: StubResponseController forwardGetRequests -WITHOUT- restTemplate.exchange");
