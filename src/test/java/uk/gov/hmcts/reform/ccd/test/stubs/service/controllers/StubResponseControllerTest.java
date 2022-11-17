@@ -30,7 +30,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -58,14 +57,25 @@ class StubResponseControllerTest {
     }
 
     @Test
-    @DisplayName("Should return internal server error on invalid request input stream")
-    void shouldReturnInternalServerError() throws IOException {
+    @DisplayName("Test for forwardGetRequests()")
+    void shouldReturnInternalServerError() throws IOException, InterruptedException {
+        /*
         HttpServletRequest request = mock(HttpServletRequest.class);
         doThrow(new IOException("")).when(request).getInputStream();
 
         ResponseEntity<Object> responseEntity = stubResponseController.forwardGetRequests(request);
         assertNotNull(responseEntity);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+        */
+
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        //assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test

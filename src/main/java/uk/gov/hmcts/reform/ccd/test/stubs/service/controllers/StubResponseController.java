@@ -95,12 +95,9 @@ public class StubResponseController {
     @GetMapping(value = "/jctest2")
     public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException, InterruptedException {
         LOG.info("JCDEBUG: StubResponseController jctest2");
-
         HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl("/jctest2")))
             .build();
-
         HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
         return new ResponseEntity<Object>(httpResponse.body().toString(), HttpStatus.OK);
     }
 
@@ -156,11 +153,30 @@ public class StubResponseController {
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
+    /**
+     * Forward GET requests to Wiremock Server.
+     */
     @GetMapping(value = "**")
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
+        LOG.info("JCDEBUG: StubResponseController forwardGetRequests -WITHOUT- restTemplate.exchange");
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (Exception e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
     }
 
+    /**
+     * Forward POST requests to Wiremock Server.
+     */
     @PostMapping(value = "**")
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
         var result = forwardAllRequests(request);
@@ -168,11 +184,17 @@ public class StubResponseController {
         return new ResponseEntity<>(resultBody, result.getStatusCode());
     }
 
+    /**
+     * Forward PUT requests to Wiremock Server.
+     */
     @PutMapping(value = "**")
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
     }
 
+    /**
+     * Forward DELETE requests to Wiremock Server.
+     */
     @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
         return forwardAllRequests(request);
