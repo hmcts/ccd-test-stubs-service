@@ -87,19 +87,6 @@ class StubResponseControllerTest {
     }
 
     @Test
-    @DisplayName("Test for 'jctest2'")
-    void shouldReturnStatusOKJctest2() throws IOException, InterruptedException {
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
-        when(mockResponse.body()).thenReturn("MOCK BODY");
-
-        ResponseEntity<Object> responseEntityReturned = stubResponseController.jctest2(mockRequest);
-        assertNotNull(responseEntityReturned);
-        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
-    }
-
-    @Test
     @DisplayName("Should return response")
     void shouldReturnResponse() throws IOException {
         MockHttpServletRequest request = mock(MockHttpServletRequest.class);

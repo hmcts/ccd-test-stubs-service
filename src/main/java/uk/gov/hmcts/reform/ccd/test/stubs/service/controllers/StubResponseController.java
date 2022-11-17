@@ -92,15 +92,6 @@ public class StubResponseController {
         this.httpClient = httpClient;
     }
 
-    @GetMapping(value = "/jctest2")
-    public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException, InterruptedException {
-        LOG.info("JCDEBUG: StubResponseController jctest2");
-        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl("/jctest2")))
-            .build();
-        HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-        return new ResponseEntity<Object>(httpResponse.body().toString(), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
                                                    @RequestParam(value = "scope", required = false) final String scope,
@@ -154,10 +145,11 @@ public class StubResponseController {
     }
 
     /**
-     * Forward GET requests to Wiremock Server.
+     * Forward GET requests to Wiremock Server and return GET responses to Test Stub Client.
      */
     @GetMapping(value = "**")
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
+        // TODO: Remove logging.
         LOG.info("JCDEBUG: StubResponseController forwardGetRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
@@ -175,10 +167,11 @@ public class StubResponseController {
     }
 
     /**
-     * Forward POST requests to Wiremock Server.
+     * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
      */
     @PostMapping(value = "**")
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
+        LOG.info("JCDEBUG: StubResponseController forwardPostRequests");
         var result = forwardAllRequests(request);
         var resultBody = result.getBody();
         return new ResponseEntity<>(resultBody, result.getStatusCode());
