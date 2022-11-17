@@ -9,10 +9,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -72,26 +73,47 @@ public class StubResponseController {
     @Value("classpath:userInfoOverrideRequestTemplate.json")
     private Resource userInfoRequestTemplate;
 
-
     private final RestTemplate restTemplate;
+
+    private HttpClient httpClient = HttpClient.newHttpClient();
 
     private final MockHttpServer mockHttpServer;
     private final ObjectMapper mapper;
 
     @Autowired
-    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer,
+                                  ObjectMapper mapper) {
         this.restTemplate = restTemplate;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
     }
 
-    @GetMapping(value = "/jctest2")
-    public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException {
+    public void setHttpClient(HttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    /*
+    @GetMapping(value = "/jctest1")
+    public ResponseEntity<Object> jctest1(HttpServletRequest request) throws IOException {
+        LOG.info("JCDEBUG: StubResponseController jctest1");
         HttpURLConnection connection = (HttpURLConnection) new URL(getMockHttpServerUrl("/jctest2"))
             .openConnection();
         final String requestBody =
             IOUtils.toString(connection.getInputStream(), Charset.forName(request.getCharacterEncoding()));
         return new ResponseEntity<Object>(requestBody, HttpStatus.OK);
+    }
+    */
+
+    @GetMapping(value = "/jctest2")
+    public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException, InterruptedException {
+        LOG.info("JCDEBUG: StubResponseController jctest2");
+
+        HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl("/jctest2")))
+            .build();
+
+        HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        return new ResponseEntity<Object>(httpResponse.body().toString(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/login")

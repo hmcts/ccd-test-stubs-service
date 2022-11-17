@@ -4,6 +4,8 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -27,7 +30,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -45,11 +47,14 @@ class StubResponseControllerTest {
     @Mock
     MockHttpServer mockHttpServer;
 
+    HttpClient mockHttpClient = mock(HttpClient.class);
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
         stubResponseController = new StubResponseController(restTemplate, mockHttpServer, mapper);
+        stubResponseController.setHttpClient(mockHttpClient);
     }
 
     @Test
@@ -63,16 +68,31 @@ class StubResponseControllerTest {
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+    /*
     @Test
-    @DisplayName("Test for 'jctest2'")
-    void shouldReturnInternalServerErrorJctest2() throws IOException {
+    @DisplayName("Test for 'jctest1'")
+    void shouldReturnInternalServerErrorJctest1() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);
         try {
-            ResponseEntity<Object> responseEntity = stubResponseController.jctest2(request);
+            ResponseEntity<Object> responseEntity = stubResponseController.jctest1(request);
             fail();
         } catch (IOException e) {
             return;  // Pass
         }
+    }
+    */
+
+    @Test
+    @DisplayName("Test for 'jctest2'")
+    void shouldReturnInternalServerErrorJctest2() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.jctest2(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test
