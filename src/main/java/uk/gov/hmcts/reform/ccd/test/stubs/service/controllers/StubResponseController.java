@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -85,11 +87,11 @@ public class StubResponseController {
 
     @GetMapping(value = "/jctest2")
     public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException {
-        return restTemplate.exchange(getMockHttpServerUrl("/jctest2"),
-            HttpMethod.valueOf(request.getMethod()),
-            new ResponseEntity<>("requestBody", HttpStatus.OK),
-            Object.class,
-            request.getParameterMap());
+        HttpURLConnection connection = (HttpURLConnection) new URL(getMockHttpServerUrl("/jctest2"))
+            .openConnection();
+        final String requestBody =
+            IOUtils.toString(connection.getInputStream(), Charset.forName(request.getCharacterEncoding()));
+        return new ResponseEntity<Object>(requestBody, HttpStatus.OK);
     }
 
     @GetMapping(value = "/login")

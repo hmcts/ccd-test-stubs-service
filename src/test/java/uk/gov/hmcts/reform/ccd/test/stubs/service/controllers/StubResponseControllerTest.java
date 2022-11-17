@@ -27,6 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -60,6 +61,18 @@ class StubResponseControllerTest {
         ResponseEntity<Object> responseEntity = stubResponseController.forwardGetRequests(request);
         assertNotNull(responseEntity);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @Test
+    @DisplayName("Test for 'jctest2'")
+    void shouldReturnInternalServerErrorJctest2() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        try {
+            ResponseEntity<Object> responseEntity = stubResponseController.jctest2(request);
+            fail();
+        } catch (IOException e) {
+            return;  // Pass
+        }
     }
 
     @Test
