@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import java.io.IOException;
@@ -56,18 +55,12 @@ class StubResponseControllerTest {
         stubResponseController.setHttpClient(mockHttpClient);
     }
 
+    /**
+     * Forward GET requests unit test with status OK.
+     */
     @Test
-    @DisplayName("Test for forwardGetRequests()")
-    void shouldReturnInternalServerError() throws IOException, InterruptedException {
-        /*
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        doThrow(new IOException("")).when(request).getInputStream();
-
-        ResponseEntity<Object> responseEntity = stubResponseController.forwardGetRequests(request);
-        assertNotNull(responseEntity);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
-        */
-
+    @DisplayName("Test for forwardGetRequests() status OK")
+    void shouldReturnStatusOK_ForwardGetRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
@@ -79,9 +72,23 @@ class StubResponseControllerTest {
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
     }
 
+    /**
+     * Forward GET requests unit test with exception thrown.
+     */
+    @Test
+    @DisplayName("Test for forwardGetRequests() exception thrown")
+    void shouldThrowException_ForwardGetRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
     @Test
     @DisplayName("Test for 'jctest2'")
-    void shouldReturnInternalServerErrorJctest2() throws IOException, InterruptedException {
+    void shouldReturnStatusOKJctest2() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
