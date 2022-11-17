@@ -83,30 +83,6 @@ public class StubResponseController {
         this.mapper = mapper;
     }
 
-    @GetMapping(value = "/jctest1")
-    public ResponseEntity<Object> jctest1(HttpServletRequest request) {
-        //LOG.info("JCDEBUG: StubResponseController: jctest1");
-        return new ResponseEntity<>("JCTEST1 OK", HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/jctest2")
-    public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException {
-        //LOG.info("JCDEBUG: StubResponseController: jctest2");
-        String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-        final String requestBody =
-            IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
-        //LOG.info("JCDEBUG: StubResponseController: jctest2 requestBody.length = {}", requestBody.length());
-        //LOG.info("JCDEBUG: StubResponseController: jctest2 requestBody = {}", requestBody);
-        //LOG.info("JCDEBUG: StubResponseController: jctest2 url = {}", getMockHttpServerUrl(requestPath));
-        //LOG.info("JCDEBUG: StubResponseController: jctest2 method = {}", HttpMethod.valueOf(request.getMethod()));
-        //LOG.info("JCDEBUG: StubResponseController: jctest2 variables.size = {}", request.getParameterMap().size());
-        return restTemplate.exchange(getMockHttpServerUrl(requestPath),
-            HttpMethod.valueOf(request.getMethod()),
-            new ResponseEntity<>(requestBody, HttpStatus.OK),
-            Object.class,
-            request.getParameterMap());
-    }
-
     @GetMapping(value = "/login")
     public ResponseEntity<Object> redirectToOauth2(@RequestParam("redirect_uri") final String redirectUri,
                                                    @RequestParam(value = "scope", required = false) final String scope,
