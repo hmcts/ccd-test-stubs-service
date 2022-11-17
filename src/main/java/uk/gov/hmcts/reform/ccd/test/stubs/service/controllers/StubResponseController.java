@@ -14,7 +14,6 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -147,9 +145,9 @@ public class StubResponseController {
     /**
      * Forward GET requests to Wiremock Server and return GET responses to Test Stub Client.
      */
-    @GetMapping(value = "**", produces = "application/json")
+    @GetMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
-        // TODO: Remove logging.
+        // TODO: Remove logging for HTTP GET.
         LOG.info("JCDEBUG: StubResponseController forwardGetRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
@@ -169,9 +167,9 @@ public class StubResponseController {
     /**
      * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
      */
-    @PostMapping(value = "**", produces = "application/json")
+    @PostMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) throws InterruptedException {
-        // TODO: Remove logging.
+        // TODO: Remove logging for HTTP POST.
         LOG.info("JCDEBUG: StubResponseController forwardPostRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
@@ -192,20 +190,54 @@ public class StubResponseController {
 
     /**
      * Forward PUT requests to Wiremock Server and return PUT responses to Test Stub Client.
+     * TODO: Needs unit tests.
      */
-    @PutMapping(value = "**")
-    public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
+    @PutMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) throws InterruptedException {
+        // TODO: Remove logging for HTTP PUT.
+        LOG.info("JCDEBUG: StubResponseController forwardPutRequests -WITHOUT- restTemplate.exchange");
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            final String requestBody = IOUtils.toString(request.getInputStream());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
     }
 
     /**
      * Forward DELETE requests to Wiremock Server and return DELETE responses to Test Stub Client.
+     * TODO: Needs unit tests.
      */
     @DeleteMapping(value = "**")
-    public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
+    public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) throws InterruptedException {
+        // TODO: Remove logging for HTTP DELETE.
+        LOG.info("JCDEBUG: StubResponseController forwardDeleteRequests -WITHOUT- restTemplate.exchange");
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .DELETE()
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
     }
 
+    /*
     private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
@@ -229,6 +261,7 @@ public class StubResponseController {
                 .body(e.getMessage());
         }
     }
+    */
 
     @PostMapping(
         path = "/idam-user",
