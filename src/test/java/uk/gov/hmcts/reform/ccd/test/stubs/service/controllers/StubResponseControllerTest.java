@@ -68,20 +68,6 @@ class StubResponseControllerTest {
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
-    /*
-    @Test
-    @DisplayName("Test for 'jctest1'")
-    void shouldReturnInternalServerErrorJctest1() throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        try {
-            ResponseEntity<Object> responseEntity = stubResponseController.jctest1(request);
-            fail();
-        } catch (IOException e) {
-            return;  // Pass
-        }
-    }
-    */
-
     @Test
     @DisplayName("Test for 'jctest2'")
     void shouldReturnInternalServerErrorJctest2() throws IOException, InterruptedException {

@@ -92,18 +92,6 @@ public class StubResponseController {
         this.httpClient = httpClient;
     }
 
-    /*
-    @GetMapping(value = "/jctest1")
-    public ResponseEntity<Object> jctest1(HttpServletRequest request) throws IOException {
-        LOG.info("JCDEBUG: StubResponseController jctest1");
-        HttpURLConnection connection = (HttpURLConnection) new URL(getMockHttpServerUrl("/jctest2"))
-            .openConnection();
-        final String requestBody =
-            IOUtils.toString(connection.getInputStream(), Charset.forName(request.getCharacterEncoding()));
-        return new ResponseEntity<Object>(requestBody, HttpStatus.OK);
-    }
-    */
-
     @GetMapping(value = "/jctest2")
     public ResponseEntity<Object> jctest2(HttpServletRequest request) throws IOException, InterruptedException {
         LOG.info("JCDEBUG: StubResponseController jctest2");
