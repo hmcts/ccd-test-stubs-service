@@ -255,7 +255,7 @@ public class StubResponseController {
             ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
 
-            // TODO: Remove logging for HTTP DELETE.
+            // TODO: Remove logging for Configure User.
             LOG.info("JCDEBUG: StubResponseController.configureUser: stringResponseEntity = "
                 + stringResponseEntity.toString());
             stringResponseEntity.getStatusCodeValue();
