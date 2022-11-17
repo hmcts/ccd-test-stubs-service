@@ -25,8 +25,9 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -60,6 +61,20 @@ class StubResponseControllerTest {
         ResponseEntity<Object> responseEntity = stubResponseController.forwardGetRequests(request);
         assertNotNull(responseEntity);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @Test
+    @DisplayName("Should return internal server error on invalid request input stream")
+    void shouldReturnInternalServerErrorForJcTest2() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        doThrow(new IOException("")).when(request).getInputStream();
+
+        try {
+            ResponseEntity<Object> responseEntity = stubResponseController.jctest2(request);
+            fail();
+        } catch (IOException e) {
+            assertThat(e.getMessage(), is(""));
+        }
     }
 
     @Test
