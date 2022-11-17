@@ -170,15 +170,28 @@ public class StubResponseController {
      * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
      */
     @PostMapping(value = "**")
-    public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
-        LOG.info("JCDEBUG: StubResponseController forwardPostRequests");
-        var result = forwardAllRequests(request);
-        var resultBody = result.getBody();
-        return new ResponseEntity<>(resultBody, result.getStatusCode());
+    public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) throws InterruptedException {
+        // TODO: Remove logging.
+        LOG.info("JCDEBUG: StubResponseController forwardPostRequests -WITHOUT- restTemplate.exchange");
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            final String requestBody = IOUtils.toString(request.getInputStream());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
     }
 
     /**
-     * Forward PUT requests to Wiremock Server.
+     * Forward PUT requests to Wiremock Server and return PUT responses to Test Stub Client.
      */
     @PutMapping(value = "**")
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
@@ -186,7 +199,7 @@ public class StubResponseController {
     }
 
     /**
-     * Forward DELETE requests to Wiremock Server.
+     * Forward DELETE requests to Wiremock Server and return DELETE responses to Test Stub Client.
      */
     @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
