@@ -72,10 +72,11 @@ class StubResponseControllerTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
         assertNotNull(responseEntityReturned);
-        //assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
     }
 
     @Test

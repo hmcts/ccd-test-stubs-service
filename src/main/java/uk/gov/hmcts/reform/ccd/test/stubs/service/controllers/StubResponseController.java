@@ -157,7 +157,7 @@ public class StubResponseController {
      * Forward GET requests to Wiremock Server.
      */
     @GetMapping(value = "**")
-    public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
+    public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
         LOG.info("JCDEBUG: StubResponseController forwardGetRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
@@ -166,7 +166,7 @@ public class StubResponseController {
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             return new ResponseEntity<Object>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error occurred", e);
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
