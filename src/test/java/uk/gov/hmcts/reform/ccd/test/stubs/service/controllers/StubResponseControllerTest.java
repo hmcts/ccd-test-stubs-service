@@ -19,7 +19,6 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -37,19 +36,16 @@ class StubResponseControllerTest {
     ObjectMapper mapper;
 
     @Mock
-    RestTemplate restTemplate;
-
-    @Mock
     MockHttpServer mockHttpServer;
 
-    HttpClient mockHttpClient = mock(HttpClient.class);
+    @Mock
+    HttpClient mockHttpClient;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        stubResponseController = new StubResponseController(restTemplate, mockHttpServer, mapper);
-        stubResponseController.setHttpClient(mockHttpClient);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
     }
 
     /**

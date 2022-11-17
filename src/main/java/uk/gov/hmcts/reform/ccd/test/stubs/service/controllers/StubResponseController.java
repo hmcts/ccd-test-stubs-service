@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
@@ -71,22 +70,16 @@ public class StubResponseController {
     @Value("classpath:userInfoOverrideRequestTemplate.json")
     private Resource userInfoRequestTemplate;
 
-    private final RestTemplate restTemplate;
-
-    private HttpClient httpClient = HttpClient.newHttpClient();
+    private final HttpClient httpClient;
 
     private final MockHttpServer mockHttpServer;
     private final ObjectMapper mapper;
 
     @Autowired
-    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
-        this.restTemplate = restTemplate;
+    public StubResponseController(HttpClient httpClient, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+        this.httpClient = httpClient;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
-    }
-
-    public void setHttpClient(HttpClient httpClient) {
-        this.httpClient = httpClient;
     }
 
     @GetMapping(value = "/login")
@@ -146,8 +139,6 @@ public class StubResponseController {
      */
     @GetMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
-        // TODO: Remove logging for HTTP GET.
-        LOG.info("JCDEBUG: StubResponseController forwardGetRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
@@ -168,8 +159,6 @@ public class StubResponseController {
      */
     @PostMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) throws InterruptedException {
-        // TODO: Remove logging for HTTP POST.
-        LOG.info("JCDEBUG: StubResponseController forwardPostRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             final String requestBody = IOUtils.toString(request.getInputStream());
@@ -192,8 +181,6 @@ public class StubResponseController {
      */
     @PutMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) throws InterruptedException {
-        // TODO: Remove logging for HTTP PUT.
-        LOG.info("JCDEBUG: StubResponseController forwardPutRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             final String requestBody = IOUtils.toString(request.getInputStream());
@@ -216,8 +203,6 @@ public class StubResponseController {
      */
     @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) throws InterruptedException {
-        // TODO: Remove logging for HTTP DELETE.
-        LOG.info("JCDEBUG: StubResponseController forwardDeleteRequests -WITHOUT- restTemplate.exchange");
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
             HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
@@ -256,9 +241,6 @@ public class StubResponseController {
             ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
 
-            // TODO: Remove logging for Configure User.
-            LOG.info("JCDEBUG: StubResponseController.configureUser: stringResponseEntity = "
-                + stringResponseEntity.toString());
             stringResponseEntity.getStatusCodeValue();
             return ResponseEntity.ok().build();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
