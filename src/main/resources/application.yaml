@@ -25,6 +25,7 @@ logging:
   level:
     root: INFO
     org.springframework.web: WARN
+    com.github.tomakehurst: INFO
 
 app:
   management-web-url: ${MANAGEMENT_WEB_URL:http://localhost:3451}
