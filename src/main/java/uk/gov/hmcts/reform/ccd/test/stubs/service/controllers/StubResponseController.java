@@ -79,8 +79,7 @@ public class StubResponseController {
     private final ObjectMapper mapper;
 
     @Autowired
-    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer,
-                                  ObjectMapper mapper) {
+    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
         this.restTemplate = restTemplate;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
@@ -190,7 +189,6 @@ public class StubResponseController {
 
     /**
      * Forward PUT requests to Wiremock Server and return PUT responses to Test Stub Client.
-     * TODO: Needs unit tests.
      */
     @PutMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) throws InterruptedException {
@@ -215,7 +213,6 @@ public class StubResponseController {
 
     /**
      * Forward DELETE requests to Wiremock Server and return DELETE responses to Test Stub Client.
-     * TODO: Needs unit tests.
      */
     @DeleteMapping(value = "**")
     public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) throws InterruptedException {
@@ -237,32 +234,9 @@ public class StubResponseController {
         }
     }
 
-    /*
-    private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
-        try {
-            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-            LOG.info("Request path: {}", requestPath);
-            final String requestBody =
-                    IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
-
-            ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath),
-                HttpMethod.valueOf(request.getMethod()),
-                new ResponseEntity<>(requestBody, HttpStatus.OK),
-                Object.class,
-                request.getParameterMap());
-            return response;
-
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
-        } catch (Exception e) {
-            LOG.error("Error occurred", e);
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
-        }
-    }
-    */
-
+    /**
+     * Change the stubbed user info at runtime by posting the desired user info.
+     */
     @PostMapping(
         path = "/idam-user",
         consumes = MediaType.APPLICATION_JSON_VALUE
@@ -274,7 +248,16 @@ public class StubResponseController {
         String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
 
         try {
-            ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(requestUrl, request, String.class);
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(requestUrl))
+                .POST(HttpRequest.BodyPublishers.ofString(request))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+
+            // TODO: Remove logging for HTTP DELETE.
+            LOG.info("JCDEBUG: StubResponseController.configureUser: stringResponseEntity = "
+                + stringResponseEntity.toString());
             stringResponseEntity.getStatusCodeValue();
             return ResponseEntity.ok().build();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -282,7 +265,7 @@ public class StubResponseController {
             return new ResponseEntity<>("Some error occurred", e.getStatusCode());
         } catch (Exception e) {
             LOG.error("Error configuring stub IDAM user", e);
-            return new ResponseEntity<>("Some unknown error occurred", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("Some unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
