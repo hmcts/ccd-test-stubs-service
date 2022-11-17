@@ -95,18 +95,16 @@ public class StubResponseController {
         String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
         final String requestBody =
             IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
-        LOG.info("JCDEBUG: StubResponseController: jctest2 requestBody.length = " + requestBody.length());
-        LOG.info("JCDEBUG: StubResponseController: jctest2 requestBody = " + requestBody);
-        LOG.info("JCDEBUG: StubResponseController: jctest2 url = " + getMockHttpServerUrl(requestPath));
-        LOG.info("JCDEBUG: StubResponseController: jctest2 method = " + HttpMethod.valueOf(request.getMethod()));
-        LOG.info("JCDEBUG: StubResponseController: jctest2 variables.size = "
-            + (request.getParameterMap() == null ? "NULL" : request.getParameterMap().size()));
-        ResponseEntity<Object> response = restTemplate.exchange(getMockHttpServerUrl(requestPath),
+        LOG.info("JCDEBUG: StubResponseController: jctest2 requestBody.length = {}", requestBody.length());
+        LOG.info("JCDEBUG: StubResponseController: jctest2 requestBody = {}", requestBody);
+        LOG.info("JCDEBUG: StubResponseController: jctest2 url = {}", getMockHttpServerUrl(requestPath));
+        LOG.info("JCDEBUG: StubResponseController: jctest2 method = {}", HttpMethod.valueOf(request.getMethod()));
+        LOG.info("JCDEBUG: StubResponseController: jctest2 variables.size = {}", request.getParameterMap().size());
+        return restTemplate.exchange(getMockHttpServerUrl(requestPath),
             HttpMethod.valueOf(request.getMethod()),
             new ResponseEntity<>(requestBody, HttpStatus.OK),
             Object.class,
             request.getParameterMap());
-        return response;
     }
 
     @GetMapping(value = "/login")
