@@ -241,7 +241,8 @@ public class StubResponseController {
         path = "/idam-user",
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo) throws JsonProcessingException {
+    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo)
+        throws JsonProcessingException, InterruptedException {
         LOG.info("setting stub user info to: {}", asJson(userInfo));
 
         String request = createWiremockRequestForUserInfo(asJson(userInfo));
@@ -263,7 +264,7 @@ public class StubResponseController {
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             LOG.error("Error configuring stub IDAM user", e);
             return new ResponseEntity<>("Some error occurred", e.getStatusCode());
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error configuring stub IDAM user", e);
             return new ResponseEntity<>("Some unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
