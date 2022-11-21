@@ -140,7 +140,7 @@ ext {
 }
 
 ext['spring-framework.version'] = '5.3.20'
-ext['spring-security.version'] = '5.4.7'
+ext['spring-security.version'] = '5.6.9'
 ext['log4j2.version'] = '2.17.1'
 ext['jackson.version'] = '2.14.0-rc1'
 ext['snakeyaml.version'] = '1.32'
@@ -221,7 +221,7 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
   compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
-  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.5.7'
+  compile group: 'org.springframework.security', name: 'spring-security-crypto'
 
 
   // CVE-2019-10086 force update of commons-beanutils.
