@@ -140,7 +140,7 @@ ext {
 }
 
 ext['spring-framework.version'] = '5.3.20'
-ext['spring-security.version'] = '5.4.7'
+ext['spring-security.version'] = '5.6.9'
 ext['log4j2.version'] = '2.17.1'
 ext['jackson.version'] = '2.14.0-rc1'
 ext['snakeyaml.version'] = '1.32'
@@ -188,15 +188,16 @@ dependencies {
   }
 
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-  compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2')
-          {
-            exclude group: 'com.github.jknack', module: 'handlebars'
-          }
+  compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.0')
 // https://mvnrepository.com/artifact/com.github.jknack/handlebars
   implementation group: 'com.github.jknack', name: 'handlebars', version: '4.3.1'
 
   compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-client', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-openjdk8-client', version: jettyVersion
+  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-openjdk8-server', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-util', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: jettyVersion
@@ -207,6 +208,7 @@ dependencies {
   compile group: 'org.eclipse.jetty', name: 'jetty-io', version: jettyVersion
   compile group: 'org.eclipse.jetty.http2', name: 'http2-server', version: jettyVersion
   compile group: 'org.eclipse.jetty.http2', name: 'http2-common', version: jettyVersion
+  compile group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
   compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: jettyVersion
   compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jettyVersion
@@ -221,7 +223,7 @@ dependencies {
   compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
   compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
-  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.5.7'
+  compile group: 'org.springframework.security', name: 'spring-security-crypto'
 
 
   // CVE-2019-10086 force update of commons-beanutils.

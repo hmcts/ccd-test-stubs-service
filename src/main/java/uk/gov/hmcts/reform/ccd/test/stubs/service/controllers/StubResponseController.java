@@ -11,7 +11,9 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,9 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
@@ -71,15 +70,14 @@ public class StubResponseController {
     @Value("classpath:userInfoOverrideRequestTemplate.json")
     private Resource userInfoRequestTemplate;
 
-
-    private final RestTemplate restTemplate;
+    private final HttpClient httpClient;
 
     private final MockHttpServer mockHttpServer;
     private final ObjectMapper mapper;
 
     @Autowired
-    public StubResponseController(RestTemplate restTemplate, MockHttpServer mockHttpServer, ObjectMapper mapper) {
-        this.restTemplate = restTemplate;
+    public StubResponseController(HttpClient httpClient, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+        this.httpClient = httpClient;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
     }
@@ -136,44 +134,19 @@ public class StubResponseController {
         return new ResponseEntity<>(body, httpHeaders, HttpStatus.OK);
     }
 
-    @GetMapping(value = "**")
-    public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
-
-    @PostMapping(value = "**")
-    public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) {
-        var result = forwardAllRequests(request);
-        var resultBody = result.getBody();
-        return new ResponseEntity<>(resultBody, result.getStatusCode());
-    }
-
-    @PutMapping(value = "**")
-    public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
-
-    @DeleteMapping(value = "**")
-    public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) {
-        return forwardAllRequests(request);
-    }
-
-    private ResponseEntity<Object> forwardAllRequests(HttpServletRequest request) {
+    /**
+     * Forward GET requests to Wiremock Server and return GET responses to Test Stub Client.
+     */
+    @GetMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-            LOG.info("Request path: {}", requestPath);
-            String requestBody =
-                    IOUtils.toString(request.getInputStream(), Charset.forName(request.getCharacterEncoding()));
-
-            return restTemplate.exchange(getMockHttpServerUrl(requestPath),
-                                         HttpMethod.valueOf(request.getMethod()),
-                                         new HttpEntity<>(requestBody),
-                                         Object.class,
-                                         request.getParameterMap());
-
-        } catch (HttpClientErrorException e) {
-            return new ResponseEntity<>(e.getResponseBodyAsByteArray(), e.getResponseHeaders(), e.getStatusCode());
-        } catch (Exception e) {
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
             LOG.error("Error occurred", e);
             return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -181,27 +154,101 @@ public class StubResponseController {
         }
     }
 
+    /**
+     * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
+     */
+    @PostMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> forwardPostRequests(HttpServletRequest request) throws InterruptedException {
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            final String requestBody = IOUtils.toString(request.getInputStream());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
+    }
+
+    /**
+     * Forward PUT requests to Wiremock Server and return PUT responses to Test Stub Client.
+     */
+    @PutMapping(value = "**", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> forwardPutRequests(HttpServletRequest request) throws InterruptedException {
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            final String requestBody = IOUtils.toString(request.getInputStream());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
+    }
+
+    /**
+     * Forward DELETE requests to Wiremock Server and return DELETE responses to Test Stub Client.
+     */
+    @DeleteMapping(value = "**")
+    public ResponseEntity<Object> forwardDeleteRequests(HttpServletRequest request) throws InterruptedException {
+        try {
+            String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+                .DELETE()
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            return new ResponseEntity<Object>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+        } catch (IOException e) {
+            LOG.error("Error occurred", e);
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+        }
+    }
+
+    /**
+     * Change the stubbed user info at runtime by posting the desired user info.
+     */
     @PostMapping(
         path = "/idam-user",
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo) throws JsonProcessingException {
-
+    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo)
+        throws JsonProcessingException, InterruptedException {
         LOG.info("setting stub user info to: {}", asJson(userInfo));
 
         String request = createWiremockRequestForUserInfo(asJson(userInfo));
         String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
 
         try {
-            ResponseEntity<String> stringResponseEntity = restTemplate.postForEntity(requestUrl, request, String.class);
+            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(requestUrl))
+                .POST(HttpRequest.BodyPublishers.ofString(request))
+                .build();
+            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
+                HttpStatus.valueOf(httpResponse.statusCode()));
+
             stringResponseEntity.getStatusCodeValue();
             return ResponseEntity.ok().build();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             LOG.error("Error configuring stub IDAM user", e);
             return new ResponseEntity<>("Some error occurred", e.getStatusCode());
-        } catch (Exception e) {
+        } catch (IOException e) {
             LOG.error("Error configuring stub IDAM user", e);
-            return new ResponseEntity<>("Some unknown error occurred", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("Some unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
