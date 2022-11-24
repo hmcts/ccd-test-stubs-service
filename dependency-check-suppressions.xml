@@ -1,27 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<suppressions
-	xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-
-  <!--Please add all the false positives under the below section-->
+<?xml version="1.0" encoding="UTF-8"?><suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
   <suppress>
     <notes>False Positives
       CVE-2016-1000027 refer https://tools.hmcts.net/jira/browse/CCD-3252
     </notes>
     <cve>CVE-2016-1000027</cve>
   </suppress>
-  <!--End of false positives section -->
-
-  <!--Please add all the temporary suppression under the below section -->
-  <suppress>
-    <notes>Temporary Suppression
-      CVE-2022-31690 refer https://tools.hmcts.net/jira/browse/CCD-3917
-      CVE-2022-31692 refer https://tools.hmcts.net/jira/browse/CCD-3917
-      CVE-2022-42252 refer https://tools.hmcts.net/jira/browse/CCD-3918
-    </notes>
-    <cve>CVE-2022-31690</cve>
-    <cve>CVE-2022-31692</cve>
-    <cve>CVE-2022-42252</cve>
-  </suppress>
-  <!--End of temporary suppression section -->
-
 </suppressions>
