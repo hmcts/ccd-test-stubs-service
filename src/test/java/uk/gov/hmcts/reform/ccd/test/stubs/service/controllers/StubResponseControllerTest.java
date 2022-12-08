@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import java.io.IOException;
-import java.util.Map;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.json.JSONException;
@@ -14,20 +14,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.client.RestTemplate;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.Mockito.doThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,49 +36,140 @@ class StubResponseControllerTest {
     ObjectMapper mapper;
 
     @Mock
-    RestTemplate restTemplate;
+    MockHttpServer mockHttpServer;
 
     @Mock
-    MockHttpServer mockHttpServer;
+    HttpClient mockHttpClient;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        stubResponseController = new StubResponseController(restTemplate, mockHttpServer, mapper);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
     }
 
+    /**
+     * Forward GET requests unit test with status OK.
+     */
     @Test
-    @DisplayName("Should return internal server error on invalid request input stream")
-    void shouldReturnInternalServerError() throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);
-        doThrow(new IOException("")).when(request).getInputStream();
+    @DisplayName("Test for forwardGetRequests() status OK")
+    void shouldReturnStatusOK_ForwardGetRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
 
-        ResponseEntity<Object> responseEntity = stubResponseController.forwardGetRequests(request);
-        assertNotNull(responseEntity);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
-    }
-
-    @Test
-    @DisplayName("Should return response")
-    void shouldReturnResponse() throws IOException {
-        MockHttpServletRequest request = mock(MockHttpServletRequest.class);
-        when(request.getMethod()).thenReturn("POST");
-        when(request.getCharacterEncoding()).thenReturn("ISO-8859-1");
-        ResponseEntity<Object> responseEntity = new ResponseEntity<>(HttpStatus.OK);
-
-        when(restTemplate.exchange(
-            Matchers.anyString(),
-            Matchers.any(HttpMethod.class),
-            Matchers.any(),
-            Matchers.<Class<Object>>any(),
-            Matchers.<Map<String, String[]>>any()
-            )
-        ).thenReturn(responseEntity);
-
-        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(request);
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
         assertNotNull(responseEntityReturned);
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    /**
+     * Forward GET requests unit test with exception thrown.
+     */
+    @Test
+    @DisplayName("Test for forwardGetRequests() exception thrown")
+    void shouldThrowException_ForwardGetRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    /**
+     * Forward POST requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardPostRequests() status OK")
+    void shouldReturnStatusOK_ForwardPostRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    /**
+     * Forward POST requests unit test with exception thrown.
+     */
+    @Test
+    @DisplayName("Test for forwardPostRequests() exception thrown")
+    void shouldThrowException_ForwardPostRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    /**
+     * Forward PUT requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardPutRequests() status OK")
+    void shouldReturnStatusOK_ForwardPutRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPutRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    /**
+     * Forward PUT requests unit test with exception thrown.
+     */
+    @Test
+    @DisplayName("Test for forwardPutRequests() exception thrown")
+    void shouldThrowException_ForwardPutRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPutRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    /**
+     * Forward DELETE requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardDeleteRequests() status OK")
+    void shouldReturnStatusOK_ForwardDeleteRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardDeleteRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    /**
+     * Forward DELETE requests unit test with exception thrown.
+     */
+    @Test
+    @DisplayName("Test for forwardDeleteRequests() exception thrown")
+    void shouldThrowException_ForwardDeleteRequests() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardDeleteRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @Test
