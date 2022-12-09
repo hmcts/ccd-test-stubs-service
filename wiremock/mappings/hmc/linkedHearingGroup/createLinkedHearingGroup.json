@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPattern": "/hmi/resources/linked-hearing-group/(\\d{1,})"
+    "urlPattern": "/hmi/resources/linked-hearing-group"
   },
   "response": {
     "status": 201,
