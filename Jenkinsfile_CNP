@@ -22,7 +22,7 @@ withPipeline(type, product, component) {
   onMaster {
     enableSlackNotifications('#ccd-master-builds')
     env.WIREMOCK_SERVER_MAPPINGS_PATH = "wiremock"
-    after('smoketest:aat') {
+    afterAlways('smoketest:aat') {
       echo "Disabling prod build"
       sh "rm -rf infrastructure/"
     }
