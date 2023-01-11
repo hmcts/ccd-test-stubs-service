@@ -5,17 +5,17 @@
 #### Environment variables
 The following environment variables are required:
 
-| Name | Default | Description |
-|------|---------|-------------|
+| Name                          | Default  | Description               |
+|-------------------------------|----------|---------------------------|
 | WIREMOCK_SERVER_MAPPINGS_PATH | wiremock | Path to WireMock mappings |
 
-__Note__: If the path to the WireMock mapping files is not set, it will use the default mappings from the project 
-resource repository (https://github.com/hmcts/ccd-test-stubs-service/tree/master/wiremock/mappings). If 
-setting the variable, please keep all WireMock json stub files in a directory named 
-_mappings_ and exclude this directory in the path. For e.g. if you place the _mappings_ in /home/user/mappings then 
-export WIREMOCK_SERVER_MAPPINGS_PATH=/home/user. If you are running data-store-api in a docker container, please make 
-sure the callback URLs defined in the definition file use the host as **_host.docker.internal:5555_** and if running 
-the data-store-api on its own (non-docker), then the host should be **_localhost:5555_** 
+__Note__: If the path to the WireMock mapping files is not set, it will use the default mappings from the project
+resource repository (https://github.com/hmcts/ccd-test-stubs-service/tree/master/wiremock/mappings). If
+setting the variable, please keep all WireMock json stub files in a directory named
+_mappings_ and exclude this directory in the path. For e.g. if you place the _mappings_ in /home/user/mappings then
+export WIREMOCK_SERVER_MAPPINGS_PATH=/home/user. If you are running data-store-api in a docker container, please make
+sure the callback URLs defined in the definition file use the host as **_host.docker.internal:5555_** and if running
+the data-store-api on its own (non-docker), then the host should be **_localhost:5555_**
 
 For more information on how to define wiremock stubs, please visit http://wiremock.org/docs/stubbing.
 
@@ -117,14 +117,10 @@ http://localhost:5555/idam-user
 
 The changes are not persistent, i.e. they do not survive service restarts
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
-
 ## Additional information
 
-**_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed 
-case data in the response. To use this transformer, please define it in the wiremock response mapping as configured 
+**_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed
+case data in the response. To use this transformer, please define it in the wiremock response mapping as configured
 in _wiremock/mappings/aat_dynamic_data_about_to_submit.json_
 
 _Example:_
@@ -153,8 +149,51 @@ Then using this transformer will produce the final response as:
   }
 }`
 
-## Example ccd definition file configuration with callbacks
+## Example CCD definition file configuration with callbacks
 
-An example spreadsheet definition [CCD_CNP_27_With_Callbacks.xlsx] is available under root directory with configured callback urls. This can be used / tweaked to test various ccd callback scenarios. 
+An example spreadsheet definition [CCD_CNP_27_With_Callbacks.xlsx] is available under root directory with configured callback urls. This can be used / tweaked to test various CCD callback scenarios.
 
 Urls have to go under `CaseEvent` `CaseEventToFields` tabs against various callback columns (CallBackURLAboutToStartEvent, CallBackURLAboutToSubmitEvent, CallBackURLSubmittedEvent and CallBackURLMidEvent).
+
+
+## Pipeline testing in isolation
+
+A large number of the test stubs contained in this library are callback APIs created to support specific test scenarios
+built into the [CCD Data Store](https://github.com/hmcts/ccd-data-store-api)'s functional tests.  Therefor changes to
+this library should be tested by re-running these tests against an instance of the Test-Stubs service containing these
+changes.
+
+As the CCD preview pipelines by default use shared instances of some services to store the case type definitions; it is
+important that any test CCD pipelines are configured to run in isolation otherwise any changes to the callback URLs
+risk impacting in-flight CCD preview pipelines or the custom callback URLs may be quickly overwritten by another
+pipeline giving false results to your own tests.
+
+Therefor the following steps should be applied:
+
+* Ensure the Test-Stubs pull request (PR) that is under test has the `keep-helm` label set to ensure the instance
+  remains active after the pipeline is complete.
+* Generate test PRs for the [CCD Definition Store](https://github.com/hmcts/ccd-definition-store-api) and
+  [CCD Data Store](https://github.com/hmcts/ccd-data-store-api) and configured them to run in isolation as described in
+  [Configuring pipeline isolation](https://github.com/hmcts/ccd-test-definitions/blob/master/README.md#configuring-pipeline-isolation).
+* Apply the following additional changes to the CCD pipelines to make them use the Test-Stubs PR that is under test:
+
+**[CCD Definition Store](https://github.com/hmcts/ccd-definition-store-api) additional pipeline configuration**:
+* `Jenkinsfile_CNP` add the following but referring to the correct Test-Stubs PR number:
+  ```
+  env.TEST_STUB_SERVICE_BASE_URL = "http://ccd-test-stubs-service-pr-204-java"
+  ```
+
+**[CCD Data Store](https://github.com/hmcts/ccd-data-store-api) additional pipeline configuration**:
+
+* `Jenkinsfile_CNP` add or override the following but referring to the correct Test-Stubs PR number:
+  ```
+  env.BEFTA_TEST_STUB_SERVICE_BASE_URL = "https://ccd-test-stubs-service-pr-204.service.core-compute-preview.internal"
+  env.TEST_STUB_SERVICE_BASE_URL = "http://ccd-test-stubs-service-pr-204-java"
+  ```
+  > Note: these are two different URLs as one call is ***jenkins** FTAs* -> ***Preview** Test-Stubs* and the other is
+  > ***Preview** Data-Store* -> ***Preview** Test-Stubs*.  So they both need different URLs to allow them to resolve the
+  > *Test-Stubs* endpoint correctly from their respective source environment.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
