@@ -15,6 +15,11 @@ management:
 spring:
   application:
     name: CCD Test Stubs Services
+  cloud:
+    discovery:
+      client:
+        composite-indicator:
+          enabled: false
 
 wiremock:
   server:
