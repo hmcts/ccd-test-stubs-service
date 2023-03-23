@@ -136,7 +136,7 @@ repositories {
 
 ext {
   groovyVersion = '3.0.7'
-  tomcatVersion = '9.0.69!!'
+  tomcatVersion = '9.0.73!!'
   jettyVersion = '9.4.48.v20220622'
 }
 
@@ -221,7 +221,7 @@ dependencies {
   compile group: 'org.springframework.security', name: 'spring-security-crypto'
 
 
-  // CVE-2019-10086 force update of commons-beanutils.
+  implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
   compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
   compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
 
