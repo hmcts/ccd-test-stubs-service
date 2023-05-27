@@ -251,7 +251,7 @@ dependencies {
 
   compile group: 'junit', name: 'junit', version: '4.13.1'
 
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.11'
 
   // CCD-3511 CVE-2020-15522
   implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
