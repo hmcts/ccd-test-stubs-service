@@ -233,7 +233,7 @@ dependencies {
   testCompile(group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
-  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
+  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.5.1'
   testCompile(group: 'io.rest-assured', name: 'xml-path', version: '4.3.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
