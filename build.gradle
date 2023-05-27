@@ -167,7 +167,7 @@ dependencies {
   compile "org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}"
 
   // CVE-2021-28170
-  compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+  compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.2'
   // CVE-2021-42550
   implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
   implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
