@@ -135,7 +135,7 @@ repositories {
 }
 
 ext {
-  groovyVersion = '3.0.7'
+  groovyVersion = '3.0.17'
   tomcatVersion = '9.0.73!!'
   jettyVersion = '9.4.48.v20220622'
 }
