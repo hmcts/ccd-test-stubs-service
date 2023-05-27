@@ -149,7 +149,7 @@ ext['snakeyaml.version'] = '1.32'
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
 // enforces it's own (older) version which is not recommended.
 def versions = [
-  junit           : '5.3.2',
+  junit           : '5.9.3',
   reformLogging   : '5.1.9',
   springBoot      : springBoot.class.package.implementationVersion,
   springfoxSwagger: '3.0.0',
