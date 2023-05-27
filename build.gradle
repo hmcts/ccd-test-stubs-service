@@ -169,7 +169,7 @@ dependencies {
   // CVE-2021-28170
   compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
   // CVE-2021-42550
-  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.7'
   implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
 
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
