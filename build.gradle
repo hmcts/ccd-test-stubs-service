@@ -249,7 +249,7 @@ dependencies {
   functionalTestCompile sourceSets.main.runtimeClasspath
   functionalTestCompile sourceSets.test.runtimeClasspath
 
-  compile group: 'junit', name: 'junit', version: '4.13.1'
+  compile group: 'junit', name: 'junit', version: '4.13.2'
 
   implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
 
