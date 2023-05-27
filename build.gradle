@@ -230,7 +230,7 @@ dependencies {
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  testCompile(group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0') {
+  testCompile(group: 'io.rest-assured', name: 'rest-assured', version: '4.5.1') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
   testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
