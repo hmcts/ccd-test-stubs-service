@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>hmcts/.github:renovate-config"],
+  "extends": ["config:base"],
   "labels": ["Renovate-dependencies"],
   "major": {
     "dependencyDashboardApproval": true
