@@ -18,7 +18,8 @@
         CVE-2023-41329 refer [Ticket]
         CVE-2023-41327 refer [Ticket]
         CVE-2023-36479 refer [Ticket]
-        CVE-2023-41900 refer [Ticket]</notes>
+        CVE-2023-41900 refer [Ticket]
+        CVE-2023-40167 refer [Ticket]</notes>
     <cve>CVE-2022-45688</cve>
     <cve>CVE-2022-1471</cve>
     <cve>CVE-2023-26048</cve>
@@ -35,5 +36,6 @@
     <cve>CVE-2023-41327</cve>
     <cve>CVE-2023-36479</cve>
     <cve>CVE-2023-41900</cve>
+    <cve>CVE-2023-40167</cve>
   </suppress>
 </suppressions>
