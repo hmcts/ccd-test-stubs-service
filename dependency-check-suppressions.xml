@@ -14,7 +14,12 @@
         CVE-2023-34034 refer [Ticket]
         CVE-2020-8908 refer [Ticket]
         CVE-2023-34040 refer [Ticket]
-        CVE-2023-41080 refer [Ticket]</notes>
+        CVE-2023-41080 refer [Ticket]
+        CVE-2023-41329 refer [Ticket]
+        CVE-2023-41327 refer [Ticket]
+        CVE-2023-36479 refer [Ticket]
+        CVE-2023-41900 refer [Ticket]
+        CVE-2023-40167 refer [Ticket]</notes>
     <cve>CVE-2022-45688</cve>
     <cve>CVE-2022-1471</cve>
     <cve>CVE-2023-26048</cve>
@@ -26,12 +31,11 @@
     <cve>CVE-2023-2976</cve>
     <cve>CVE-2023-34034</cve>
     <cve>CVE-2020-8908</cve>
-    <cve>CVE-2023-34040</cve>
     <cve>CVE-2023-41080</cve>
-    <cve>CVE-2023-41327</cve>
-    <cve>CVE-2023-41900</cve>
     <cve>CVE-2023-41329</cve>
-    <cve>CVE-2023-40167</cve>
+    <cve>CVE-2023-41327</cve>
     <cve>CVE-2023-36479</cve>
+    <cve>CVE-2023-41900</cve>
+    <cve>CVE-2023-40167</cve>
   </suppress>
 </suppressions>
