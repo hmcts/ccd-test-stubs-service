@@ -8,14 +8,11 @@
   "packageRules": [
     {
       "matchUpdateTypes": [
-        "minor",
-        "patch"
+        "minor", "patch"
       ],
       "groupName": "All patch-minor dependencies",
       "groupSlug": "All-minor-patch",
-      "addLabels": [
-        "Renovate All-minor-patch"
-      ],
+      "addLabels": ["Renovate All-minor-patch"],
       "automerge": false
     }
   ]

@@ -15,11 +15,6 @@ management:
 spring:
   application:
     name: CCD Test Stubs Services
-  cloud:
-    discovery:
-      client:
-        composite-indicator:
-          enabled: false
 
 wiremock:
   server:
@@ -31,7 +26,7 @@ logging:
     root: INFO
     org.springframework.web: WARN
     com.github.tomakehurst: INFO
-    
+
 app:
   management-web-url: ${MANAGEMENT_WEB_URL:http://localhost:3451}
   secret-key: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
