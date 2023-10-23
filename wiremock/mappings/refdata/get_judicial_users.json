@@ -1,0 +1,368 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/refdata/judicial/users",
+    "bodyPatterns" : [ {
+      "matchesJsonPath" :  "$.personal_code[?(@ in [\"7007496\", \"4927250\", \"4918178\"])]"
+    } ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": [
+      {
+        "sidam_id": "6d85cb89-ddf2-4a58-a568-2053cb282c6c",
+        "object_id": "34715858-6da7-4957-8616-d094f6327c74-test2",
+        "known_as": "Oliver",
+        "surname": "Ingleby",
+        "full_name": "Oliver ingleby",
+        "post_nominals": "Mr",
+        "email_id": "legal-caseworker-north-east@ejudiciary.net",
+        "personal_code": "4927250",
+        "appointments": [
+          {
+            "base_location_id": "1032",
+            "epimms_id": "",
+            "court_name": "Social Entitlement Chamber",
+            "cft_region_id": "3",
+            "cft_region": "North East",
+            "location_id": "26",
+            "location": "North East",
+            "is_principal_appointment": "true",
+            "appointment": "Tribunal Judge",
+            "appointment_type": "Fee Paid",
+            "service_code": "BBA3",
+            "roles": [],
+            "start_date": "2019-01-25",
+            "end_date": null
+          },
+          {
+            "base_location_id": "939",
+            "epimms_id": "455174",
+            "court_name": "Leeds Combined Court - County",
+            "cft_region_id": "3",
+            "cft_region": "North East",
+            "location_id": "3",
+            "location": "North East",
+            "is_principal_appointment": "false",
+            "appointment": "Deputy District Judge- Fee-Paid",
+            "appointment_type": "Fee Paid",
+            "service_code": null,
+            "roles": [],
+            "start_date": "2019-03-13",
+            "end_date": null
+          }
+        ],
+        "authorisations": [
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "Social Security and Child Support",
+            "ticket_code": "357",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2019-01-25T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "First Tier - Social Entitlement",
+            "ticket_code": "376",
+            "service_codes": [
+              "BBA2"
+            ],
+            "start_date": "2019-01-25T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Family",
+            "ticket_description": "Private Law",
+            "ticket_code": "315",
+            "service_codes": [
+              "ABA5"
+            ],
+            "start_date": "2019-11-18T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "03 - Disability Living Allowance",
+            "ticket_code": "365",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2019-03-04T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "04 - Incapacity Benefit Employment Support",
+            "ticket_code": "366",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2019-03-04T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Civil",
+            "ticket_description": "Civil Authorisation",
+            "ticket_code": "294",
+            "service_codes": [
+              "AAA1",
+              "AAA2",
+              "AAA3",
+              "AAA4",
+              "AAA5",
+              "AAA6",
+              "AAA7"
+            ],
+            "start_date": "2019-03-13T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Family",
+            "ticket_description": "Private Law",
+            "ticket_code": "315",
+            "service_codes": [
+              "ABA5"
+            ],
+            "start_date": "2019-07-24T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Family",
+            "ticket_description": "Financial Remedy",
+            "ticket_code": "410",
+            "service_codes": [
+              "ABA2"
+            ],
+            "start_date": "2020-06-01T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Family",
+            "ticket_description": "Public Law",
+            "ticket_code": "316",
+            "service_codes": [
+              "ABA3"
+            ],
+            "start_date": "2021-04-20T00:00",
+            "end_date": null
+          }
+        ]
+      },
+      {
+        "sidam_id": null,
+        "object_id": "672caa37-0c0b-4d7d-b6b7-460d1bfd29e9",
+        "known_as": "Joe",
+        "surname": "Bloggs",
+        "full_name": "Joe Bloggs",
+        "post_nominals": "Mr",
+        "email_id": "42720@ejudiciary.net",
+        "personal_code": "4918178",
+        "appointments": [
+          {
+            "base_location_id": "1032",
+            "epimms_id": "",
+            "court_name": "Social Entitlement Chamber",
+            "cft_region_id": "5",
+            "cft_region": "South East",
+            "location_id": "18",
+            "location": "South East",
+            "is_principal_appointment": "false",
+            "appointment": "Tribunal Judge",
+            "appointment_type": "Fee Paid",
+            "service_code": "BBA3",
+            "roles": [],
+            "start_date": "2005-04-04",
+            "end_date": "2026-09-21"
+          }
+        ],
+        "authorisations": [
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "Social Security and Child Support",
+            "ticket_code": "357",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2011-09-22T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "First Tier - Immigration and Asylum",
+            "ticket_code": "373",
+            "service_codes": [
+              "BFA1"
+            ],
+            "start_date": "2011-09-22T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "First Tier - Social Entitlement",
+            "ticket_code": "376",
+            "service_codes": [
+              "BBA2"
+            ],
+            "start_date": "2011-09-22T00:00",
+            "end_date": null
+          }
+        ]
+      },
+      {
+        "sidam_id": "a229ec37-d84d-4eed-bd7f-0c77a6721da6",
+        "object_id": "ae160051-91a5-4630-8618-30f07a96f46a-test2",
+        "known_as": "Ramon",
+        "surname": "Herrera",
+        "full_name": "Ramon Herrera",
+        "post_nominals": "Dr",
+        "email_id": "7007496EMP-@ejudiciary.net",
+        "personal_code": "7007496",
+        "appointments": [
+          {
+            "base_location_id": "1032",
+            "epimms_id": "",
+            "court_name": "Social Entitlement Chamber",
+            "cft_region_id": "7",
+            "cft_region": "Wales",
+            "location_id": "27",
+            "location": "Wales",
+            "is_principal_appointment": "true",
+            "appointment": "Tribunal Member Medical",
+            "appointment_type": "Fee Paid",
+            "service_code": "BBA3",
+            "roles": [],
+            "start_date": "2006-04-12",
+            "end_date": null
+          }
+        ],
+        "authorisations": [
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "Social Security and Child Support",
+            "ticket_code": "357",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2008-11-03T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "First Tier - Social Entitlement",
+            "ticket_code": "376",
+            "service_codes": [
+              "BBA2"
+            ],
+            "start_date": "2013-11-03T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "03 - Disability Living Allowance",
+            "ticket_code": "365",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2006-04-12T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "04 - Incapacity Benefit Employment Support",
+            "ticket_code": "366",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2007-05-01T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "05 - Industrial Injuries",
+            "ticket_code": "367",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2009-06-01T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Tribunals",
+            "ticket_description": "06 - Industrial injuries 2",
+            "ticket_code": "1416",
+            "service_codes": [
+              "BBA3"
+            ],
+            "start_date": "2009-06-01T00:00",
+            "end_date": null
+          }
+        ]
+      },
+      {
+        "sidam_id": null,
+        "object_id": "672caa37-0c0b-4d7d-b6b7-460d1bfd29e9",
+        "known_as": "Joe",
+        "surname": "Bloggs",
+        "full_name": "Joe Bloggs",
+        "post_nominals": "Mr",
+        "email_id": "42719@ejudiciary.net",
+        "personal_code": "4918178",
+        "appointments": [
+          {
+            "base_location_id": "781",
+            "epimms_id": "228015",
+            "court_name": "Willesden County Court",
+            "cft_region_id": "1",
+            "cft_region": "London",
+            "location_id": "1",
+            "location": "London",
+            "is_principal_appointment": "true",
+            "appointment": "District Judge",
+            "appointment_type": "Salaried",
+            "service_code": null,
+            "roles": [
+              "Appraisal Judge",
+              "Pool of Judges"
+            ],
+            "start_date": "2011-11-25",
+            "end_date": null
+          }
+        ],
+        "authorisations": [
+          {
+            "jurisdiction": "Authorisation Civil",
+            "ticket_description": "Civil Authorisation",
+            "ticket_code": "294",
+            "service_codes": [
+              "AAA1",
+              "AAA2",
+              "AAA3",
+              "AAA4",
+              "AAA5",
+              "AAA6",
+              "AAA7"
+            ],
+            "start_date": "2011-11-25T00:00",
+            "end_date": null
+          },
+          {
+            "jurisdiction": "Authorisation Family",
+            "ticket_description": "Private Law",
+            "ticket_code": "315",
+            "service_codes": [
+              "ABA5"
+            ],
+            "start_date": "2012-01-23T00:00",
+            "end_date": "2034-07-28T00:00"
+          }
+        ]
+      }
+    ]
+  }
+}
