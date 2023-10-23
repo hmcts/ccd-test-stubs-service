@@ -2,11 +2,6 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
-import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpResponse;
-import javax.servlet.http.HttpServletRequest;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,10 +16,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -55,6 +56,24 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardGetRequests() status OK")
     void shouldReturnStatusOK_ForwardGetRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    @DisplayName("Test for forwardGetRequests() with query parameter status OK")
+    void shouldReturnStatusOK_ForwardGetRequestsWhenQueryParametersPresent()
+        throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        String[] value = {"1"};
+        when(mockRequest.getParameterMap()).thenReturn(Map.of("id", value));
+
         HttpResponse mockResponse = mock(HttpResponse.class);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
