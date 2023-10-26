@@ -138,7 +138,7 @@ repositories {
 }
 
 ext {
-  groovyVersion = '3.0.7'
+  groovyVersion = '3.0.19'
   tomcatVersion = '9.0.75!!'
   jettyVersion = '9.4.48.v20220622'
 }
@@ -146,7 +146,7 @@ ext {
 ext['spring-framework.version'] = '5.3.27'
 ext['spring-security.version'] = '5.7.8'
 ext['log4j2.version'] = '2.17.1'
-ext['jackson.version'] = '2.14.1'
+ext['jackson.version'] = '2.15.3'
 ext['snakeyaml.version'] = '1.32'
 
 // it is important to specify logback classic and core packages explicitly as libraries like spring boot
@@ -160,6 +160,7 @@ def versions = [
 
 
 dependencies {
+
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.1'
 
   implementation group: 'com.google.guava', name: 'guava', version:'30.1-jre'
@@ -228,6 +229,18 @@ dependencies {
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
   implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
 
+  constraints {
+    implementation('org.json:json:20231013') {
+      because('Versions < 2.7 allows limited path traversal with FileNameUtils.normalize method - CVE-2021-29425')
+    }
+    implementation('json-java_project:json-java:20231013') {
+      because('Versions < 2.7 allows limited path traversal with FileNameUtils.normalize method - CVE-2021-29425')
+    }
+    implementation('java_project:json-java:20231013') {
+      because('Versions < 2.7 allows limited path traversal with FileNameUtils.normalize method - CVE-2021-29425')
+    }
+  }
+  
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
@@ -254,7 +267,7 @@ dependencies {
 
   implementation group: 'junit', name: 'junit', version: '4.13.1'
 
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.5.0'
 
   // CCD-3511 CVE-2020-15522
   implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
