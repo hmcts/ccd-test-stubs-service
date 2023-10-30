@@ -6,6 +6,7 @@ plugins {
   id 'com.github.ben-manes.versions' version '0.20.0'
   id 'org.sonarqube' version '4.4.0.3356'
   id 'uk.gov.hmcts.java' version '0.12.40'
+  id 'org.owasp.dependencycheck' version '8.4.2' apply true
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
@@ -90,8 +91,10 @@ task functional(type: Test) {
 jacocoTestReport {
   executionData(test, integration)
   reports {
-    xml.enabled = true
-    csv.enabled = false
+    //xml.enabled = true
+    //csv.enabled = false
+    xml.required = true
+    csv.required = false
     xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
@@ -240,7 +243,7 @@ dependencies {
       because('Versions < 2.7 allows limited path traversal with FileNameUtils.normalize method - CVE-2021-29425')
     }
   }
-  
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
@@ -281,7 +284,8 @@ test {
 mainClassName = 'uk.gov.hmcts.reform.ccd.test.stubs.service.Application'
 
 bootJar {
-  archiveName = 'ccd-test-stubs-service.jar'
+  //archiveName = 'ccd-test-stubs-service.jar'
+  archiveFileName = 'ccd-test-stubs-service.jar'
 
   manifest {
     attributes('Implementation-Title': project.name)
