@@ -153,7 +153,7 @@ ext['snakeyaml.version'] = '1.32'
 // enforces it's own (older) version which is not recommended.
 def versions = [
   junit           : '5.3.2',
-  reformLogging   : '5.1.9',
+  reformLogging   : '6.0.1',
   springBoot      : springBoot.class.package.implementationVersion,
   springfoxSwagger: '3.0.0',
 ]
