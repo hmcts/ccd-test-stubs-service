@@ -2,7 +2,7 @@ plugins {
   id 'application'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-  id 'org.springframework.boot' version '2.4.4'
+  id 'org.springframework.boot' version '2.7.10'
   id 'com.github.ben-manes.versions' version '0.20.0'
   id 'org.sonarqube' version '4.4.0.3356'
   id 'uk.gov.hmcts.java' version '0.12.40'
@@ -154,7 +154,7 @@ ext['snakeyaml.version'] = '2.0'
 def versions = [
   junit           : '5.3.2',
   reformLogging   : '6.0.1',
-  springBoot      : springBoot.class.package.implementationVersion,
+  springBoot      : '3.0',
   springfoxSwagger: '3.0.0',
 ]
 
