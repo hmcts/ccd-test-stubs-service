@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -26,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +57,7 @@ class StubResponseControllerTest {
     void shouldReturnStatusOK_ForwardGetRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -75,7 +75,7 @@ class StubResponseControllerTest {
         when(mockRequest.getParameterMap()).thenReturn(Map.of("id", value));
 
         HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -91,7 +91,7 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardGetRequests() exception thrown")
     void shouldThrowException_ForwardGetRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(any(), any());
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
         assertNotNull(responseEntityReturned);
@@ -106,7 +106,7 @@ class StubResponseControllerTest {
     void shouldReturnStatusOK_ForwardPostRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -122,7 +122,7 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardPostRequests() exception thrown")
     void shouldThrowException_ForwardPostRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(any(), any());
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
         assertNotNull(responseEntityReturned);
@@ -137,7 +137,7 @@ class StubResponseControllerTest {
     void shouldReturnStatusOK_ForwardPutRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -153,7 +153,7 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardPutRequests() exception thrown")
     void shouldThrowException_ForwardPutRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(any(), any());
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPutRequests(mockRequest);
         assertNotNull(responseEntityReturned);
@@ -168,7 +168,7 @@ class StubResponseControllerTest {
     void shouldReturnStatusOK_ForwardDeleteRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -184,7 +184,7 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardDeleteRequests() exception thrown")
     void shouldThrowException_ForwardDeleteRequests() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(Matchers.any(), Matchers.any());
+        Mockito.doThrow(new IOException("")).when(mockHttpClient).send(any(), any());
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardDeleteRequests(mockRequest);
         assertNotNull(responseEntityReturned);
