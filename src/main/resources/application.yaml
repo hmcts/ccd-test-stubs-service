@@ -37,4 +37,4 @@ app:
   secret-key: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
   jwt:
     issuer: http://fr-am:8080/openam/oauth2/hmcts
-    expiration: 14400000 # milliseconds 4 hours
+    expiration: ${JWT_EXPIRATION_MSSEC:14400000} # milliseconds 4 hours
