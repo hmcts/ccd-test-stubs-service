@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_about_to_start_caseaccessgroup_modified"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "CaseAccessGroup": {
+          "caseAccessGroupType": "type of case access group",
+          "caseAccessGroupId": "id of case access group modified"
+        }
+      }
+    }
+  }
+}
