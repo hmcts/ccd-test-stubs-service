@@ -160,7 +160,7 @@ def versions = [
 
 
 dependencies {
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.0'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.8'
 
   implementation group: 'com.google.guava', name: 'guava', version:'32.1.2-jre'
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
@@ -257,7 +257,32 @@ dependencies {
   implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
 
   // CCD-3511 CVE-2020-15522
-  implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
+  implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15to18', version: '1.77'
+
+  implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:3.1.8'
+  implementation('org.springframework.cloud:spring-cloud-starter'){
+    version {
+      strictly '3.1.8'
+    }
+  }
+
+  implementation('org.springframework.boot:spring-boot-starter'){
+    version {
+      strictly '3.1.7'
+    }
+  }
+
+  implementation('org.springframework.security:spring-security-rsa'){
+    version {
+      strictly '1.0.12.RELEASE'
+    }
+  }
+
+  implementation('org.bouncycastle:bcpkix-jdk18on') {
+    version {
+      strictly '1.77'
+    }
+  }
 }
 
 test {
