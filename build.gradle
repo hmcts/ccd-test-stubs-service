@@ -2,7 +2,7 @@ plugins {
   id 'application'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-  id 'org.springframework.boot' version '2.7.12'
+  id 'org.springframework.boot' version '2.7.18'
   id 'com.github.ben-manes.versions' version '0.20.0'
   id 'org.sonarqube' version '4.4.0.3356'
   id 'uk.gov.hmcts.java' version '0.12.40'
@@ -139,7 +139,7 @@ repositories {
 
 ext {
   groovyVersion = '3.0.7'
-  tomcatVersion = '9.0.75!!'
+  tomcatVersion = '9.0.83'
   jettyVersion = '9.4.53.v20231009'
 }
 
@@ -161,7 +161,6 @@ def versions = [
 
 dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.8'
-
   implementation group: 'com.google.guava', name: 'guava', version:'32.1.2-jre'
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
@@ -172,8 +171,8 @@ dependencies {
   // CVE-2021-28170
   implementation group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
   // CVE-2021-42550
-  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
-  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
+  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.13'
+  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.13'
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
