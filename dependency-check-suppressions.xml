@@ -4,8 +4,6 @@
         CVE-2022-45688 refer https://tools.hmcts.net/jira/browse/CCD-4373
         CVE-2023-26048 refer [Ticket]
         CVE-2023-26049 refer [Ticket]
-        CVE-2023-20873 refer [Ticket]
-        CVE-2023-20883 refer [Ticket]
         CVE-2023-35116 refer [Ticket]
         CVE-2023-2976 refer [Ticket]
         CVE-2023-34040 refer [Ticket]
@@ -24,22 +22,15 @@
         CVE-2023-34055 refer [Ticket]
         CVE-2023-46589 refer [Ticket]
         CVE-2023-6378 refer [Ticket]
+        CVE-2023-33202 refer https://tools.hmcts.net/jira/browse/CCD-5136
+        CVE-2023-34055 refer https://tools.hmcts.net/jira/browse/CCD-5135
     </notes>
     <cve>CVE-2022-45688</cve>
-    <cve>CVE-2023-20873</cve>
-    <cve>CVE-2023-20883</cve>
     <cve>CVE-2023-35116</cve>
-    <cve>CVE-2023-41080</cve>
     <cve>CVE-2023-41329</cve>
     <cve>CVE-2023-41327</cve>
-    <cve>CVE-2023-42794</cve>
-    <cve>CVE-2023-42795</cve>
-    <cve>CVE-2023-45648</cve>
-    <cve>CVE-2023-44487</cve>
     <cve>CVE-2023-5072</cve>
     <cve>CVE-2023-33202</cve>
     <cve>CVE-2023-34055</cve>
-    <cve>CVE-2023-46589</cve>
-    <cve>CVE-2023-6378</cve>
   </suppress>
 </suppressions>
