@@ -267,7 +267,7 @@ dependencies {
 
   implementation('org.springframework.boot:spring-boot-starter'){
     version {
-      strictly '3.1.7'
+      strictly '3.1.8'
     }
   }
 
