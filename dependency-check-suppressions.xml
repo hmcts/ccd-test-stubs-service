@@ -9,8 +9,6 @@
     <cve>CVE-2022-45688</cve>
     <cve>CVE-2023-5072</cve>
     <cve>CVE-2023-34042</cve>
-    <cve>CVE-2023-41329</cve>
-    <cve>CVE-2023-41327</cve>
     <cve>CVE-2023-1370</cve>
   </suppress>
 </suppressions>
