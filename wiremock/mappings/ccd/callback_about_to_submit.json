@@ -7,7 +7,13 @@
     "status": 200,
     "headers": {
       "Content-Type": "application/json",
-      "Client-Context": "{\n    \"user_task\": {\n        \"task_data\": \"task structure from aboutToSubmit callback\",\n        \"new_field\": \"somehow\",\n        \"complete_task\": \"false\"\n    }\n}"
+      "Client-Context": {
+        "user_task": {
+            "task_data": "task structure from aboutToSubmit callback",
+            "new_field": "somehow",
+            "complete_task": "false"
+        }
+      }
     },
     "jsonBody": {
       "data": {
