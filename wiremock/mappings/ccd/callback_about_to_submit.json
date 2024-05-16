@@ -6,7 +6,8 @@
   "response": {
     "status": 200,
     "headers": {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      "Client-Context": "{ user_task: { task_data: task structure from aboutToSubmit callback, new_field: somehow, complete_task: false } }"
     },
     "jsonBody": {
       "data": {
