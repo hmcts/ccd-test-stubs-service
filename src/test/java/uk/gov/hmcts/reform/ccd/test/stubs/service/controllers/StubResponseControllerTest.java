@@ -116,6 +116,24 @@ class StubResponseControllerTest {
     }
 
     /**
+     * Forward POST requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardPostRequests() status OK - null custom headers")
+    void shouldReturnStatusOK_ForwardPostRequestsForNullCustomHeaders() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.headers()).thenReturn(null);
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    /**
      * Forward POST requests unit test with exception thrown.
      */
     @Test

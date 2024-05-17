@@ -176,7 +176,7 @@ public class StubResponseController {
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             HttpHeaders customHeaders = getCustomHeaders(httpResponse.headers());
 
-            if (null != customHeaders) {
+            if (null != customHeaders && customHeaders.size() > 0) {
                 return new ResponseEntity<>(httpResponse.body().toString(),
                     customHeaders,
                     HttpStatus.valueOf(httpResponse.statusCode()));
