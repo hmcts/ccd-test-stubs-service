@@ -6,14 +6,8 @@
   "response": {
     "status": 200,
     "headers": {
-      "Content-Type": "application/json",
-      "Client-Context": {
-        "user_task": {
-          "task_data": "task structure from submitted callback",
-          "new_field": "whatever",
-          "complete_task": "true"
-        }
-      }
+      "Client-Context": "anyString2",
+      "Content-Type": "application/json"
     },
     "jsonBody": {
       "data": {
