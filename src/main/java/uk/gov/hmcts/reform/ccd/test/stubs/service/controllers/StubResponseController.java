@@ -162,8 +162,6 @@ public class StubResponseController {
         }
     }
 
-
-
     /**
      * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
      */
@@ -176,11 +174,16 @@ public class StubResponseController {
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            HttpHeaders originalHeaders = getCustomHeaders(httpResponse.headers());
+            HttpHeaders customHeaders = getCustomHeaders(httpResponse.headers());
 
-            return new ResponseEntity<>(httpResponse.body().toString(),
-                originalHeaders,
-                HttpStatus.valueOf(httpResponse.statusCode()));
+            if (null != customHeaders) {
+                return new ResponseEntity<>(httpResponse.body().toString(),
+                    customHeaders,
+                    HttpStatus.valueOf(httpResponse.statusCode()));
+            } else {
+                return new ResponseEntity<>(httpResponse.body().toString(),
+                    HttpStatus.valueOf(httpResponse.statusCode()));
+            }
         } catch (IOException e) {
             LOG.error("Error occurred", e);
             return ResponseEntity
@@ -201,10 +204,7 @@ public class StubResponseController {
                 .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            HttpHeaders customHeaders = getCustomHeaders(httpResponse.headers());
-
             return new ResponseEntity<>(httpResponse.body().toString(),
-                customHeaders,
                 HttpStatus.valueOf(httpResponse.statusCode()));
         } catch (IOException e) {
             LOG.error("Error occurred", e);
@@ -272,7 +272,7 @@ public class StubResponseController {
 
         HttpHeaders springHeaders = new HttpHeaders();
         CUSTOM_HEADERS.forEach(context -> {
-            if (originalHeaders.map().containsKey(context.toLowerCase())) {
+            if (null != originalHeaders && originalHeaders.map().containsKey(context.toLowerCase())) {
                 springHeaders.put(context, originalHeaders.map().get(context.toLowerCase()));
             }
         });
