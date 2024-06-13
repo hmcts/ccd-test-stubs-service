@@ -5,20 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
 import io.micrometer.core.instrument.util.IOUtils;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UncheckedIOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 import net.minidev.json.JSONObject;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -46,7 +32,24 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Default endpoints per application.
@@ -141,7 +144,10 @@ public class StubResponseController {
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-            HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(getMockHttpServerUrl(requestPath)))
+            Map<String, String[]> parameterMap = request.getParameterMap();
+            URI uri = URI.create(getMockHttpServerUrl(requestPath, parameterMap));
+
+            HttpRequest httpRequest = HttpRequest.newBuilder(uri)
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             return new ResponseEntity<Object>(httpResponse.body().toString(),
@@ -153,6 +159,8 @@ public class StubResponseController {
                 .body(e.getMessage());
         }
     }
+
+
 
     /**
      * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
@@ -271,6 +279,27 @@ public class StubResponseController {
 
     private String getMockHttpServerUrl(String requestPath) {
         return "http://" + mockHttpServerHost + ":" + mockHttpServer.portNumber() + requestPath;
+    }
+
+    private String getMockHttpServerUrl(String requestPath, Map<String, String[]> parameterMap) {
+        return parameterMap.entrySet().stream()
+            .map(entry -> String.join(
+                "=",
+                entry.getKey(),
+                entry.getValue()[0]))
+            .collect(
+                collectingAndThen(
+                    joining("&"),
+                    params ->
+                        params.length() > 0
+                            ? String.join(
+                                    "",
+                                getMockHttpServerUrl(requestPath),
+                                "?",
+                                params)
+                            : getMockHttpServerUrl(requestPath)
+                )
+            );
     }
 
     private void addUriParams(URIBuilder builder, final String scope,
