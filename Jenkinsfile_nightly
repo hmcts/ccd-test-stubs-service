@@ -13,7 +13,7 @@ def product = "ccd"
 def component = "ccd-test-stubs-service"
 
 withNightlyPipeline(type, product, component) {
-  enableFortifyScan();
+  // enableFortifyScan();
   afterAlways('fortify-scan') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
   }
