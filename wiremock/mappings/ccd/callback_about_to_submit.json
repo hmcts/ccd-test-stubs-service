@@ -7,7 +7,7 @@
     "status": 200,
     "headers": {
       "Content-Type": "application/json",
-      "Client-Context": "anyString"
+      "Client-Context": "eyJmaXJzdFByb3BlcnR5IjogInN0cmluZ1VwZGF0ZWQiLCAidGhpcmRQcm9wZXJ0eSI6ICJzdHJpbmcifQ=="
     },
     "jsonBody": {
       "data": {

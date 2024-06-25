@@ -6,7 +6,7 @@
   "response": {
     "status": 200,
     "headers": {
-      "Client-Context": "anyString2",
+      "Client-Context": "IHsic2Vjb25kUHJvcGVydHkiOiAic3RyaW5nVXBkYXRlZCIsICJ0aGlyZFByb3BlcnR5IjogInN0cmluZyIsICJmb3VydGhQcm9wZXJ0eSI6ICJzdHJpbmcifQ",
       "Content-Type": "application/json"
     },
     "jsonBody": {
