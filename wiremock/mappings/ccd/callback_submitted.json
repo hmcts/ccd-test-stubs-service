@@ -6,7 +6,7 @@
   "response": {
     "status": 200,
     "headers": {
-      "Client-Context": "eyJ1c2VyX3Rhc2siOiB7CiAgInRhc2tfZGF0YSI6IHsKICAgICJ0YXNrMyI6ICJTdWJtaXR0ZWQiCiAgfSwKICAiY29tcGxldGVfdGFzayI6IHRydWUKfQ==",
+      "Client-Context": "ewogICAgInVzZXJfdGFzayI6IHsKICAgICAgICAidGFza19kYXRhIjogewogICAgICAgICAgICAidGFzazMiOiAiU3VibWl0dGVkIC0gY29tcGxldGVkIgogICAgICAgIH0KICAgIH0sCiAgICAiZmllbGQyIjogIlN0cmluZyIsCiAgICAiY29tcGxldGVfdGFzayI6IHRydWUKfQ==",
       "Content-Type": "application/json"
     },
     "jsonBody": {
