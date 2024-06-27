@@ -7,7 +7,7 @@
     "status": 200,
     "headers": {
       "Content-Type": "application/json",
-      "Client-Context": "ewogICJ1c2VyX3Rhc2siOiB7CiAgICAidGFza19kYXRhIjogewogICAgICAgInRhc2syIjogIkFib3V0IHRvIHN1Ym1pdCAtIGNvbXBsZXRlZCIsCiAgICAgICAidGFzazMiOiAiU3VibWl0dGVkIC0gcGVuZGluZyIKICAgIH0sCgkiZmllbGQxIjogIlN0cmluZyIKICB9Cn0="
+      "Client-Context": "ewogICJ1c2VyX3Rhc2siOiB7CiAgICAidGFza19kYXRhIjogewogICAgICAgInRhc2sxIjogIkluaXRpYWwgY2FsbCIsCiAgICAgICAidGFzazIiOiAiQWJvdXQgdG8gc3VibWl0IC0gY29tcGxldGVkIiwKICAgICAgICJ0YXNrMyI6ICJTdWJtaXR0ZWQgLSBwZW5kaW5nIgogICAgfQogIH0sCiAgImZpZWxkMSI6ICJTdHJpbmciCn0="
     },
     "jsonBody": {
       "data": {
