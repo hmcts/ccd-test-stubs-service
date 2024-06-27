@@ -14,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.util.HeadersProvider;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
+import java.util.Collections;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,6 +110,27 @@ class StubResponseControllerTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    /**
+     * Forward POST requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardPostRequests() status OK - empty custom headers")
+    void shouldReturnStatusOK_ForwardPostRequestsForEmptyCustomHeaders() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+
+        HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
+        when(mockHeadersProvider.getHeaders()).thenReturn(Collections.emptyMap());
+
         when(mockResponse.statusCode()).thenReturn(200);
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
