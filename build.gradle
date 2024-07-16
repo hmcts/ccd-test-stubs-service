@@ -146,6 +146,8 @@ ext {
   springCloudVersion = '2022.0.5'
 }
 
+ext['spring-framework.version'] = '6.0.21'
+ext['spring-security.version'] = '6.0.8'
 ext['log4j2.version'] = '2.23.1'
 ext['jackson.version'] = '2.16.0'
 ext['snakeyaml.version'] = '2.2'
