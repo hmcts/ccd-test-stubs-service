@@ -245,11 +245,11 @@ public class StubResponseController {
             HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(requestUrl))
                 .POST(HttpRequest.BodyPublishers.ofString(request))
                 .build();
-            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
 
-            stringResponseEntity.getStatusCodeValue();
+            stringResponseEntity.getStatusCode();
             return ResponseEntity.ok().build();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             LOG.error("Error configuring stub IDAM user", e);
