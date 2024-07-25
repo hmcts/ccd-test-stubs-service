@@ -2,8 +2,7 @@
   <suppress>
     <notes>Temporary Suppression
       CVE-2022-45688 False Positive
-      CVE-2023-5072 refer [Ticket]
-      CVE-2023-41327 refer [Ticket]s
+      CVE-2023-5072 False Positive
       CVE-2023-1370 refer [Ticket]</notes>
     <cve>CVE-2022-45688</cve>
     <cve>CVE-2023-5072</cve>
