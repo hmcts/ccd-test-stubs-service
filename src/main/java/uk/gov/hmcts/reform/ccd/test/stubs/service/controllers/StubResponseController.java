@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -245,11 +245,11 @@ public class StubResponseController {
             HttpRequest httpRequest = HttpRequest.newBuilder(URI.create(requestUrl))
                 .POST(HttpRequest.BodyPublishers.ofString(request))
                 .build();
-            HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
 
-            stringResponseEntity.getStatusCodeValue();
+            stringResponseEntity.getStatusCode();
             return ResponseEntity.ok().build();
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             LOG.error("Error configuring stub IDAM user", e);
