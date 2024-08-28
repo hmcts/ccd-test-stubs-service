@@ -322,9 +322,9 @@ public class StubResponseController {
             );
     }
 
-    private void addUriParams(URIBuilder builder, final String scope,
-                                 final String state,
-                                 final String clientId) {
+    void addUriParams(URIBuilder builder, final String scope,
+                      final String state,
+                      final String clientId) {
         if ("xuiwebapp".equalsIgnoreCase(clientId)
             || "xui_webapp".equalsIgnoreCase(clientId)) {
             String localIss = "http://localhost:5555/o";
