@@ -257,7 +257,7 @@ class StubResponseControllerTest {
     }
 
     @Test
-    @DisplayName("Should return oauth2 token")
+    @DisplayName("Should return correct UI Params")
     void shouldReturnUIParams() {
         URIBuilder builder = new URIBuilder();
         stubResponseController.addUriParams(builder,"scope", "clientid", "xuiwebapp");
