@@ -60,6 +60,8 @@ public class StubResponseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
     static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
+    static final List<String> CUSTOM_HEADERS = List.of("Client-Context");
+
 
     @Value("${wiremock.server.host}")
     private String mockHttpServerHost;
@@ -150,7 +152,7 @@ public class StubResponseController {
             HttpRequest httpRequest = HttpRequest.newBuilder(uri)
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            return new ResponseEntity<Object>(httpResponse.body().toString(),
+            return new ResponseEntity<>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
         } catch (IOException e) {
             LOG.error("Error occurred", e);
@@ -159,8 +161,6 @@ public class StubResponseController {
                 .body(e.getMessage());
         }
     }
-
-
 
     /**
      * Forward POST requests to Wiremock Server and return POST responses to Test Stub Client.
@@ -174,8 +174,16 @@ public class StubResponseController {
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            return new ResponseEntity<Object>(httpResponse.body().toString(),
-                HttpStatus.valueOf(httpResponse.statusCode()));
+            HttpHeaders customHeaders = getCustomHeaders(httpResponse.headers());
+
+            if (customHeaders.size() > 0) {
+                return new ResponseEntity<>(httpResponse.body().toString(),
+                    customHeaders,
+                    HttpStatus.valueOf(httpResponse.statusCode()));
+            } else {
+                return new ResponseEntity<>(httpResponse.body().toString(),
+                    HttpStatus.valueOf(httpResponse.statusCode()));
+            }
         } catch (IOException e) {
             LOG.error("Error occurred", e);
             return ResponseEntity
@@ -196,7 +204,7 @@ public class StubResponseController {
                 .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            return new ResponseEntity<Object>(httpResponse.body().toString(),
+            return new ResponseEntity<>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
         } catch (IOException e) {
             LOG.error("Error occurred", e);
@@ -217,7 +225,7 @@ public class StubResponseController {
                 .DELETE()
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            return new ResponseEntity<Object>(httpResponse.body().toString(),
+            return new ResponseEntity<>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
         } catch (IOException e) {
             LOG.error("Error occurred", e);
@@ -246,7 +254,7 @@ public class StubResponseController {
                 .POST(HttpRequest.BodyPublishers.ofString(request))
                 .build();
             HttpResponse httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            ResponseEntity<String> stringResponseEntity = new ResponseEntity<String>(httpResponse.body().toString(),
+            ResponseEntity<String> stringResponseEntity = new ResponseEntity<>(httpResponse.body().toString(),
                 HttpStatus.valueOf(httpResponse.statusCode()));
 
             stringResponseEntity.getStatusCodeValue();
@@ -258,6 +266,18 @@ public class StubResponseController {
             LOG.error("Error configuring stub IDAM user", e);
             return new ResponseEntity<>("Some unknown error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private HttpHeaders getCustomHeaders(java.net.http.HttpHeaders originalHeaders) {
+
+        HttpHeaders springHeaders = new HttpHeaders();
+        CUSTOM_HEADERS.forEach(context -> {
+            if (null != originalHeaders && originalHeaders.map().containsKey(context.toLowerCase())) {
+                springHeaders.put(context, originalHeaders.map().get(context.toLowerCase()));
+            }
+        });
+
+        return springHeaders;
     }
 
     private String asJson(Object object) throws JsonProcessingException {
