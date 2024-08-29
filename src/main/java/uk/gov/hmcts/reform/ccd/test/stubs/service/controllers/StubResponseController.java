@@ -242,7 +242,7 @@ public class StubResponseController {
         path = "/idam-user",
         consumes = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo)
+    private ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo)
         throws JsonProcessingException, InterruptedException {
         LOG.info("setting stub user info to: {}", asJson(userInfo));
 
