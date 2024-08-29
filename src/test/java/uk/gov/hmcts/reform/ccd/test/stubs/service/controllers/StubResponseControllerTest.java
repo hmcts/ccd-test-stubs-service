@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
+import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +21,13 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpResponse;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -250,5 +254,19 @@ class StubResponseControllerTest {
         ResponseEntity<Object> responseEntity = stubResponseController.oauth2Token(request);
         assertNotNull(responseEntity);
         assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @Test
+    @DisplayName("Should return correct UI Params")
+    void shouldReturnUIParams() {
+        URIBuilder builder = new URIBuilder();
+        stubResponseController.addUriParams(builder,"scope", "clientid", "xuiwebapp");
+        List<String> queryParameters = builder.getQueryParams()
+            .stream()
+            .map(p -> p.getValue()).collect(Collectors.toList());
+
+        assertThat(queryParameters, hasItem("scope"));
+        assertThat(queryParameters, hasItem("clientid"));
+        assertThat(queryParameters, hasItem("http://localhost:5555/o"));
     }
 }
