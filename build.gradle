@@ -160,6 +160,11 @@ def versions = [
 
 
 dependencies {
+  implementation('com.jayway.jsonpath:json-path'){
+    version {
+      strictly '2.9.0'
+    }
+  }
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.1.8'
   implementation group: 'com.google.guava', name: 'guava', version:'32.1.2-jre'
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
@@ -185,7 +190,10 @@ dependencies {
   }
 
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-  implementation(group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.2')
+  implementation(group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.2') {
+    exclude group: 'com.jayway.jsonpath', module: 'json-path'
+    exclude group: 'net.javacrumbs.json-unit', module: 'json-unit-core'
+  }
 // https://mvnrepository.com/artifact/com.github.jknack/handlebars
   implementation group: 'com.github.jknack', name: 'handlebars', version: '4.3.1'
 
@@ -222,16 +230,18 @@ dependencies {
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
   implementation group: 'org.springframework.security', name: 'spring-security-crypto'
 
-
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
   implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+    exclude group: 'com.jayway.jsonpath', module: 'json-path'
+  }
   testImplementation(group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
