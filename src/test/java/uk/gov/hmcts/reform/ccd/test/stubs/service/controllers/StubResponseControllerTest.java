@@ -23,7 +23,6 @@ import java.net.http.HttpResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -261,9 +260,10 @@ class StubResponseControllerTest {
     void shouldReturnUIParams() {
         URIBuilder builder = new URIBuilder();
         stubResponseController.addUriParams(builder,"scope", "clientid", "xuiwebapp");
+
         List<String> queryParameters = builder.getQueryParams()
             .stream()
-            .map(p -> p.getValue()).collect(Collectors.toList());
+            .map(p -> p.getValue()).toList();
 
         assertThat(queryParameters, hasItem("scope"));
         assertThat(queryParameters, hasItem("clientid"));
