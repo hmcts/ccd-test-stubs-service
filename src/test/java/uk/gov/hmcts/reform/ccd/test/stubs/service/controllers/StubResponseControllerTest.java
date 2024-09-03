@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -19,11 +21,14 @@ import uk.gov.hmcts.reform.ccd.test.stubs.service.util.HeadersProvider;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpResponse;
+import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,6 +36,7 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -72,6 +78,7 @@ class StubResponseControllerTest {
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     @DisplayName("Test for forwardGetRequests() with query parameter status OK")
     void shouldReturnStatusOK_ForwardGetRequestsWhenQueryParametersPresent()
@@ -80,8 +87,8 @@ class StubResponseControllerTest {
         String[] value = {"1"};
         when(mockRequest.getParameterMap()).thenReturn(Map.of("id", value));
 
-        HttpResponse mockResponse = mock(HttpResponse.class);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
+        HttpResponse<String> mockResponse = mock(HttpResponse.class);
+        when(mockHttpClient.<String>send(any(), any())).thenReturn(mockResponse);
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -107,13 +114,72 @@ class StubResponseControllerTest {
     /**
      * Forward POST requests unit test with status OK.
      */
+    @SuppressWarnings("unchecked")
     @Test
     @DisplayName("Test for forwardPostRequests() status OK")
     void shouldReturnStatusOK_ForwardPostRequests() throws IOException, InterruptedException {
+        HttpClient mockHttpClient = mock(HttpClient.class);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        HttpHeaders headers = HttpHeaders.of(
+            Map.of("Header-Name", List.of("Header-Value")), (s1, s2) -> true);
+        HttpResponse<String> mockResponse = mock(HttpResponse.class);
+        when(mockHttpClient.<String>send(any(), any())).thenReturn(mockResponse);
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+        when(mockResponse.headers()).thenReturn(headers);
+
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+
+    static Stream<Map<String, List<String>>> headersProvider() {
+        return Stream.of(
+            Collections.emptyMap(),
+            Map.of("Header-Name-1", List.of("Header-Value1"), "Client-Context", List.of("Header-Value2"))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("headersProvider")
+    @DisplayName("Test for forwardPostRequests() status OK - with custom header")
+    void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders(Map<String, List<String>> headersMap) throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
+
+        HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
+        HttpHeaders headers = HttpHeaders.of(headersMap, (s1, s2) -> true);
+        when(mockHeadersProvider.getHeaders()).thenReturn(headersMap);
+
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+
+
+    /**
+     * Forward POST requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardPostRequests() status OK - empty custom headers")
+    void shouldReturnStatusOK_ForwardPostRequestsForEmptyCustomHeaders() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+
+        HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
+        when(mockHeadersProvider.getHeaders()).thenReturn(Collections.emptyMap());
+
         when(mockResponse.statusCode()).thenReturn(200);
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
@@ -125,15 +191,17 @@ class StubResponseControllerTest {
      * Forward POST requests unit test with status OK.
      */
     @Test
-    @DisplayName("Test for forwardPostRequests() status OK - empty custom headers")
-    void shouldReturnStatusOK_ForwardPostRequestsForEmptyCustomHeaders() throws IOException, InterruptedException {
+    @DisplayName("Test for forwardPostRequests() status OK - with custom header")
+    void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
 
-        HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
-        when(mockHeadersProvider.getHeaders()).thenReturn(Collections.emptyMap());
+        HttpHeaders headers = HttpHeaders.of(
+            Map.of("Header-Name-1", List.of("Header-Value1"), "Client-Context", List.of("Header-Value2")), (s1, s2) -> true);
+        when(mockResponse.headers()).thenReturn(headers);
 
         when(mockResponse.statusCode()).thenReturn(200);
 
@@ -268,5 +336,21 @@ class StubResponseControllerTest {
         assertThat(queryParameters, hasItem("scope"));
         assertThat(queryParameters, hasItem("clientid"));
         assertThat(queryParameters, hasItem("http://localhost:5555/o"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("redirectToOauth2InvalidUriProvider")
+    @DisplayName("redirectToOauth2 should handle invalid URIs")
+    void redirectToOauth2ShouldHandleInvalidURIs(String redirectUri) {
+        assertThrows(URISyntaxException.class, () -> {
+            stubResponseController.redirectToOauth2(redirectUri, "scope", "state", "clientId");
+        });
+    }
+
+    static Stream<String> redirectToOauth2InvalidUriProvider() {
+        return Stream.of(
+            "http://localhost:8080/callback with spaces",
+            "http://localhost:8080/callback?query=<invalid>"
+        );
     }
 }
