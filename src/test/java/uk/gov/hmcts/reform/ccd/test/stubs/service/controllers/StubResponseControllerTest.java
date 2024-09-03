@@ -27,7 +27,6 @@ import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 
@@ -142,11 +141,33 @@ class StubResponseControllerTest {
         );
     }
 
+    /**
+     * Forward POST requests unit test with status OK.
+     */
+    @Test
+    @DisplayName("Test for forwardPostRequests() status OK - empty custom headers")
+    void shouldReturnStatusOK_ForwardPostRequestsForEmptyCustomHeaders() throws IOException, InterruptedException {
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+
+        HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
+        when(mockHeadersProvider.getHeaders()).thenReturn(Collections.emptyMap());
+
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
     @ParameterizedTest
     @MethodSource("headersProvider")
     @DisplayName("Test for forwardPostRequests() status OK - with custom header")
-    void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders(Map<String, List<String>> headersMap) throws IOException, InterruptedException {
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+    void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders(Map<String, List<String>> headersMap)
+        throws IOException, InterruptedException {
         HttpResponse mockResponse = mock(HttpResponse.class);
         stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
@@ -158,30 +179,7 @@ class StubResponseControllerTest {
 
         when(mockResponse.statusCode()).thenReturn(200);
 
-        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
-        assertNotNull(responseEntityReturned);
-        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
-    }
-
-
-
-    /**
-     * Forward POST requests unit test with status OK.
-     */
-    @Test
-    @DisplayName("Test for forwardPostRequests() status OK - empty custom headers")
-    void shouldReturnStatusOK_ForwardPostRequestsForEmptyCustomHeaders() throws IOException, InterruptedException {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpResponse mockResponse = mock(HttpResponse.class);
-        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
-        Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
-        when(mockResponse.body()).thenReturn("MOCK BODY");
-
-        HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
-        when(mockHeadersProvider.getHeaders()).thenReturn(Collections.emptyMap());
-
-        when(mockResponse.statusCode()).thenReturn(200);
-
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
         assertNotNull(responseEntityReturned);
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
@@ -193,18 +191,18 @@ class StubResponseControllerTest {
     @Test
     @DisplayName("Test for forwardPostRequests() status OK - with custom header")
     void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders() throws IOException, InterruptedException {
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpResponse mockResponse = mock(HttpResponse.class);
         stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
 
         HttpHeaders headers = HttpHeaders.of(
-            Map.of("Header-Name-1", List.of("Header-Value1"), "Client-Context", List.of("Header-Value2")), (s1, s2) -> true);
+            Map.of("Header-Name-1", List.of("Header-Value1"),
+                "Client-Context", List.of("Header-Value2")), (s1, s2) -> true);
         when(mockResponse.headers()).thenReturn(headers);
-
         when(mockResponse.statusCode()).thenReturn(200);
 
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardPostRequests(mockRequest);
         assertNotNull(responseEntityReturned);
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
