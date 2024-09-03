@@ -329,9 +329,10 @@ class StubResponseControllerTest {
     void shouldReturnUIParams() {
         URIBuilder builder = new URIBuilder();
         stubResponseController.addUriParams(builder,"scope", "clientid", "xuiwebapp");
+
         List<String> queryParameters = builder.getQueryParams()
             .stream()
-            .map(p -> p.getValue()).collect(Collectors.toList());
+            .map(p -> p.getValue()).toList();
 
         assertThat(queryParameters, hasItem("scope"));
         assertThat(queryParameters, hasItem("clientid"));

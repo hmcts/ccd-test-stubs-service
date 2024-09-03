@@ -322,7 +322,7 @@ public class StubResponseController {
             );
     }
 
-    private void addUriParams(URIBuilder builder, final String scope,
+    void addUriParams(URIBuilder builder, final String scope,
                       final String state,
                       final String clientId) {
         if ("xuiwebapp".equalsIgnoreCase(clientId)
