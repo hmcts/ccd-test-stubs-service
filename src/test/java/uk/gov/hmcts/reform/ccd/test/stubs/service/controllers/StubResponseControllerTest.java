@@ -117,7 +117,6 @@ class StubResponseControllerTest {
     @Test
     @DisplayName("Test for forwardPostRequests() status OK")
     void shouldReturnStatusOK_ForwardPostRequests() throws IOException, InterruptedException {
-        HttpClient mockHttpClient = mock(HttpClient.class);
         stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
         HttpHeaders headers = HttpHeaders.of(
             Map.of("Header-Name", List.of("Header-Value")), (s1, s2) -> true);
@@ -174,7 +173,6 @@ class StubResponseControllerTest {
         when(mockResponse.body()).thenReturn("MOCK BODY");
 
         HeadersProvider mockHeadersProvider = mock(HeadersProvider.class);
-        HttpHeaders headers = HttpHeaders.of(headersMap, (s1, s2) -> true);
         when(mockHeadersProvider.getHeaders()).thenReturn(headersMap);
 
         when(mockResponse.statusCode()).thenReturn(200);
