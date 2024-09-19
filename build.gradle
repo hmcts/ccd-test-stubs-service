@@ -219,7 +219,7 @@ dependencies {
   implementation group: 'org.codehaus.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
 
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.37.2'
   implementation group: 'org.springframework.security', name: 'spring-security-crypto'
 
 
@@ -253,7 +253,7 @@ dependencies {
 
   implementation group: 'junit', name: 'junit', version: '4.13.1'
 
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.9'
 
   // CCD-3511 CVE-2020-15522
   implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15to18', version: '1.77'
