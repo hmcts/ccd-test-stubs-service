@@ -1,6 +1,6 @@
 ARG PLATFORM=""
 
-FROM hmctspublic.azurecr.io/base/java${PLATFORM}:17-distroless
+FROM hmctspublic.azurecr.io/base/java${PLATFORM}:21-distroless
 USER hmcts
 
 ENV APPLICATION_TOTAL_MEMORY 128M
