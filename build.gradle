@@ -3,16 +3,16 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.10.RELEASE'
   id 'org.springframework.boot' version '2.7.18'
-  id 'com.github.ben-manes.versions' version '0.20.0'
-  id 'org.sonarqube' version '4.4.0.3356'
-  id 'uk.gov.hmcts.java' version '0.12.40'
+  id 'com.github.ben-manes.versions' version '0.51.0'
+  id 'org.sonarqube' version '5.1.0.4882'
+  id 'uk.gov.hmcts.java' version '0.12.63'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(17)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
@@ -90,9 +90,9 @@ task functional(type: Test) {
 jacocoTestReport {
   executionData(test, integration)
   reports {
-    xml.enabled = true
-    csv.enabled = false
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.required = true
+    csv.required = false
+    xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
@@ -107,7 +107,7 @@ sonarqube {
     property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.outputLocation}"
   }
 }
 
@@ -289,10 +289,12 @@ test {
   failFast = true
 }
 
-mainClassName = 'uk.gov.hmcts.reform.ccd.test.stubs.service.Application'
+application {
+  mainClass = 'uk.gov.hmcts.reform.ccd.test.stubs.service.Application'
+}
 
 bootJar {
-  archiveName = 'ccd-test-stubs-service.jar'
+  archiveFileName = 'ccd-test-stubs-service.jar'
 
   manifest {
     attributes('Implementation-Title': project.name)
@@ -313,7 +315,7 @@ dependencyManagement {
 task dependencyCheck(dependsOn: dependencyCheckAnalyze)
 
 task fortifyScan(type: JavaExec)  {
-  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+  mainClass = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
   classpath += sourceSets.test.runtimeClasspath
   jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
