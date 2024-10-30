@@ -185,7 +185,12 @@ dependencies {
   }
 
   // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-  implementation(group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.2')
+  implementation(group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.35.2') {
+    exclude group: 'com.jayway.jsonpath', module: 'json-path'
+  }
+
+  implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.9.0'
+
 // https://mvnrepository.com/artifact/com.github.jknack/handlebars
   implementation group: 'com.github.jknack', name: 'handlebars', version: '4.3.1'
 
@@ -231,7 +236,9 @@ dependencies {
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation(group: 'org.springframework.boot', name: 'spring-boot-starter-test') {
+    exclude group:'com.jayway.jsonpath', module: 'json-path'
+  }
   testImplementation(group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0') {
     exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
   }
