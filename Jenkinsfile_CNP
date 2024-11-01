@@ -18,6 +18,9 @@ def product = "ccd"
 def component = "test-stubs-service"
 def branchesToSync = ['demo', 'ithc', 'perftest']
 
+// Prevent Docker hub rate limit errors by ensuring that testcontainers uses images from hmctspublic ACR
+env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX = "hmctspublic.azurecr.io/imported/"
+
 withPipeline(type, product, component) {
   onMaster {
     enableSlackNotifications('#ccd-master-builds')

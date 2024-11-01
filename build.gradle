@@ -12,7 +12,7 @@ group = 'uk.gov.hmcts.reform.ccd'
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(17)
+    languageVersion = JavaLanguageVersion.of(21)
   }
 }
 
@@ -55,10 +55,6 @@ tasks.withType(Test) {
   testLogging {
     exceptionFormat = 'full'
   }
-}
-
-test {
-  failFast = true
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
@@ -176,6 +172,7 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
   implementation group: 'org.springframework.security', name: 'spring-security-crypto'
   implementation group: 'org.springframework.security', name: 'spring-security-rsa'
+  implementation group: 'org.springframework.security', name: 'spring-security-crypto'
   
   implementation group: 'com.google.guava', name: 'guava', version:'32.1.2-jre'
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
@@ -218,8 +215,9 @@ dependencies {
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
 
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.11'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.9'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.37.2'
+
 
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
@@ -284,6 +282,4 @@ task fortifyScan(type: JavaExec)  {
   mainClass = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
   classpath += sourceSets.test.runtimeClasspath
   jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
-  // The line below prevents the build from failing if the Fortify scan detects issues
-  ignoreExitValue = true
 }
