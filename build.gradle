@@ -1,11 +1,13 @@
 plugins {
   id 'application'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.1.5'
-  id 'org.springframework.boot' version '3.1.12'
+  id 'io.spring.dependency-management' version '1.1.6'
+  id 'org.springframework.boot' version '3.3.5'
+  id 'se.patrikerdes.use-latest-versions' version '0.2.18'
   id 'com.github.ben-manes.versions' version '0.51.0'
-  id 'org.sonarqube' version '5.0.0.4638'
+  id 'org.sonarqube' version '5.1.0.4882'
   id 'uk.gov.hmcts.java' version '0.12.63'
+  id 'org.owasp.dependencycheck' version '11.1.0'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
@@ -134,30 +136,36 @@ repositories {
 }
 
 ext {
-  junitVersion = '5.3.2'
-  groovyVersion = '4.0.21'
+  set('springCloudVersion', '2023.0.3')
+  set('spring-framework.version', '6.1.14')
+  set('spring-security.version', '6.3.4')
+  set('log4j2.version', '2.23.1')
+  set('jackson.version', '2.18.0')
+  set('snakeyaml.version', '2.2')
+  junit = '5.10.5'
+  junitPlatform = '1.10.5'
+  groovyVersion = '4.0.23'
   restAssuredVersion = '5.3.2'
   tomcatVersion = '10.1.25'
   reformLogging = '6.0.1'
   jettyVersion = '11.0.20'
-  springCloudVersion = '2022.0.5'
 }
 
-ext['spring-framework.version'] = '6.0.21'
-ext['spring-security.version'] = '6.0.8'
-ext['log4j2.version'] = '2.23.1'
-ext['jackson.version'] = '2.16.0'
-ext['snakeyaml.version'] = '2.2'
+ext.libraries = [
+  junit5: [
+    "org.junit.jupiter:junit-jupiter-api:${junit}",
+    "org.junit.jupiter:junit-jupiter-engine:${junit}",
+    "org.junit.jupiter:junit-jupiter-params:${junit}",
+    "org.junit.platform:junit-platform-commons:${junitPlatform}",
+    "org.junit.platform:junit-platform-engine:${junitPlatform}",
+    "org.apiguardian:apiguardian-api:1.0.0"
+  ]
+]
 
 dependencyManagement {
   imports {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
   }
-}
-
-configurations.all {
-  exclude group: 'ch.qos.logback', module: 'logback-core'
-  exclude group: 'ch.qos.logback', module: 'logback-classic'
 }
 
 dependencies {
@@ -174,19 +182,19 @@ dependencies {
   implementation group: 'org.springframework.security', name: 'spring-security-rsa'
   implementation group: 'org.springframework.security', name: 'spring-security-crypto'
   
-  implementation group: 'com.google.guava', name: 'guava', version:'32.1.2-jre'
-  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+  implementation group: 'com.google.guava', name: 'guava', version:'33.3.1-jre'
+  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.4.1'
 
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: tomcatVersion
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: tomcatVersion
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: tomcatVersion
 
-  implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '5.0.1'
+  implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.4'
 
-  implementation group: 'org.wiremock', name: 'wiremock-standalone', version: '3.0.3'
-  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.3.1'
+  implementation group: 'org.wiremock', name: 'wiremock-standalone', version: '3.9.2'
+  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.4.0'
 
   // JETTY
   implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
@@ -215,19 +223,17 @@ dependencies {
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
 
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.9'
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.37.2'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.5.1'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.45'
 
 
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-  implementation group: 'commons-io', name: 'commons-io', version: '2.8.0'
+  implementation group: 'commons-io', name: 'commons-io', version: '2.17.0'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLogging
 
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: junitVersion
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: junitVersion
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: junitVersion
+  testImplementation libraries.junit5
 
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion, {
@@ -242,7 +248,7 @@ dependencies {
     exclude group: 'org.codehaus.grooy'
   }
 
-  testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+  testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
   testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.1'
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath

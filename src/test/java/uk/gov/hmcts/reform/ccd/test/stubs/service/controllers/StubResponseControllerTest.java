@@ -2,7 +2,8 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
-import org.apache.http.client.utils.URIBuilder;
+
+import org.apache.hc.core5.net.URIBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
