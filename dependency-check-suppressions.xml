@@ -2,8 +2,7 @@
   <suppress>
     <notes>Temporary Suppression
         CVE-2022-45688 refer https://tools.hmcts.net/jira/browse/CCD-4373
-        CVE-2024-38820 refer [Ticket]</notes>
+    </notes>
     <cve>CVE-2022-45688</cve>
-    <cve>CVE-2024-38820</cve>
   </suppress>
 </suppressions>
