@@ -160,7 +160,6 @@ ext.libraries = [
     "org.junit.platform:junit-platform-engine:${junitPlatform}",
     "org.apiguardian:apiguardian-api:1.0.0"
   ]
-]
 
 dependencyManagement {
   imports {
