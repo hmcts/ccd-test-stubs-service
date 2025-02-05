@@ -12,9 +12,6 @@
       "data": {
         "TTL": { }
       }
-    },
-    "transformers": [
-      "dynamic-ttl-null-response-transformer"
-    ]
+    }
   }
 }
