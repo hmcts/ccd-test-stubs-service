@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "POST",
-    "urlPath": "/callback_about_to_start_ttl_modified_null"
+    "urlPath": "/callback_ttl_empty"
   },
   "response": {
     "status": 200,
@@ -12,6 +12,9 @@
       "data": {
         "TTL": { }
       }
-    }
+    },
+    "transformers": [
+      "dynamic-ttl-null-response-transformer"
+    ]
   }
 }
