@@ -143,11 +143,12 @@ ext {
   set('snakeyaml.version', '2.3')
   groovyVersion = '4.0.23'
   jettyVersion = '11.0.20'
-  junit = '5.10.5'
-  junitPlatform = '1.10.5'
   reformLogging = '6.0.1'
-  restAssuredVersion = '5.3.2'
-  tomcatVersion = '10.1.25'
+  tomcatVersion = '10.1.34'
+  // test versions
+  junit = '5.11.4'
+  junitPlatform = '1.11.4'
+  restAssuredVersion = '5.5.0'
 }
 
 ext.libraries = [
@@ -157,7 +158,7 @@ ext.libraries = [
     "org.junit.jupiter:junit-jupiter-params:${junit}",
     "org.junit.platform:junit-platform-commons:${junitPlatform}",
     "org.junit.platform:junit-platform-engine:${junitPlatform}",
-    "org.apiguardian:apiguardian-api:1.0.0"
+    "org.apiguardian:apiguardian-api:1.1.2"
   ]
 ]
 
@@ -169,6 +170,18 @@ dependencyManagement {
 
 dependencies {
 
+  // start::CVE Vulnerability dependency overrides                                                        // MAIN PARENT DEPENDEDNCY
+
+  implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'                  // wiremock-spring-boot
+  implementation group: 'commons-io', name: 'commons-io', version: '2.18.0'                               // wiremock-spring-boot
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: tomcatVersion      // spring-boot-starter-tomcat
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: tomcatVersion        // spring-boot-starter-tomcat
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: tomcatVersion // spring-boot-starter-tomcat
+
+  testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
+
+  // end::CVE Vulnerability dependency overrides                                                          // MAIN PARENT DEPENDEDNCY
+
   // SPRING
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
@@ -179,20 +192,9 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
   implementation group: 'org.springframework.security', name: 'spring-security-crypto'
   implementation group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.1.5'
-  
-  implementation group: 'com.google.guava', name: 'guava', version:'33.3.1-jre'
-  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.4.1'
 
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: tomcatVersion
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: tomcatVersion
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: tomcatVersion
-
-  implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
-
-  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.4'
-
-  implementation group: 'org.wiremock', name: 'wiremock-standalone', version: '3.9.2'
-  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.4.0'
+  // HMCTS
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLogging
 
   // JETTY
   implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
@@ -217,37 +219,27 @@ dependencies {
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-common', version: jettyVersion
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
+
+  // implementation group: 'com.google.guava', name: 'guava', version:'33.3.1-jre'
+  // implementation group: 'com.github.jknack', name: 'handlebars', version: '4.4.0'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.0.1'
+  implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.10.0'
+  implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.5.1'
+  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.4.1'
   implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
+  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.6.0'
 
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.5.1'
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.45'
-
-
-  implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
-  implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-  implementation group: 'commons-io', name: 'commons-io', version: '2.17.0'
-
-  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLogging
 
   testImplementation libraries.junit5
-
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion, {
-    exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
-    exclude group: 'org.codehaus.grooy'
-  }
-  testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion, {
-    exclude group: 'org.codehaus.grooy'
-  }
-  testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion, {
-    exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
-    exclude group: 'org.codehaus.grooy'
-  }
+  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
+  testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
+  testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
 
-  testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.1'
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.6'
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
 
