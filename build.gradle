@@ -220,8 +220,6 @@ dependencies {
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
 
-  // implementation group: 'com.google.guava', name: 'guava', version:'33.3.1-jre'
-  // implementation group: 'com.github.jknack', name: 'handlebars', version: '4.4.0'
   implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.0.1'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.10.0'
   implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
