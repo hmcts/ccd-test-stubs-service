@@ -1,13 +1,12 @@
 plugins {
   id 'application'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.1.6'
-  id 'org.springframework.boot' version '3.3.5'
-  id 'se.patrikerdes.use-latest-versions' version '0.2.18'
   id 'com.github.ben-manes.versions' version '0.51.0'
-  id 'org.sonarqube' version '5.1.0.4882'
+  id 'io.spring.dependency-management' version '1.1.7'
+  id 'org.owasp.dependencycheck' version '11.1.1'
+  id 'org.sonarqube' version '6.0.1.5171'
+  id 'org.springframework.boot' version '3.4.1'
   id 'uk.gov.hmcts.java' version '0.12.63'
-  id 'org.owasp.dependencycheck' version '11.1.0'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
@@ -136,19 +135,19 @@ repositories {
 }
 
 ext {
-  set('springCloudVersion', '2023.0.3')
-  set('spring-framework.version', '6.1.14')
-  set('spring-security.version', '6.3.4')
-  set('log4j2.version', '2.23.1')
-  set('jackson.version', '2.18.0')
-  set('snakeyaml.version', '2.2')
+  set('springCloudVersion', '2024.0.0')
+  set('spring-framework.version', '6.2.1')
+  set('spring-security.version', '6.4.2')
+  set('log4j2.version', '2.24.3')
+  set('jackson.version', '2.18.2')
+  set('snakeyaml.version', '2.3')
+  groovyVersion = '4.0.23'
+  jettyVersion = '11.0.20'
   junit = '5.10.5'
   junitPlatform = '1.10.5'
-  groovyVersion = '4.0.23'
+  reformLogging = '6.0.1'
   restAssuredVersion = '5.3.2'
   tomcatVersion = '10.1.25'
-  reformLogging = '6.0.1'
-  jettyVersion = '11.0.20'
 }
 
 ext.libraries = [
@@ -179,8 +178,7 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
   implementation group: 'org.springframework.security', name: 'spring-security-crypto'
-  implementation group: 'org.springframework.security', name: 'spring-security-rsa'
-  implementation group: 'org.springframework.security', name: 'spring-security-crypto'
+  implementation group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.1.5'
   
   implementation group: 'com.google.guava', name: 'guava', version:'33.3.1-jre'
   implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.4.1'
