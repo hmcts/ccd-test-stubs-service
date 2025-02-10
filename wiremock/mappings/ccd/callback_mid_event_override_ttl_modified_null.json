@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_mid_event_override_ttl_modified_null"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "TTL": { }
+      }
+    }
+  }
+}
