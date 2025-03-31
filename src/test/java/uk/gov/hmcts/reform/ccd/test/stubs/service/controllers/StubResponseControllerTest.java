@@ -2,7 +2,8 @@ package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
-import org.apache.http.client.utils.URIBuilder;
+
+import org.apache.hc.core5.net.URIBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.util.HeadersProvider;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpHeaders;
@@ -28,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import javax.servlet.http.HttpServletRequest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -55,7 +56,7 @@ class StubResponseControllerTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
     }
