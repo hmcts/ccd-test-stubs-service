@@ -35,6 +35,10 @@ class StubResponseControllerTest {
     @Autowired
     ObjectMapper mapper;
 
+    public static final String AM_ROLE_ASSIGNMENTS_URL = "/am/role-assignments";
+    public static final String OAUTH_AUTHORIZE_URL = "/oauth2/authorize";
+   public static final String EVENT_TRIGGERS_CASE_TYPE_URL = "/case-types/FT_CRUD/event-triggers/createCase";
+
     @DisplayName("Should return wiremock stub response with 200")
     @Test
     void forwardAllRequestEndpoint() throws Exception {
@@ -133,6 +137,35 @@ class StubResponseControllerTest {
             .contentType(APPLICATION_JSON_VALUE)
             .content(oldUserInfo))
             .andExpect(status().isOk());
+    }
+
+    @DisplayName("postRoleAssignments should return 200 for valid requests")
+    @Test
+    void postRoleAssignmentsShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(post(AM_ROLE_ASSIGNMENTS_URL)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content("{\"actorId\":[\"3c0b4d4e-32af-4998-890a-e82850360de4\"],\"roleType\":[\"ORGANISATION\"]}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.roleName").value("hearing-manager"));
+    }
+
+    @DisplayName("postOauthAuthorize should return 200 for valid requests")
+    @Test
+    void postOauthAuthorizeShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(post(OAUTH_AUTHORIZE_URL)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content("{\"code\":[\"eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJtYXN0ZXIuY2FzZXdvcmtlckBnbWFpbC5jb20iLCJhdXRoX2xldmVsIjowLCJhdWRpdFRyYWNraW5nSWQiOiI4MWY3NGI0ZS00YjFkLTQyZGYtYWFhNC0xZmU5ZGZiOGFhMDEiLCJpc3MiOiJodHRwOi8vZnItYW06ODA4MC9vcGVuYW0vb2F1dGgyL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoiYTgzOTdlYjctYWE2ZS00ZDYxLWIyNWYtMzQ1MDNiMjU4OGQ5IiwiYXVkIjoiY2NkX2dhdGV3YXkiLCJuYmYiOjE3NDE3OTMwNjAsImdyYW50X3R5cGUiOiJhdXRob3JpemF0aW9uX2NvZGUiLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwicm9sZXMiXSwiYXV0aF90aW1lIjoxNzQxNzkzMDU4MDAwLCJyZWFsbSI6Ii9obWN0cyIsImV4cCI6MTc0MTgyMTg2MCwiaWF0IjoxNzQxNzkzMDYwLCJleHBpcmVzX2luIjoyODgwMCwianRpIjoiNTUzNzE5ZGMtZjU4Ni00MTgzLTk4NTAtNjg5YzhjY2FkM2ZlIn0.D0PL9b2a3z9x7kxuco820_bjDxTIWK4ZYzJzv39IyX_iRqjLwIF_sINuXiLBhaFUDsnJ9wg-kYF4E1RAvqGbKzA17SHc60HV5T4PxdVNIfZD3xd0sd8Si24GRF2eCmq9GhNptvnGg1BSF8aelj4UoIijt9GL0lRSUCIYmiC0jdFOjTKPXVTg7zFa5z0oxhmd6JvuWFyvTm0JZKZtGLSXabaEpWwxbIXDnaOy0MEazhFC3yruwgAd7ptVXxRTu9u3uRY0f9qWVksf9xJxy53bfkdEjSQLzaXwZdKGFyWp0ueG0qdPX4COJK4NPL17O7beARJIcljF-z5OTtM5OWjCpA\"]}"))
+            .andExpect(status().isOk())
+            .an-dExpect(jsonPath("$.code").exists());
+    }
+
+    @DisplayName("get Create Case should return 200 for valid requests")
+    @Test
+    void getCreateCaseShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(get(EVENT_TRIGGERS_CASE_TYPE_URL)
+                .contentType(APPLICATION_JSON_VALUE))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.event_id").exists());
     }
 
     private String asJson(IdamUserInfo userInfo) throws JsonProcessingException {
