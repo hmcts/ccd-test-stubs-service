@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasItem;
@@ -37,12 +38,12 @@ class StubResponseControllerTest {
 
     public static final String AM_ROLE_ASSIGNMENTS_URL = "/am/role-assignments";
     public static final String OAUTH_AUTHORIZE_URL = "/oauth2/authorize";
-   public static final String EVENT_TRIGGERS_CASE_TYPE_URL = "/case-types/FT_CRUD/event-triggers/createCase";
+    public static final String EVENT_TRIGGERS_CASE_TYPE_URL = "/case-types/FT_CRUD/event-triggers/createCase";
 
     @DisplayName("Should return wiremock stub response with 200")
     @Test
     void forwardAllRequestEndpoint() throws Exception {
-        mockMvc.perform(post("/callback_about_to_start").characterEncoding("UTF-8"))
+        mockMvc.perform(post("/callback_about_to_start").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.CallbackText").value("test"));
     }
@@ -50,21 +51,21 @@ class StubResponseControllerTest {
     @DisplayName("Should return http client error for invalid get operation")
     @Test
     void invalidGetOperation() throws Exception {
-        mockMvc.perform(get("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
+        mockMvc.perform(get("/case_type/aat/invalid_endpoint").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().is4xxClientError());
     }
 
     @DisplayName("Should return http client error for invalid put operation")
     @Test
     void invalidPutOperation() throws Exception {
-        mockMvc.perform(put("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
+        mockMvc.perform(put("/case_type/aat/invalid_endpoint").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().is4xxClientError());
     }
 
     @DisplayName("Should return http client error for invalid delete operation")
     @Test
     void invalidDeleteOperation() throws Exception {
-        mockMvc.perform(delete("/case_type/aat/invalid_endpoint").characterEncoding("UTF-8"))
+        mockMvc.perform(delete("/case_type/aat/invalid_endpoint").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().is4xxClientError());
     }
 
@@ -79,7 +80,7 @@ class StubResponseControllerTest {
     @DisplayName("Should return random jw token with response code 200")
     @Test
     void testTokenEndpoint() throws Exception {
-        mockMvc.perform(post("/oauth2/token").characterEncoding("UTF-8"))
+        mockMvc.perform(post("/oauth2/token").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.expires_in").value("14400000"));
     }
@@ -87,7 +88,7 @@ class StubResponseControllerTest {
     @DisplayName("Should return random jw token with response code 200")
     @Test
     void testOpenIdTokenEndpoint() throws Exception {
-        mockMvc.perform(post("/o/token").characterEncoding("UTF-8"))
+        mockMvc.perform(post("/o/token").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.expires_in").value("14400000"));
     }
@@ -95,14 +96,14 @@ class StubResponseControllerTest {
     @DisplayName("Should return random jw token with response code 200")
     @Test
     void testJwksEndpoint() throws Exception {
-        mockMvc.perform(get("/o/jwks").characterEncoding("UTF-8"))
+        mockMvc.perform(get("/o/jwks").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk());
     }
 
     @DisplayName("Should return user info with response code 200")
     @Test
     void testUserInfoEndpoint() throws Exception {
-        mockMvc.perform(get("/o/userinfo").characterEncoding("UTF-8"))
+        mockMvc.perform(get("/o/userinfo").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email").value("auto.test.cnp@gmail.com"));
     }
@@ -110,7 +111,7 @@ class StubResponseControllerTest {
     @DisplayName("Should be able to configure at runtime stubbed IDAM user info")
     @Test
     void testChangeStubbedUserInfo() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get("/o/userinfo").characterEncoding("UTF-8"))
+        MockHttpServletResponse response = mockMvc.perform(get("/o/userinfo").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email").value("auto.test.cnp@gmail.com"))
             .andExpect(jsonPath("$.roles", not(hasItem("role1"))))
@@ -128,7 +129,7 @@ class StubResponseControllerTest {
             .content(asJson(userInfo)))
             .andExpect(status().isOk());
 
-        mockMvc.perform(get("/o/userinfo").characterEncoding("UTF-8"))
+        mockMvc.perform(get("/o/userinfo").characterEncoding(StandardCharsets.UTF_8))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.email").value(newEmail))
             .andExpect(jsonPath("$.roles", hasItem("role1")));
@@ -146,7 +147,7 @@ class StubResponseControllerTest {
                 .contentType(APPLICATION_JSON_VALUE)
                 .content("{\"actorId\":[\"3c0b4d4e-32af-4998-890a-e82850360de4\"],\"roleType\":[\"ORGANISATION\"]}"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.roleName").value("hearing-manager"));
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].roleName").value("hearing-manager"));
     }
 
     @DisplayName("postOauthAuthorize should return 200 for valid requests")
@@ -154,9 +155,18 @@ class StubResponseControllerTest {
     void postOauthAuthorizeShouldReturn200ForValidRequests() throws Exception {
         mockMvc.perform(post(OAUTH_AUTHORIZE_URL)
                 .contentType(APPLICATION_JSON_VALUE)
-                .content("{\"code\":[\"eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJtYXN0ZXIuY2FzZXdvcmtlckBnbWFpbC5jb20iLCJhdXRoX2xldmVsIjowLCJhdWRpdFRyYWNraW5nSWQiOiI4MWY3NGI0ZS00YjFkLTQyZGYtYWFhNC0xZmU5ZGZiOGFhMDEiLCJpc3MiOiJodHRwOi8vZnItYW06ODA4MC9vcGVuYW0vb2F1dGgyL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNzX3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoiYTgzOTdlYjctYWE2ZS00ZDYxLWIyNWYtMzQ1MDNiMjU4OGQ5IiwiYXVkIjoiY2NkX2dhdGV3YXkiLCJuYmYiOjE3NDE3OTMwNjAsImdyYW50X3R5cGUiOiJhdXRob3JpemF0aW9uX2NvZGUiLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwicm9sZXMiXSwiYXV0aF90aW1lIjoxNzQxNzkzMDU4MDAwLCJyZWFsbSI6Ii9obWN0cyIsImV4cCI6MTc0MTgyMTg2MCwiaWF0IjoxNzQxNzkzMDYwLCJleHBpcmVzX2luIjoyODgwMCwianRpIjoiNTUzNzE5ZGMtZjU4Ni00MTgzLTk4NTAtNjg5YzhjY2FkM2ZlIn0.D0PL9b2a3z9x7kxuco820_bjDxTIWK4ZYzJzv39IyX_iRqjLwIF_sINuXiLBhaFUDsnJ9wg-kYF4E1RAvqGbKzA17SHc60HV5T4PxdVNIfZD3xd0sd8Si24GRF2eCmq9GhNptvnGg1BSF8aelj4UoIijt9GL0lRSUCIYmiC0jdFOjTKPXVTg7zFa5z0oxhmd6JvuWFyvTm0JZKZtGLSXabaEpWwxbIXDnaOy0MEazhFC3yruwgAd7ptVXxRTu9u3uRY0f9qWVksf9xJxy53bfkdEjSQLzaXwZdKGFyWp0ueG0qdPX4COJK4NPL17O7beARJIcljF-z5OTtM5OWjCpA\"]}"))
+                .content("{\"code\":[\"eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIsImFsZyI6IlJTMjU2In0."
+                    + "eyJzdWIiOiJtYXN0ZXIuY2FzZXdvcmtlckBnbWFpbC5jb20iLCJhdXRoX2xldmVsIjowLCJhdWRpdFRyYWNraW5nSWQiOiI4MWY3NGI0ZS00YjFkLTQy"
+                    + "ZGYtYWFhNC0xZmU5ZGZiOGFhMDEiLCJpc3MiOiJodHRwOi8vZnItYW06ODA4MC9vcGVuYW0vb2F1dGgyL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNz"
+                    + "X3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoiYTgzOTdlYjctYWE2ZS00ZDYxLWIyNWYtMzQ1MDNiMjU4OGQ5IiwiYXVk"
+                    + "IjoiY2NkX2dhdGV3YXkiLCJuYmYiOjE3NDE3OTMwNjAsImdyYW50X3R5cGUiOiJhdXRob3JpemF0aW9uX2NvZGUiLCJzY29wZSI6WyJvcGVuaWQiLCJw"
+                    + "cm9maWxlIiwicm9sZXMiXSwiYXV0aF90aW1lIjoxNzQxNzkzMDU4MDAwLCJyZWFsbSI6Ii9obWN0cyIsImV4cCI6MTc0MTgyMTg2MCwiaWF0IjoxNzQx"
+                    + "NzkzMDYwLCJleHBpcmVzX2luIjoyODgwMCwianRpIjoiNTUzNzE5ZGMtZjU4Ni00MTgzLTk4NTAtNjg5YzhjY2FkM2ZlIn0.D0PL9b2a3z9x7kxuco820"
+                    + "_bjDxTIWK4ZYzJzv39IyX_iRqjLwIF_sINuXiLBhaFUDsnJ9wg-kYF4E1RAvqGbKzA17SHc60HV5T4PxdVNIfZD3xd0sd8Si24GRF2eCmq9GhNptvnGg"
+                    + "1BSF8aelj4UoIijt9GL0lRSUCIYmiC0jdFOjTKPXVTg7zFa5z0oxhmd6JvuWFyvTm0JZKZtGLSXabaEpWwxbIXDnaOy0MEazhFC3yruwgAd7ptVXxRTu"
+                    + "9u3uRY0f9qWVksf9xJxy53bfkdEjSQLzaXwZdKGFyWp0ueG0qdPX4COJK4NPL17O7beARJIcljF-z5OTtM5OWjCpA\"]}"))
             .andExpect(status().isOk())
-            .an-dExpect(jsonPath("$.code").exists());
+            .andExpect(jsonPath("$.code").exists());
     }
 
     @DisplayName("get Create Case should return 200 for valid requests")
