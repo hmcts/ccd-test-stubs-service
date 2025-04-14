@@ -6,13 +6,20 @@
   "response": {
     "status": 200,
     "headers": {
-      "Content-Type": "application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8"
+      "Content-Type": "application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8",
+      "X-Frame-Options": "DENY",
+      "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+      "X-Content-Type-Options": "nosniff",
+      "Pragma": "no-cache",
+      "Expires": "0",
+      "X-XSS-Protection": "1; mode=block",
+      "Date": "2025-04-01T15:08:58.566524"
     },
     "jsonBody": {
       "token" : "e54676a",
       "_links": {
         "self": {
-          "href": "[[ANYTHING_PRESENT]]"
+          "href" : "https://ccd-data-store-api-staging.service.core-compute-aat.internal/cases/{{request.path.[1]}}"
         }
       },
       "case_details" : {

@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/am/role-assignments/actors/(fe051b3d-7751-4b44-ba97-b00b0e508b2e|ge051b3d-7751-4b44-ba97-b00b0e508b2e|he051b3d-7751-4b44-ba97-b00b0e508b2e|ie051b3d-7751-4b44-ba97-b00b0e508b2e)"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "roleAssignmentResponse": [
+        {
+          "id": "e6fc5ebb-63e3-4613-9cfc-b3f9b1559571",
+          "actorIdType": "IDAM",
+          "actorId": "{{userId}}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "PROFESSIONAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1619532860727729",
+            "region": "south-east"
+          },
+          "authorisations": []
+        }
+      ]
+    },
+    "transformers": [
+      "dynamic-role-assignments-response-transformer"
+    ]
+  }
+}

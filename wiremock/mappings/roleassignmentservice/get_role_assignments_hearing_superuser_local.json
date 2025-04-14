@@ -1,0 +1,103 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/am/role-assignments/actors/(3c0b4d4e-32af-4998-890a-e82850360de4|4c0b4d4e-32af-4998-890a-e82850360de4|5c0b4d4e-32af-4998-890a-e82850360de4|6c0b4d4e-32af-4998-890a-e82850360de4)"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "roleAssignmentResponse": [
+        {
+          "id": "3c0b4d4e-32af-4998-890a-e82850360de4",
+          "actorIdType": "IDAM",
+          "actorId": "{{userId}}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-superuser",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "PROFESSIONAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1619532860727729",
+            "region": "south-east"
+          },
+          "authorisations": []
+        },
+        {
+          "id": "e6fc5ebb-63e3-4613-9cfc-b3f9b1559571",
+          "actorIdType": "IDAM",
+          "actorId": "{{userId}}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-manager",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "PROFESSIONAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1619532860727729",
+            "region": "south-east"
+          },
+          "authorisations": []
+        },
+        {
+          "id": "18187443-7b29-47c1-bcda-6f099705e4bc",
+          "actorIdType": "IDAM",
+          "actorId": "{{userId}}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "PROFESSIONAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1619532860727729",
+            "region": "south-east"
+          },
+          "authorisations": []
+        },
+        {
+          "id": "a8ae0153-8c4b-4f09-bd8d-2a93db2a0520",
+          "actorIdType": "IDAM",
+          "actorId": "{{userId}}",
+          "roleType": "ORGANISATION",
+          "roleName": "listed-hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "PROFESSIONAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1619532860727729",
+            "region": "south-east"
+          },
+          "authorisations": []
+        }
+      ]
+    },
+    "transformers": [
+      "dynamic-role-assignments-response-transformer"
+    ]
+  }
+}

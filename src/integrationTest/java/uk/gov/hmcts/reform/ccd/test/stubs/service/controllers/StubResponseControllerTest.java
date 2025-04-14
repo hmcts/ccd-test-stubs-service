@@ -36,8 +36,11 @@ class StubResponseControllerTest {
     @Autowired
     ObjectMapper mapper;
 
-    public static final String AM_ROLE_ASSIGNMENTS_URL = "/am/role-assignments";
-    public static final String OAUTH_AUTHORIZE_URL = "/oauth2/authorize";
+    public static final String AM_ROLE_ASSIGNMENTS_URL = "/am/role-assignments/actors/";
+    public static final String ID_HEARING_VIEWER = "18187443-7b29-47c1-bcda-6f099705e4bc";
+    public static final String ID_HEARING_MANAGER = "fe051b3d-7751-4b44-ba97-b00b0e508b2e";
+    public static final String ID_HMC_SUPERUSER = "3c0b4d4e-32af-4998-890a-e82850360de4";
+    public static final String ID_LISTED_HEARING_VIEWER = "a8ae0153-8c4b-4f09-bd8d-2a93db2a0520";
     public static final String EVENT_TRIGGERS_CASE_TYPE_URL = "/case-types/FT_CRUD/event-triggers/createCase";
 
     @DisplayName("Should return wiremock stub response with 200")
@@ -140,33 +143,61 @@ class StubResponseControllerTest {
             .andExpect(status().isOk());
     }
 
-    @DisplayName("postRoleAssignments should return 200 for valid requests")
+    @DisplayName("getRoleAssignments for hearing superuser should return 200 for valid requests")
     @Test
-    void postRoleAssignmentsShouldReturn200ForValidRequests() throws Exception {
-        mockMvc.perform(post(AM_ROLE_ASSIGNMENTS_URL)
-                .contentType(APPLICATION_JSON_VALUE)
-                .content("{\"actorId\":[\"3c0b4d4e-32af-4998-890a-e82850360de4\"],\"roleType\":[\"ORGANISATION\"]}"))
+    void getRoleAssignmentsForHearingSuperuserShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(get(AM_ROLE_ASSIGNMENTS_URL + ID_HMC_SUPERUSER))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.roleAssignmentResponse[0].roleName").value("hearing-manager"));
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].roleName")
+                .value("hearing-superuser"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].actorId")
+                .value(ID_HMC_SUPERUSER))
+            .andExpect(jsonPath("$.roleAssignmentResponse[3].roleName")
+                .value("listed-hearing-viewer"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[3].actorId")
+                .value(ID_HMC_SUPERUSER))
+            .andExpect(jsonPath("$.roleAssignmentResponse[2].roleName")
+                .value("hearing-viewer"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[2].actorId")
+                .value(ID_HMC_SUPERUSER))
+            .andExpect(jsonPath("$.roleAssignmentResponse[1].roleName")
+                .value("hearing-manager"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[1].actorId")
+                .value(ID_HMC_SUPERUSER));
     }
 
-    @DisplayName("postOauthAuthorize should return 200 for valid requests")
+    @DisplayName("getRoleAssignments for hearing manager should return 200 for valid requests")
     @Test
-    void postOauthAuthorizeShouldReturn200ForValidRequests() throws Exception {
-        mockMvc.perform(post(OAUTH_AUTHORIZE_URL)
-                .contentType(APPLICATION_JSON_VALUE)
-                .content("{\"code\":[\"eyJ0eXAiOiJKV1QiLCJ6aXAiOiJOT05FIiwia2lkIjoiYi9PNk92VnYxK3krV2dySDVVaTlXVGlvTHQwPSIsImFsZyI6IlJTMjU2In0."
-                    + "eyJzdWIiOiJtYXN0ZXIuY2FzZXdvcmtlckBnbWFpbC5jb20iLCJhdXRoX2xldmVsIjowLCJhdWRpdFRyYWNraW5nSWQiOiI4MWY3NGI0ZS00YjFkLTQy"
-                    + "ZGYtYWFhNC0xZmU5ZGZiOGFhMDEiLCJpc3MiOiJodHRwOi8vZnItYW06ODA4MC9vcGVuYW0vb2F1dGgyL2htY3RzIiwidG9rZW5OYW1lIjoiYWNjZXNz"
-                    + "X3Rva2VuIiwidG9rZW5fdHlwZSI6IkJlYXJlciIsImF1dGhHcmFudElkIjoiYTgzOTdlYjctYWE2ZS00ZDYxLWIyNWYtMzQ1MDNiMjU4OGQ5IiwiYXVk"
-                    + "IjoiY2NkX2dhdGV3YXkiLCJuYmYiOjE3NDE3OTMwNjAsImdyYW50X3R5cGUiOiJhdXRob3JpemF0aW9uX2NvZGUiLCJzY29wZSI6WyJvcGVuaWQiLCJw"
-                    + "cm9maWxlIiwicm9sZXMiXSwiYXV0aF90aW1lIjoxNzQxNzkzMDU4MDAwLCJyZWFsbSI6Ii9obWN0cyIsImV4cCI6MTc0MTgyMTg2MCwiaWF0IjoxNzQx"
-                    + "NzkzMDYwLCJleHBpcmVzX2luIjoyODgwMCwianRpIjoiNTUzNzE5ZGMtZjU4Ni00MTgzLTk4NTAtNjg5YzhjY2FkM2ZlIn0.D0PL9b2a3z9x7kxuco820"
-                    + "_bjDxTIWK4ZYzJzv39IyX_iRqjLwIF_sINuXiLBhaFUDsnJ9wg-kYF4E1RAvqGbKzA17SHc60HV5T4PxdVNIfZD3xd0sd8Si24GRF2eCmq9GhNptvnGg"
-                    + "1BSF8aelj4UoIijt9GL0lRSUCIYmiC0jdFOjTKPXVTg7zFa5z0oxhmd6JvuWFyvTm0JZKZtGLSXabaEpWwxbIXDnaOy0MEazhFC3yruwgAd7ptVXxRTu"
-                    + "9u3uRY0f9qWVksf9xJxy53bfkdEjSQLzaXwZdKGFyWp0ueG0qdPX4COJK4NPL17O7beARJIcljF-z5OTtM5OWjCpA\"]}"))
+    void getRoleAssignmentsForHearingManagerShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(get(AM_ROLE_ASSIGNMENTS_URL + ID_HEARING_MANAGER))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.code").exists());
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].roleName")
+                .value("hearing-manager"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].actorId")
+                .value(ID_HEARING_MANAGER));
+    }
+
+    @DisplayName("getRoleAssignments for hearing viewer should return 200 for valid requests")
+    @Test
+    void getRoleAssignmentsForHearingViewerShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(get(AM_ROLE_ASSIGNMENTS_URL + ID_HEARING_VIEWER))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].roleName")
+                .value("hearing-viewer"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].actorId")
+            .value(ID_HEARING_VIEWER));
+    }
+
+    @DisplayName("getRoleAssignments for listed hearing viewr should return 200 for valid requests")
+    @Test
+    void getRoleAssignmentsForListedHearingViewerShouldReturn200ForValidRequests() throws Exception {
+        mockMvc.perform(get(AM_ROLE_ASSIGNMENTS_URL  + ID_LISTED_HEARING_VIEWER))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].roleName")
+                .value("listed-hearing-viewer"))
+            .andExpect(jsonPath("$.roleAssignmentResponse[0].actorId")
+                .value(ID_LISTED_HEARING_VIEWER))
+        ;
     }
 
     @DisplayName("get Create Case should return 200 for valid requests")

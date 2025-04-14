@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/am/role-assignments/actors/(d8798811-99c5-4f72-b919-7e9826ceb7db|4e710c72-e31d-44e8-8bad-a34fff2cbdf7|1ce13385-444b-4488-89d4-94fbdc331ff5)"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "roleAssignmentResponse": [
+      ]
+    },
+    "transformers": [
+      "dynamic-role-assignments-response-transformer"
+    ]
+  }
+}

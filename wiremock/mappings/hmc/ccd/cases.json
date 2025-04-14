@@ -6,15 +6,27 @@
   "response": {
     "status": 201,
     "headers": {
-      "Content-Type": "application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8"
+      "Content-Type": "application/vnd.uk.gov.hmcts.ccd-data-store-api.create-case.v2+json;charset=UTF-8",
+      "X-Frame-Options": "DENY",
+      "Cache-Control": "no-cache, no-store, max-age=0, must-revalidate",
+      "X-Content-Type-Options": "nosniff",
+      "Pragma": "no-cache",
+      "Expires": "0",
+      "X-XSS-Protection": "1; mode=block",
+      "Date": "2025-04-01T15:08:58.566524"
     },
     "jsonBody": {
-      "id": "[[ANYTHING_PRESENT]]",
+      "_links": {
+        "self": {
+          "href" : "https://ccd-data-store-api-staging.service.core-compute-aat.internal/cases/{{request.path.[1]}}"
+        }
+      },
+      "id": "10001",
       "jurisdiction": "BEFTA_MASTER",
       "case_type": "FT_CRUD",
-      "created_on": "[[ANYTHING_PRESENT]]",
-      "last_modified_on": "[[ANYTHING_PRESENT]]",
-      "last_state_modified_on": "[[ANYTHING_PRESENT]]",
+      "created_on" : "2025-04-01T15:08:58.566524",
+      "last_modified_on" : "2025-04-01T15:08:58.567438",
+      "last_state_modified_on" : "2025-04-01T15:08:58.566524",
       "state": "CaseCreated",
       "security_classification": "PUBLIC",
       "data": {
