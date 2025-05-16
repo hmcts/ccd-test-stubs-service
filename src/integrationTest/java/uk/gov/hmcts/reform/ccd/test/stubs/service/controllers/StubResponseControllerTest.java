@@ -209,6 +209,26 @@ class StubResponseControllerTest {
             .andExpect(jsonPath("$.event_id").exists());
     }
 
+    @DisplayName("post Role Assignments should return 200")
+    @Test
+    void postRoleAssignmentsHmcSuperUser1() throws Exception {
+        mockMvc.perform(post("/am/role-assignments")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content("\"actorId\":\"cc80b61d-02b8-4bf8-b0d2-5fda88649ab4\",\"roleType\":\"ORGANISATION\""))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.roleAssignmentResponse.roleRequest.id").value("0c6f56f5-4457-485e-a0de-828e6dfa1e22"));
+    }
+
+    @DisplayName("post Role Assignments should return 200")
+    @Test
+    void postRoleAssignmentsHearingManager() throws Exception {
+        mockMvc.perform(post("/am/role-assignments")
+                .characterEncoding(StandardCharsets.UTF_8)
+                .content("\"actorId\":\"59a73933-9c23-4180-80fa-76ee07fa20cd\",\"roleType\":\"ORGANISATION\""))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.roleAssignmentResponse.roleRequest.id").value("0c6f56f5-4457-485e-a0de-828e6dfa1e11"));
+    }
+
     private String asJson(IdamUserInfo userInfo) throws JsonProcessingException {
         return mapper.writeValueAsString(userInfo);
     }
