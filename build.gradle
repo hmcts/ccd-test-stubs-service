@@ -130,7 +130,8 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    url 'https://jitpack.io'
+    name = "AzureArtifacts"
+    url = uri("https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1")
   }
 }
 
@@ -237,7 +238,7 @@ dependencies {
   testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
 
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.6', classifier: 'all'
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.9', classifier: 'all'
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
 
