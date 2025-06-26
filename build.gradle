@@ -174,7 +174,7 @@ dependencies {
   // start::CVE Vulnerability dependency overrides                                                        // MAIN PARENT DEPENDEDNCY
 
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'                  // wiremock-spring-boot
-  implementation group: 'commons-io', name: 'commons-io', version: '2.18.0'                               // wiremock-spring-boot
+  implementation group: 'commons-io', name: 'commons-io', version: '2.19.0'                               // wiremock-spring-boot
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: tomcatVersion      // spring-boot-starter-tomcat
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: tomcatVersion        // spring-boot-starter-tomcat
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: tomcatVersion // spring-boot-starter-tomcat
