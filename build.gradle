@@ -148,7 +148,7 @@ ext {
   tomcatVersion = '10.1.42'
   // test versions
   junit = '5.11.4'
-  junitPlatform = '1.11.4'
+  junitPlatform = '1.13.2'
   restAssuredVersion = '5.5.5'
 }
 
