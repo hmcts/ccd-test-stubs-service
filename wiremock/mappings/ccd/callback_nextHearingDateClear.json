@@ -1,0 +1,20 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_nextHearingDateClear"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "nextHearingDetails": {
+          "hearingID": null,
+          "hearingDateTime": null
+        }
+      }
+    }
+  }
+}

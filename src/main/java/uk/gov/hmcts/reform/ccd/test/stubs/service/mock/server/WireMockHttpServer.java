@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.slf4j.Logger;

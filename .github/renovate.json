@@ -1,12 +1,12 @@
 {
-  "enabledManagers": ["helm-requirements"],
-  "helm-requirements":
-    {
-      "enabled": true,
-      "fileMatch": ["\\Chart.yaml|requirements.yaml$"],
-      "aliases": {
-        "hmctspublic": "https://hmctspublic.azurecr.io/helm/v1/repo/"
-      }
-    }
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>hmcts/.github:renovate-config",
+    "local>hmcts/.github//renovate/automerge-minor"
+  ],
+  "labels": ["Renovate Dependencies"],
+  "prConcurrentLimit": 5,
+  "schedule": ["* 16-19 * * 1-5"],
+  "automergeSchedule": ["* 14-18 * * 1-4"],
+  "rebaseWhen": "conflicted"
 }
-

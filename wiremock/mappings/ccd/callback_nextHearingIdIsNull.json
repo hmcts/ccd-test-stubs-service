@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/callback_nextHearingIdIsNull"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "data": {
+        "nextHearingDetails": {
+          "hearingID": null,
+          "hearingDateTime": "{{now offset='8 years' format='yyyy'}}-04-23T10:00:00.000"
+        }
+      }
+    },
+    "transformers": ["response-template"]
+  }
+}

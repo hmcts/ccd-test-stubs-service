@@ -2,7 +2,8 @@
 
 properties([
   // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
-  pipelineTriggers([cron('H 05 * * *')])
+  //CCD-3539 (Stop running Nightly builds on weekends). Original schedule was 'H 05 * * *'
+  pipelineTriggers([cron('H 05 * * 1-5')])
 ])
 
 @Library("Infrastructure")
@@ -11,9 +12,12 @@ def type = "java"
 def product = "ccd"
 def component = "ccd-test-stubs-service"
 
+// Prevent Docker hub rate limit errors by ensuring that testcontainers uses images from hmctspublic ACR
+env.TESTCONTAINERS_HUB_IMAGE_NAME_PREFIX = "hmctspublic.azurecr.io/imported/"
+
 withNightlyPipeline(type, product, component) {
   enableFortifyScan();
-  after('fortify-scan') {
+  afterAlways('fortify-scan') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
   }
 }

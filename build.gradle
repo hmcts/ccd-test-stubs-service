@@ -1,18 +1,21 @@
 plugins {
   id 'application'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-  id 'org.springframework.boot' version '2.4.4'
-  id 'com.github.ben-manes.versions' version '0.20.0'
-  id 'org.sonarqube' version '2.6.2'
-  id 'uk.gov.hmcts.java' version '0.12.0'
+  id 'com.github.ben-manes.versions' version '0.52.0'
+  id 'io.spring.dependency-management' version '1.1.7'
+  id 'org.owasp.dependencycheck' version '11.1.1'
+  id 'org.sonarqube' version '6.0.1.5171'
+  id 'org.springframework.boot' version '3.4.1'
+  id 'uk.gov.hmcts.java' version '0.12.67'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
-version = '0.0.1'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(21)
+  }
+}
 
 sourceSets {
   integrationTest {
@@ -47,6 +50,14 @@ tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
+tasks.withType(Test) {
+  useJUnitPlatform()
+
+  testLogging {
+    exceptionFormat = 'full'
+  }
+}
+
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
@@ -76,21 +87,24 @@ task functional(type: Test) {
 jacocoTestReport {
   executionData(test, integration)
   reports {
-    xml.enabled = true
-    csv.enabled = false
-    xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+    xml.required = true
+    csv.required = false
+    xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
 
-project.tasks['sonarqube'].dependsOn test, integration
+check.dependsOn integration
+
+project.tasks['sonarqube'].dependsOn test, integration, jacocoTestReport
 
 sonarqube {
   properties {
     property "sonar.projectName", "Reform :: ccd-test-stubs-service"
     property "sonar.projectKey", "uk.gov.hmcts.reform:ccd-test-stubs-service"
-    property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/junitPlatformTest.exec"
+    property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/test.exec"
     property "sonar.jacoco.itReportPath", "${project.buildDir}/jacoco/integration.exec"
     property "sonar.junit.reportPaths", "${project.buildDir}/test-results/junit-platform"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.outputLocation}"
   }
 }
 
@@ -107,6 +121,7 @@ dependencyUpdates.resolutionStrategy = {
   }
 }
 
+apply from: './gradle/suppress.gradle'
 dependencyCheck {
   suppressionFile = 'dependency-check-suppressions.xml'
 }
@@ -115,130 +130,124 @@ repositories {
   mavenLocal()
   mavenCentral()
   maven {
-    url 'https://jitpack.io'
+    name = "AzureArtifacts"
+    url = uri("https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1")
   }
 }
 
 ext {
-  groovyVersion = '3.0.7'
-  tomcatVersion = '9.0.63!!'
-  jettyVersion = '9.4.43.v20210629'
+  set('springCloudVersion', '2024.0.1')
+  set('spring-framework.version', '6.2.1')
+  set('spring-security.version', '6.4.2')
+  set('log4j2.version', '2.24.3')
+  set('jackson.version', '2.18.2')
+  set('snakeyaml.version', '2.3')
+  groovyVersion = '4.0.27'
+  jettyVersion = '11.0.25'
+  reformLogging = '6.1.9'
+  tomcatVersion = '10.1.42'
+  // test versions
+  junit = '5.11.4'
+  junitPlatform = '1.13.2'
+  restAssuredVersion = '5.5.5'
 }
 
-ext['spring-framework.version'] = '5.3.20'
-ext['spring-security.version'] = '5.4.5'
-ext['log4j2.version'] = '2.17.1'
-ext['jackson.version'] = '2.13.2'
-
-// it is important to specify logback classic and core packages explicitly as libraries like spring boot
-// enforces it's own (older) version which is not recommended.
-def versions = [
-  junit           : '5.3.2',
-  reformLogging   : '5.1.9',
-  springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '3.0.0'
+ext.libraries = [
+  junit5: [
+    "org.junit.jupiter:junit-jupiter-api:${junit}",
+    "org.junit.jupiter:junit-jupiter-engine:${junit}",
+    "org.junit.jupiter:junit-jupiter-params:${junit}",
+    "org.junit.platform:junit-platform-commons:${junitPlatform}",
+    "org.junit.platform:junit-platform-engine:${junitPlatform}",
+    "org.apiguardian:apiguardian-api:1.1.2"
+  ]
 ]
 
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+  }
+}
 
 dependencies {
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.1'
 
-  compile group: 'com.google.guava', name: 'guava', version:'30.1-jre'
-  compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+  // start::CVE Vulnerability dependency overrides                                                        // MAIN PARENT DEPENDEDNCY
 
-  compile "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}"
-  compile "org.apache.tomcat.embed:tomcat-embed-el:${tomcatVersion}"
-  compile "org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}"
+  implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.6.0'                  // wiremock-spring-boot
+  implementation group: 'commons-io', name: 'commons-io', version: '2.19.0'                               // wiremock-spring-boot
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: tomcatVersion      // spring-boot-starter-tomcat
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: tomcatVersion        // spring-boot-starter-tomcat
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: tomcatVersion // spring-boot-starter-tomcat
 
-  compile "com.fasterxml.jackson.core:jackson-databind:2.13.2.2"
-  compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.13.2'
-  compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
-  compile "com.fasterxml.jackson:jackson-bom:2.13.2"
+  testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
 
-  // CVE-2021-28170
-  compile group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
-  // CVE-2021-42550
-  implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.10'
-  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.2.10'
+  // end::CVE Vulnerability dependency overrides                                                          // MAIN PARENT DEPENDEDNCY
 
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  // SPRING
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
+  implementation group: 'org.springframework.security', name: 'spring-security-crypto'
+  implementation group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.1.5'
 
-  compile group: 'com.github.hmcts.java-logging', name: 'logging', version: versions.reformLogging
-  compile (group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE') {
-    exclude group: 'org.springframework.security', module: 'spring-security-rsa'
-  }
+  // HMCTS
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: reformLogging
 
-  // https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock
-  compile (group: 'com.github.tomakehurst', name: 'wiremock-jre8', version: '2.27.2')
-          {
-            exclude group: 'com.github.jknack', module: 'handlebars'
-          }
-// https://mvnrepository.com/artifact/com.github.jknack/handlebars
-  implementation group: 'com.github.jknack', name: 'handlebars', version: '4.2.0'
-
-  compile group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-continuation', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-util', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-xml', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-client', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-security', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-http', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-io', version: jettyVersion
-  compile group: 'org.eclipse.jetty.http2', name: 'http2-server', version: jettyVersion
-  compile group: 'org.eclipse.jetty.http2', name: 'http2-common', version: jettyVersion
-
-  compile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-webapp', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-proxy', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-server', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-conscrypt-server', version: jettyVersion
-  compile group: 'org.eclipse.jetty', name: 'jetty-alpn-conscrypt-client', version: jettyVersion
-
-  compile group: 'org.codehaus.groovy', name: 'groovy-json', version: groovyVersion
-  compile group: 'org.codehaus.groovy', name: 'groovy', version: groovyVersion
-  compile group: 'org.codehaus.groovy', name: 'groovy-xml', version: groovyVersion
-
-  compile group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '7.9'
-  compile group: 'org.springframework.security', name: 'spring-security-crypto', version: '5.4.5'
+  // JETTY
+  implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-alpn-client', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-alpn-java-client', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-alpn-java-server', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-util', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-util-ajax', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-xml', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-client', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-security', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-http', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-io', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-servlets', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-webapp', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-proxy', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-alpn-server', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-alpn-conscrypt-server', version: jettyVersion
+  implementation group: 'org.eclipse.jetty', name: 'jetty-alpn-conscrypt-client', version: jettyVersion
+  implementation group: 'org.eclipse.jetty.http2', name: 'http2-server', version: jettyVersion
+  implementation group: 'org.eclipse.jetty.http2', name: 'http2-common', version: jettyVersion
+  implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
 
-  // CVE-2019-10086 force update of commons-beanutils.
-  compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.4'
-  compile group: 'commons-io', name: 'commons-io', version: '2.8.0'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.3.1'
+  implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0'
+  implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.5.2'
+  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.5'
+  implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
+  implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
+  implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
+  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.6.0'
 
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-  testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  testCompile(group: 'io.rest-assured', name: 'rest-assured', version: '4.3.0') {
-    exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
-  }
-  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
-  testCompile(group: 'io.rest-assured', name: 'xml-path', version: '4.3.0') {
-    exclude group: 'org.apache.sling', module: 'org.apache.sling.javax.activation'
-  }
+  testImplementation libraries.junit5
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
+  testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
+  testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
 
-  testCompile group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-  testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
-  integrationTestCompile sourceSets.main.runtimeClasspath
-  integrationTestCompile sourceSets.test.runtimeClasspath
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.9', classifier: 'all'
+  
+  integrationTestImplementation sourceSets.main.runtimeClasspath
+  integrationTestImplementation sourceSets.test.runtimeClasspath
 
-  smokeTestCompile sourceSets.main.runtimeClasspath
-  smokeTestCompile sourceSets.test.runtimeClasspath
+  smokeTestImplementation sourceSets.main.runtimeClasspath
+  smokeTestImplementation sourceSets.test.runtimeClasspath
 
-  functionalTestCompile sourceSets.main.runtimeClasspath
-  functionalTestCompile sourceSets.test.runtimeClasspath
-
-  compile group: 'junit', name: 'junit', version: '4.13.1'
-
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.4.7'
+  functionalTestImplementation sourceSets.main.runtimeClasspath
+  functionalTestImplementation sourceSets.test.runtimeClasspath
 }
 
 test {
@@ -246,10 +255,12 @@ test {
   failFast = true
 }
 
-mainClassName = 'uk.gov.hmcts.reform.ccd.test.stubs.service.Application'
+application {
+  mainClass = 'uk.gov.hmcts.reform.ccd.test.stubs.service.Application'
+}
 
 bootJar {
-  archiveName = 'ccd-test-stubs-service.jar'
+  archiveFileName = 'ccd-test-stubs-service.jar'
 
   manifest {
     attributes('Implementation-Title': project.name)
@@ -260,19 +271,11 @@ bootJar {
   }
 }
 
-dependencyManagement {
-  imports {
-    mavenBom "org.springframework.cloud:spring-cloud-dependencies:2020.0.1"
-  }
-}
-
 // for cnp pipeline
 task dependencyCheck(dependsOn: dependencyCheckAnalyze)
 
 task fortifyScan(type: JavaExec)  {
-  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+  mainClass = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
   classpath += sourceSets.test.runtimeClasspath
   jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
-  // The line below prevents the build from failing if the Fortify scan detects issues
-  ignoreExitValue = true
 }
