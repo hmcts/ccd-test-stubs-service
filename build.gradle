@@ -6,7 +6,7 @@ plugins {
   id 'org.owasp.dependencycheck' version '11.1.1'
   id 'org.sonarqube' version '6.2.0.5505'
   id 'org.springframework.boot' version '3.4.1'
-  id 'uk.gov.hmcts.java' version '0.12.63'
+  id 'uk.gov.hmcts.java' version '0.12.67'
 }
 
 group = 'uk.gov.hmcts.reform.ccd'
