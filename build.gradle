@@ -147,8 +147,8 @@ ext {
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.43'
   // test versions
-  junit = '5.11.4'
-  junitPlatform = '1.13.2'
+  junit = '5.13.4'
+  junitPlatform = '1.13.4'
   restAssuredVersion = '5.5.5'
 }
 
