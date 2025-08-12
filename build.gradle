@@ -20,7 +20,7 @@ java {
 sourceSets {
   integrationTest {
     java {
-      compileClasspath += main.output
+      compileClasspath += main.output 
       runtimeClasspath += main.output
       srcDir file('src/integrationTest/java')
     }
@@ -46,11 +46,22 @@ sourceSets {
   }
 }
 
+configurations {
+
+  integrationTestImplementation.extendsFrom testImplementation
+  integrationTestRuntimeOnly.extendsFrom testRuntimeOnly
+  smokeTestImplementation.extendsFrom testImplementation
+  smokeTestRuntimeOnly.extendsFrom testRuntimeOnly
+  functionalTestImplementation.extendsFrom testImplementation
+  functionalTestRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
 }
 
 tasks.withType(Test) {
+  failFast = true
   useJUnitPlatform()
 
   testLogging {
@@ -61,14 +72,13 @@ tasks.withType(Test) {
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
-  useJUnitPlatform{
-    includeTags 'integration'
-  }
+
   // set your environment variables here
   environment("WIREMOCK_SERVER_MAPPINGS_PATH", "wiremock")
 }
 
 task smoke(type: Test) {
+  failFast = false
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
   useJUnitPlatform {
@@ -77,6 +87,7 @@ task smoke(type: Test) {
 }
 
 task functional(type: Test) {
+  failFast = false
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
   useJUnitPlatform {
@@ -147,22 +158,8 @@ ext {
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.44'
   // test versions
-  junit = '5.13.4'
-  junitPlatform = '1.13.4'
   restAssuredVersion = '5.5.5'
 }
-
-ext.libraries = [
-  junit5: [
-    "org.junit.jupiter:junit-jupiter-api:${junit}",
-    "org.junit.jupiter:junit-jupiter-engine:${junit}",
-    "org.junit.jupiter:junit-jupiter-params:${junit}",
-    "org.junit.platform:junit-platform-commons:${junitPlatform}",
-    "org.junit.platform:junit-platform-engine:${junitPlatform}",
-    "org.junit.platform:junit-platform-launcher:${junitPlatform}",
-    "org.apiguardian:apiguardian-api:1.1.2"
-  ]
-]
 
 dependencyManagement {
   imports {
@@ -228,7 +225,7 @@ dependencies {
   implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.10.0'
 
 
-  testImplementation libraries.junit5
+  testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
@@ -244,11 +241,6 @@ dependencies {
 
   functionalTestImplementation sourceSets.main.runtimeClasspath
   functionalTestImplementation sourceSets.test.runtimeClasspath
-}
-
-test {
-  useJUnitPlatform()
-  failFast = true
 }
 
 application {
