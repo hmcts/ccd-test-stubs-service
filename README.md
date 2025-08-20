@@ -170,7 +170,7 @@ pipeline giving false results to your own tests.
 
 Therefor the following steps should be applied:
 
-* Ensure the Test-Stubs pull request (PR) that is under test has the `keep-helm` label set to ensure the instance
+* Ensure the Test-Stubs pull request (PR) that is under test has the `enable_keep_helm` label set to ensure the instance
   remains active after the pipeline is complete.
 * Generate test PRs for the [CCD Definition Store](https://github.com/hmcts/ccd-definition-store-api) and
   [CCD Data Store](https://github.com/hmcts/ccd-data-store-api) and configured them to run in isolation as described in
@@ -187,7 +187,7 @@ Therefor the following steps should be applied:
 
 * `Jenkinsfile_CNP` add or override the following but referring to the correct Test-Stubs PR number:
   ```
-  env.BEFTA_TEST_STUB_SERVICE_BASE_URL = "https://ccd-test-stubs-service-pr-204.service.core-compute-preview.internal"
+  env.BEFTA_TEST_STUB_SERVICE_BASE_URL = "https://ccd-test-stubs-service-pr-204.preview.platform.hmcts.net"
   env.TEST_STUB_SERVICE_BASE_URL = "http://ccd-test-stubs-service-pr-204-java"
   ```
   > Note: these are two different URLs as one call is ***jenkins** FTAs* -> ***Preview** Test-Stubs* and the other is
