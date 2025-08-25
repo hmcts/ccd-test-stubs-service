@@ -38,7 +38,7 @@ jobs:
       - name: Run cleanSuppressions
         run: ./gradlew cleanSuppressions
       - name: Commit
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
           skip_dirty_check: false
           commit_message: "Suppressing CVE - Actions"
