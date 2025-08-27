@@ -143,13 +143,13 @@ ext {
   set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
   groovyVersion = '4.0.28'
-  jettyVersion = '11.0.25'
+  jettyVersion = '11.0.26'
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.44'
   // test versions
   junit = '5.11.4'
   junitPlatform = '1.13.2'
-  restAssuredVersion = '5.5.5'
+  restAssuredVersion = '5.5.6'
 }
 
 ext.libraries = [
@@ -221,7 +221,7 @@ dependencies {
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
 
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.4.1'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.4.2'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0'
   implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
   implementation group: 'net.minidev', name: 'json-smart', version: '2.6.0'
@@ -229,7 +229,7 @@ dependencies {
   implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
-  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.6.0'
+  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.10.6'
 
 
   testImplementation libraries.junit5
