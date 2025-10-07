@@ -43,7 +43,7 @@ class ServicePersistenceControllerWebMvcTest {
                 .content(firstPayload.toString()))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.revision").value(1))
-            .andExpect(jsonPath("$.case_details.revision").value(1))
+            .andExpect(jsonPath("$.case_details.version").value(1))
             .andExpect(jsonPath("$.case_details.resolved_ttl").value(ttl))
             .andExpect(jsonPath("$.case_details.case_data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE))
             .andExpect(jsonPath("$.case_details.created_date", notNullValue()))
@@ -63,7 +63,7 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(cases).hasSize(1);
         JsonNode caseDetails = cases.get(0).path("case_details");
         assertThat(caseDetails.path("reference").asLong()).isEqualTo(caseReference);
-        assertThat(caseDetails.path("revision").asInt()).isEqualTo(1);
+        assertThat(caseDetails.path("version").asInt()).isEqualTo(1);
         assertThat(caseDetails.path("case_data").path(STUB_MARKER_FIELD).asText()).isEqualTo(STUB_MARKER_VALUE);
         assertThat(caseDetails.path("created_date").asText()).isNotBlank();
         assertThat(caseDetails.path("last_modified").asText()).isNotBlank();
@@ -103,7 +103,7 @@ class ServicePersistenceControllerWebMvcTest {
                 .content(buildPayload(caseReference, "update").toString()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.revision").value(2))
-            .andExpect(jsonPath("$.case_details.revision").value(2))
+            .andExpect(jsonPath("$.case_details.version").value(2))
             .andExpect(jsonPath("$.case_details.case_data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE));
 
         String historyJson = mockMvc.perform(get("/ccd-persistence/cases/{caseRef}/history", caseReference))

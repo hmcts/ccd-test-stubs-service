@@ -66,7 +66,7 @@ public class ServicePersistenceController {
         ObjectNode caseDataNode = ensureObjectNode(caseDetails, CASE_DATA_FIELD);
         caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
         caseDetails.remove("data");
-        caseDetails.put("revision", revision);
+        caseDetails.put("version", revision);
         applyTimestampsAndDefaults(caseDetails, existing);
         JsonNode resolvedTtl = payload.path("resolved_ttl");
         if (!resolvedTtl.isMissingNode() && !resolvedTtl.isNull()) {
