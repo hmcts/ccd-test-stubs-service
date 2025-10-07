@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ServicePersistenceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServicePersistenceController.class);
+    private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
+    private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
     private final AtomicLong auditSequence = new AtomicLong(1);
@@ -58,6 +60,10 @@ public class ServicePersistenceController {
         CaseRecord existing = cases.getIfPresent(reference);
 
         long revision = existing == null ? 1 : existing.revision + 1;
+        ObjectNode caseDataNode = caseDetails.has("data") && caseDetails.get("data").isObject()
+            ? (ObjectNode) caseDetails.get("data")
+            : caseDetails.putObject("data");
+        caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
         caseDetails.put("revision", revision);
         JsonNode resolvedTtl = payload.path("resolved_ttl");
         if (!resolvedTtl.isMissingNode() && !resolvedTtl.isNull()) {

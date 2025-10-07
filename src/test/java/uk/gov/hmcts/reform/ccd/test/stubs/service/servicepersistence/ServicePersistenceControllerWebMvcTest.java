@@ -20,6 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ServicePersistenceControllerWebMvcTest {
 
+    private static final String STUB_MARKER_FIELD = "_stubProcessedBy";
+    private static final String STUB_MARKER_VALUE = "ccd-test-stubs-service";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -40,7 +43,8 @@ class ServicePersistenceControllerWebMvcTest {
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.revision").value(1))
             .andExpect(jsonPath("$.case_details.revision").value(1))
-            .andExpect(jsonPath("$.case_details.resolved_ttl").value(ttl));
+            .andExpect(jsonPath("$.case_details.resolved_ttl").value(ttl))
+            .andExpect(jsonPath("$.case_details.data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE));
 
         String casesJson = mockMvc.perform(get("/ccd-persistence/cases")
                 .param("case-refs", String.valueOf(caseReference)))
@@ -54,6 +58,7 @@ class ServicePersistenceControllerWebMvcTest {
         JsonNode caseDetails = cases.get(0).path("case_details");
         assertThat(caseDetails.path("reference").asLong()).isEqualTo(caseReference);
         assertThat(caseDetails.path("revision").asInt()).isEqualTo(1);
+        assertThat(caseDetails.path("data").path(STUB_MARKER_FIELD).asText()).isEqualTo(STUB_MARKER_VALUE);
 
         String historyJson = mockMvc.perform(get("/ccd-persistence/cases/{caseRef}/history", caseReference))
             .andExpect(status().isOk())
@@ -67,6 +72,8 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(firstEvent.path("case_reference").asLong()).isEqualTo(caseReference);
         assertThat(firstEvent.path("event").path("event_id").asText()).isEqualTo("createCase");
         assertThat(firstEvent.path("id").asLong()).isEqualTo(1L);
+        assertThat(firstEvent.path("event").path("data").path(STUB_MARKER_FIELD).asText())
+            .isEqualTo(STUB_MARKER_VALUE);
     }
 
     @Test
@@ -77,14 +84,16 @@ class ServicePersistenceControllerWebMvcTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(buildPayload(caseReference, "create").toString()))
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("$.revision").value(1));
+            .andExpect(jsonPath("$.revision").value(1))
+            .andExpect(jsonPath("$.case_details.data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE));
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(buildPayload(caseReference, "update").toString()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.revision").value(2))
-            .andExpect(jsonPath("$.case_details.revision").value(2));
+            .andExpect(jsonPath("$.case_details.revision").value(2))
+            .andExpect(jsonPath("$.case_details.data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE));
 
         String historyJson = mockMvc.perform(get("/ccd-persistence/cases/{caseRef}/history", caseReference))
             .andExpect(status().isOk())
@@ -97,6 +106,8 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(history.get(0).path("id").asLong()).isEqualTo(1L);
         assertThat(history.get(1).path("id").asLong()).isEqualTo(2L);
         assertThat(history.get(1).path("event").path("event_id").asText()).isEqualTo("update");
+        assertThat(history.get(1).path("event").path("data").path(STUB_MARKER_FIELD).asText())
+            .isEqualTo(STUB_MARKER_VALUE);
     }
 
     @Test
