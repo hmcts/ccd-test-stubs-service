@@ -35,6 +35,7 @@ public class ServicePersistenceController {
     private static final Logger LOG = LoggerFactory.getLogger(ServicePersistenceController.class);
     private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
+    private static final String CASE_DATA_FIELD = "case_data";
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
     private final AtomicLong auditSequence = new AtomicLong(1);
@@ -60,10 +61,9 @@ public class ServicePersistenceController {
         CaseRecord existing = cases.getIfPresent(reference);
 
         long revision = existing == null ? 1 : existing.revision + 1;
-        ObjectNode caseDataNode = caseDetails.has("data") && caseDetails.get("data").isObject()
-            ? (ObjectNode) caseDetails.get("data")
-            : caseDetails.putObject("data");
+        ObjectNode caseDataNode = ensureObjectNode(caseDetails, CASE_DATA_FIELD);
         caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
+        caseDetails.remove("data");
         caseDetails.put("revision", revision);
         JsonNode resolvedTtl = payload.path("resolved_ttl");
         if (!resolvedTtl.isMissingNode() && !resolvedTtl.isNull()) {
@@ -169,16 +169,24 @@ public class ServicePersistenceController {
         event.put("case_type_id", eventDetails.path("case_type").asText(caseDetails.path("case_type_id").asText(null)));
         event.put("created_date", OffsetDateTime.now().toString());
         event.put("state_id", caseDetails.path("state").asText(null));
-        ObjectNode dataNode = caseDetails.has("data") && caseDetails.get("data").isObject()
-            ? (ObjectNode) caseDetails.get("data")
-            : mapper.createObjectNode();
-        event.set("data", dataNode);
+        ObjectNode dataNode = ensureObjectNode(caseDetails, CASE_DATA_FIELD);
+        event.set("data", dataNode.deepCopy());
 
         ObjectNode wrapper = mapper.createObjectNode();
         wrapper.put("id", nextId);
         wrapper.put("case_reference", reference);
         wrapper.set("event", event);
         return wrapper;
+    }
+
+    private ObjectNode ensureObjectNode(ObjectNode parent, String fieldName) {
+        JsonNode existing = parent.get(fieldName);
+        if (existing != null && existing.isObject()) {
+            return (ObjectNode) existing;
+        }
+        ObjectNode created = mapper.createObjectNode();
+        parent.set(fieldName, created);
+        return created;
     }
 
     private record CaseRecord(ObjectNode caseDetails,
