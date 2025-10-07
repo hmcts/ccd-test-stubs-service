@@ -11,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,7 +45,12 @@ class ServicePersistenceControllerWebMvcTest {
             .andExpect(jsonPath("$.revision").value(1))
             .andExpect(jsonPath("$.case_details.revision").value(1))
             .andExpect(jsonPath("$.case_details.resolved_ttl").value(ttl))
-            .andExpect(jsonPath("$.case_details.case_data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE));
+            .andExpect(jsonPath("$.case_details.case_data." + STUB_MARKER_FIELD).value(STUB_MARKER_VALUE))
+            .andExpect(jsonPath("$.case_details.created_date", notNullValue()))
+            .andExpect(jsonPath("$.case_details.last_modified", notNullValue()))
+            .andExpect(jsonPath("$.case_details.last_state_modified_date", notNullValue()))
+            .andExpect(jsonPath("$.case_details.state", notNullValue()))
+            .andExpect(jsonPath("$.case_details.security_classification", notNullValue()));
 
         String casesJson = mockMvc.perform(get("/ccd-persistence/cases")
                 .param("case-refs", String.valueOf(caseReference)))
@@ -59,6 +65,11 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(caseDetails.path("reference").asLong()).isEqualTo(caseReference);
         assertThat(caseDetails.path("revision").asInt()).isEqualTo(1);
         assertThat(caseDetails.path("case_data").path(STUB_MARKER_FIELD).asText()).isEqualTo(STUB_MARKER_VALUE);
+        assertThat(caseDetails.path("created_date").asText()).isNotBlank();
+        assertThat(caseDetails.path("last_modified").asText()).isNotBlank();
+        assertThat(caseDetails.path("last_state_modified_date").asText()).isNotBlank();
+        assertThat(caseDetails.path("state").asText()).isNotBlank();
+        assertThat(caseDetails.path("security_classification").asText()).isNotBlank();
 
         String historyJson = mockMvc.perform(get("/ccd-persistence/cases/{caseRef}/history", caseReference))
             .andExpect(status().isOk())

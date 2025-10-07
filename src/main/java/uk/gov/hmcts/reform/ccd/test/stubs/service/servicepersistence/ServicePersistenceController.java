@@ -36,6 +36,8 @@ public class ServicePersistenceController {
     private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private static final String CASE_DATA_FIELD = "case_data";
+    private static final String DEFAULT_STATE = "CaseCreated";
+    private static final String DEFAULT_SECURITY_CLASSIFICATION = "PUBLIC";
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
     private final AtomicLong auditSequence = new AtomicLong(1);
@@ -65,6 +67,7 @@ public class ServicePersistenceController {
         caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
         caseDetails.remove("data");
         caseDetails.put("revision", revision);
+        applyTimestampsAndDefaults(caseDetails, existing);
         JsonNode resolvedTtl = payload.path("resolved_ttl");
         if (!resolvedTtl.isMissingNode() && !resolvedTtl.isNull()) {
             caseDetails.put("resolved_ttl", resolvedTtl.asText());
@@ -177,6 +180,27 @@ public class ServicePersistenceController {
         wrapper.put("case_reference", reference);
         wrapper.set("event", event);
         return wrapper;
+    }
+
+    private void applyTimestampsAndDefaults(ObjectNode caseDetails, CaseRecord existing) {
+        OffsetDateTime now = OffsetDateTime.now();
+        String nowIso = now.toString();
+
+        if (existing == null || !caseDetails.hasNonNull("created_date")) {
+            caseDetails.put("created_date", nowIso);
+        }
+
+        caseDetails.put("last_modified", nowIso);
+        caseDetails.put("last_state_modified_date", nowIso);
+
+        if (!caseDetails.hasNonNull("state") || caseDetails.get("state").asText().isBlank()) {
+            caseDetails.put("state", DEFAULT_STATE);
+        }
+
+        if (!caseDetails.hasNonNull("security_classification")
+            || caseDetails.get("security_classification").asText().isBlank()) {
+            caseDetails.put("security_classification", DEFAULT_SECURITY_CLASSIFICATION);
+        }
     }
 
     private ObjectNode ensureObjectNode(ObjectNode parent, String fieldName) {
