@@ -37,7 +37,6 @@ public class ServicePersistenceController {
     private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private static final String CASE_DATA_FIELD = "case_data";
-    private static final String DATA_CLASSIFICATION_FIELD = "data_classification";
 
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
@@ -64,14 +63,11 @@ public class ServicePersistenceController {
         requireText(caseDetails, "case_type_id");
         requireText(caseDetails, "jurisdiction");
         ObjectNode caseDataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
-        ObjectNode classificationNode = optionalObjectNode(caseDetails, DATA_CLASSIFICATION_FIELD);
-        String securityClassification = requireTextValue(caseDetails, "security_classification");
 
         CaseRecord existing = cases.getIfPresent(reference);
         final long revision = existing == null ? 1 : existing.revision + 1;
 
         caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
-        classificationNode.put(STUB_PROCESSOR_FIELD, securityClassification);
         caseDetails.remove("data");
         caseDetails.put("version", revision);
         caseDetails.put("id", reference);
@@ -192,8 +188,6 @@ public class ServicePersistenceController {
         event.put("state_id", caseDetails.path("state").asText(null));
         ObjectNode dataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
         event.set("data", dataNode.deepCopy());
-        ObjectNode dataClassification = requireObjectNode(caseDetails, DATA_CLASSIFICATION_FIELD);
-        event.set("data_classification", dataClassification.deepCopy());
         event.put("case_type_version", caseDetails.path("version").asInt(1));
         event.put("security_classification", requireTextValue(caseDetails, "security_classification"));
 
@@ -229,21 +223,6 @@ public class ServicePersistenceController {
             throw badRequest("Field '%s' must be a JSON object".formatted(fieldName));
         }
         return (ObjectNode) existing;
-    }
-
-    private ObjectNode optionalObjectNode(ObjectNode parent, String fieldName) {
-        JsonNode existing = parent.get(fieldName);
-        if (existing == null || existing.isNull()) {
-            ObjectNode created = mapper.createObjectNode();
-            parent.set(fieldName, created);
-            return created;
-        }
-        if (existing.isObject()) {
-            return (ObjectNode) existing;
-        }
-        ObjectNode replacement = mapper.createObjectNode();
-        parent.set(fieldName, replacement);
-        return replacement;
     }
 
     private long extractCaseReference(ObjectNode caseDetails, ObjectNode payload) {
@@ -283,18 +262,11 @@ public class ServicePersistenceController {
     }
 
     private List<Long> parseCaseReferences(String raw) {
-        if (raw == null || raw.isBlank()) {
-            throw badRequest("case-refs query parameter must not be blank");
-        }
-        try {
-            return Arrays.stream(raw.split(","))
-                .map(String::trim)
-                .filter(token -> !token.isEmpty())
-                .map(Long::valueOf)
-                .collect(Collectors.toList());
-        } catch (NumberFormatException ex) {
-            throw badRequest("case-refs must contain comma separated numeric values");
-        }
+        return Arrays.stream(raw.split(","))
+            .map(String::trim)
+            .filter(token -> !token.isEmpty())
+            .map(Long::valueOf)
+            .collect(Collectors.toList());
     }
 
     private ResponseStatusException badRequest(String message) {

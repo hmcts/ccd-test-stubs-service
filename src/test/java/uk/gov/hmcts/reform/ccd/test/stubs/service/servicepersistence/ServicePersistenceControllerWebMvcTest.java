@@ -207,6 +207,7 @@ class ServicePersistenceControllerWebMvcTest {
 
     private ObjectNode buildPayload(long caseReference, String eventId) {
         ObjectNode caseDetails = mapper.createObjectNode();
+        caseDetails.put("id", caseReference);
         caseDetails.put("reference", caseReference);
         caseDetails.put("case_type_id", "TestCaseType");
         caseDetails.put("state", "Created");
