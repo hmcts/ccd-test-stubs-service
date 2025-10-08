@@ -38,8 +38,6 @@ public class ServicePersistenceController {
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private static final String CASE_DATA_FIELD = "case_data";
     private static final String DATA_CLASSIFICATION_FIELD = "data_classification";
-    private static final String DEFAULT_STATE = "CaseCreated";
-    private static final String DEFAULT_SECURITY_CLASSIFICATION = "PUBLIC";
 
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
@@ -67,12 +65,13 @@ public class ServicePersistenceController {
         requireText(caseDetails, "jurisdiction");
         ObjectNode caseDataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
         ObjectNode classificationNode = optionalObjectNode(caseDetails, DATA_CLASSIFICATION_FIELD);
+        String securityClassification = requireTextValue(caseDetails, "security_classification");
 
         CaseRecord existing = cases.getIfPresent(reference);
         final long revision = existing == null ? 1 : existing.revision + 1;
 
         caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
-        classificationNode.put(STUB_PROCESSOR_FIELD, DEFAULT_SECURITY_CLASSIFICATION);
+        classificationNode.put(STUB_PROCESSOR_FIELD, securityClassification);
         caseDetails.remove("data");
         caseDetails.put("version", revision);
         caseDetails.put("id", reference);
@@ -196,8 +195,7 @@ public class ServicePersistenceController {
         ObjectNode dataClassification = requireObjectNode(caseDetails, DATA_CLASSIFICATION_FIELD);
         event.set("data_classification", dataClassification.deepCopy());
         event.put("case_type_version", caseDetails.path("version").asInt(1));
-        event.put("security_classification",
-            caseDetails.path("security_classification").asText(DEFAULT_SECURITY_CLASSIFICATION));
+        event.put("security_classification", requireTextValue(caseDetails, "security_classification"));
 
         ObjectNode wrapper = mapper.createObjectNode();
         long nextId = auditSequence.getAndIncrement();
@@ -220,14 +218,6 @@ public class ServicePersistenceController {
         caseDetails.put("last_modified", nowIso);
         caseDetails.put("last_state_modified_date", nowIso);
 
-        if (!caseDetails.hasNonNull("state") || caseDetails.get("state").asText().isBlank()) {
-            caseDetails.put("state", DEFAULT_STATE);
-        }
-
-        if (!caseDetails.hasNonNull("security_classification")
-            || caseDetails.get("security_classification").asText().isBlank()) {
-            caseDetails.put("security_classification", DEFAULT_SECURITY_CLASSIFICATION);
-        }
     }
 
     private ObjectNode requireObjectNode(ObjectNode parent, String fieldName) {
@@ -294,6 +284,11 @@ public class ServicePersistenceController {
         if (value == null || value.isNull() || value.asText().isBlank()) {
             throw badRequest("Field '%s' must be present and non-empty".formatted(fieldName));
         }
+    }
+
+    private String requireTextValue(ObjectNode node, String fieldName) {
+        requireText(node, fieldName);
+        return node.get(fieldName).asText();
     }
 
     private void requireHeader(String headerValue, String message) {

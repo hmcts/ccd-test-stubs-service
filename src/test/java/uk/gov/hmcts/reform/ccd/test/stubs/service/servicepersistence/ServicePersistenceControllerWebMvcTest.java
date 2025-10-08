@@ -211,7 +211,9 @@ class ServicePersistenceControllerWebMvcTest {
         caseDetails.put("case_type_id", "TestCaseType");
         caseDetails.put("state", "Created");
         caseDetails.put("jurisdiction", "TestJurisdiction");
+        caseDetails.put("security_classification", "PUBLIC");
         caseDetails.set("case_data", mapper.createObjectNode().put("field", "value"));
+        caseDetails.set("data_classification", mapper.createObjectNode().put("field", "PUBLIC"));
 
         ObjectNode eventDetails = mapper.createObjectNode();
         eventDetails.put("event_id", eventId);
