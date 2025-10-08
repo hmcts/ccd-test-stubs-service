@@ -173,7 +173,6 @@ public class ServicePersistenceController {
             ? (ObjectNode) payload.get("event_details")
             : mapper.createObjectNode();
         ObjectNode event = mapper.createObjectNode();
-        long nextId = auditSequence.getAndIncrement();
         String eventTriggerId = eventDetails.path("event_id").asText("event");
 
         event.put("id", eventTriggerId);
@@ -192,6 +191,7 @@ public class ServicePersistenceController {
             caseDetails.path("security_classification").asText(DEFAULT_SECURITY_CLASSIFICATION));
 
         ObjectNode wrapper = mapper.createObjectNode();
+        long nextId = auditSequence.getAndIncrement();
         wrapper.put("id", nextId);
         wrapper.put("case_reference", reference);
         wrapper.set("event", event);

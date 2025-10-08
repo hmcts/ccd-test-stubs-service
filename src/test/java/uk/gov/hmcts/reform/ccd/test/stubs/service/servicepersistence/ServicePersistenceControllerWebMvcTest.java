@@ -82,7 +82,7 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(history).hasSize(1);
         JsonNode firstEvent = history.get(0);
         assertThat(firstEvent.path("case_reference").asLong()).isEqualTo(caseReference);
-        assertThat(firstEvent.path("event").path("event_id").asText()).isEqualTo("createCase");
+        assertThat(firstEvent.path("event").path("id").asText()).isEqualTo("createCase");
         assertThat(firstEvent.path("id").asLong()).isEqualTo(1L);
         assertThat(firstEvent.path("event").path("data").path(STUB_MARKER_FIELD).asText())
             .isEqualTo(STUB_MARKER_VALUE);
@@ -119,7 +119,7 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(history).hasSize(2);
         assertThat(history.get(0).path("id").asLong()).isEqualTo(1L);
         assertThat(history.get(1).path("id").asLong()).isEqualTo(2L);
-        assertThat(history.get(1).path("event").path("event_id").asText()).isEqualTo("update");
+        assertThat(history.get(1).path("event").path("id").asText()).isEqualTo("update");
         assertThat(history.get(1).path("event").path("data").path(STUB_MARKER_FIELD).asText())
             .isEqualTo(STUB_MARKER_VALUE);
     }
