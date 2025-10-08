@@ -238,10 +238,12 @@ public class ServicePersistenceController {
             parent.set(fieldName, created);
             return created;
         }
-        if (!existing.isObject()) {
-            throw badRequest("Field '%s' must be a JSON object".formatted(fieldName));
+        if (existing.isObject()) {
+            return (ObjectNode) existing;
         }
-        return (ObjectNode) existing;
+        ObjectNode replacement = mapper.createObjectNode();
+        parent.set(fieldName, replacement);
+        return replacement;
     }
 
     private long extractCaseReference(ObjectNode caseDetails, ObjectNode payload) {
