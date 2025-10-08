@@ -261,24 +261,7 @@ public class ServicePersistenceController {
     }
 
     private long toLong(JsonNode node) {
-        if (node == null || node.isNull()) {
-            return 0L;
-        }
-        if (node.isIntegralNumber()) {
-            return node.asLong();
-        }
-        if (node.isTextual()) {
-            String text = node.asText().trim();
-            if (text.isEmpty()) {
-                return 0L;
-            }
-            try {
-                return Long.parseLong(text);
-            } catch (NumberFormatException ex) {
-                throw badRequest("Invalid numeric value '%s'".formatted(text));
-            }
-        }
-        throw badRequest("Expected numeric value but received '%s'".formatted(node.toString()));
+        return Long.parseLong(node.asText());
     }
 
     private void requireText(ObjectNode node, String fieldName) {
