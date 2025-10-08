@@ -40,6 +40,7 @@ class ServicePersistenceControllerWebMvcTest {
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "first-request")
                 .content(firstPayload.toString()))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.revision").value(1))
@@ -93,6 +94,7 @@ class ServicePersistenceControllerWebMvcTest {
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "create-request")
                 .content(buildPayload(caseReference, "create").toString()))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.revision").value(1))
@@ -100,6 +102,7 @@ class ServicePersistenceControllerWebMvcTest {
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "update-request")
                 .content(buildPayload(caseReference, "update").toString()))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.revision").value(2))
@@ -127,6 +130,7 @@ class ServicePersistenceControllerWebMvcTest {
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "missing-event")
                 .content(buildPayload(caseReference, "create").toString()))
             .andExpect(status().isCreated());
 
@@ -142,6 +146,12 @@ class ServicePersistenceControllerWebMvcTest {
         ObjectNode request = mapper.createObjectNode();
         request.set("supplementary_data", supplementary);
 
+        mockMvc.perform(post("/ccd-persistence/cases")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "supplementary-request")
+                .content(buildPayload(caseReference, "create").toString()))
+            .andExpect(status().isCreated());
+
         mockMvc.perform(post("/ccd-persistence/cases/{caseRef}/supplementary-data", caseReference)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request.toString()))
@@ -154,7 +164,8 @@ class ServicePersistenceControllerWebMvcTest {
         caseDetails.put("reference", caseReference);
         caseDetails.put("case_type_id", "TestCaseType");
         caseDetails.put("state", "Created");
-        caseDetails.set("data", mapper.createObjectNode().put("field", "value"));
+        caseDetails.put("jurisdiction", "TestJurisdiction");
+        caseDetails.set("case_data", mapper.createObjectNode().put("field", "value"));
 
         ObjectNode eventDetails = mapper.createObjectNode();
         eventDetails.put("event_id", eventId);
