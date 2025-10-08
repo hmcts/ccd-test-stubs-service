@@ -62,9 +62,6 @@ public class ServicePersistenceController {
 
         ObjectNode caseDetails = requireObjectNode(payload, "case_details");
         long reference = extractCaseReference(caseDetails, payload);
-        if (reference <= 0) {
-            throw badRequest("case_details.id or case_details.reference must be a positive long");
-        }
 
         requireText(caseDetails, "case_type_id");
         requireText(caseDetails, "jurisdiction");
@@ -113,10 +110,6 @@ public class ServicePersistenceController {
     @GetMapping("/cases")
     public List<ObjectNode> getCases(@RequestParam("case-refs") String rawCaseRefs) {
         List<Long> refs = parseCaseReferences(rawCaseRefs);
-        if (refs.isEmpty()) {
-            throw badRequest("case-refs query parameter must contain at least one reference");
-        }
-
         return refs.stream()
             .map(ref -> {
                 CaseRecord record = cases.getIfPresent(ref);
@@ -134,9 +127,6 @@ public class ServicePersistenceController {
     @GetMapping("/cases/{caseRef}/history")
     public List<ObjectNode> getHistory(@PathVariable("caseRef") long caseReference) {
         CaseRecord record = cases.getIfPresent(caseReference);
-        if (record == null) {
-            throw notFound("No case stored for reference " + caseReference);
-        }
         return record.history.stream()
             .map(ObjectNode::deepCopy)
             .toList();
