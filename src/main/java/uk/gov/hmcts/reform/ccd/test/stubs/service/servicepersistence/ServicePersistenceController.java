@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +57,7 @@ public class ServicePersistenceController {
         requireHeader(idempotencyKey, "Idempotency-Key header is required");
 
         ObjectNode caseDetails = requireObjectNode(payload, "case_details");
-        long reference = extractCaseReference(caseDetails, payload);
+        long reference = payload.path("case_details").get("id").asLong();
 
         requireText(caseDetails, "case_type_id");
         requireText(caseDetails, "jurisdiction");
@@ -223,24 +222,6 @@ public class ServicePersistenceController {
             throw badRequest("Field '%s' must be a JSON object".formatted(fieldName));
         }
         return (ObjectNode) existing;
-    }
-
-    private long extractCaseReference(ObjectNode caseDetails, ObjectNode payload) {
-        return Stream.of(
-                caseDetails.get("id"),
-                caseDetails.get("reference"),
-                payload.path("case_details").get("id"),
-                payload.path("case_details").get("reference"),
-                payload.get("case_reference")
-            )
-            .map(this::toLong)
-            .filter(value -> value > 0)
-            .findFirst()
-            .orElse(0L);
-    }
-
-    private long toLong(JsonNode node) {
-        return Long.parseLong(node.asText());
     }
 
     private void requireText(ObjectNode node, String fieldName) {
