@@ -152,9 +152,6 @@ public class ServicePersistenceController {
         return history.stream()
             .filter(event -> event.path("id").asLong() == eventId)
             .findFirst()
-            .or(() -> history.stream()
-                .filter(event -> event.path("id").asLong() == eventId - 1)
-                .findFirst())
             .map(ResponseEntity::ok)
             .orElseThrow(() -> notFound("No event " + eventId + " for case " + caseReference));
     }
