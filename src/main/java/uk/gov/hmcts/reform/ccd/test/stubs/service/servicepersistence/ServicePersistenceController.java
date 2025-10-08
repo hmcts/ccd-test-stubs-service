@@ -174,10 +174,10 @@ public class ServicePersistenceController {
             : mapper.createObjectNode();
         ObjectNode event = mapper.createObjectNode();
         long nextId = auditSequence.getAndIncrement();
+        String eventTriggerId = eventDetails.path("event_id").asText("event");
 
-        event.put("id", nextId);
-        event.put("event_id", eventDetails.path("event_id").asText("event"));
-        event.put("event_name", eventDetails.path("event_name").asText(null));
+        event.put("id", eventTriggerId);
+        event.put("event_name", eventDetails.path("event_name").asText(eventTriggerId));
         event.put("summary", eventDetails.path("summary").asText(null));
         event.put("description", eventDetails.path("description").asText(null));
         event.put("case_type_id", eventDetails.path("case_type").asText(caseDetails.path("case_type_id").asText(null)));
@@ -185,6 +185,11 @@ public class ServicePersistenceController {
         event.put("state_id", caseDetails.path("state").asText(null));
         ObjectNode dataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
         event.set("data", dataNode.deepCopy());
+        ObjectNode dataClassification = requireObjectNode(caseDetails, DATA_CLASSIFICATION_FIELD);
+        event.set("data_classification", dataClassification.deepCopy());
+        event.put("case_type_version", caseDetails.path("version").asInt(1));
+        event.put("security_classification",
+            caseDetails.path("security_classification").asText(DEFAULT_SECURITY_CLASSIFICATION));
 
         ObjectNode wrapper = mapper.createObjectNode();
         wrapper.put("id", nextId);
