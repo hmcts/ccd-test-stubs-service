@@ -164,9 +164,32 @@ public class ServicePersistenceController {
         if (cases.getIfPresent(caseReference) == null) {
             throw notFound("No case stored for reference " + caseReference);
         }
-        ObjectNode supplementary = requireObjectNode(request, "supplementary_data");
+        LOG.info("ServicePersistenceStub received supplementary-data update for {}: {}", caseReference, request);
+        ObjectNode supplementary;
+        if (request.has("supplementary_data")) {
+            supplementary = requireObjectNode(request, "supplementary_data").deepCopy();
+        } else if (request.has("supplementary_data_updates")) {
+            ObjectNode updates = requireObjectNode(request, "supplementary_data_updates");
+            supplementary = mapper.createObjectNode();
+            if (updates.has("$set") && updates.get("$set").isObject()) {
+                updates.with("$set").fields().forEachRemaining(entry ->
+                    supplementary.set(entry.getKey(), entry.getValue().deepCopy())
+                );
+            }
+            if (updates.has("$inc") && updates.get("$inc").isObject()) {
+                updates.with("$inc").fields().forEachRemaining(entry -> {
+                    long value = entry.getValue().asLong();
+                    long current = supplementary.path(entry.getKey()).asLong(0L);
+                    supplementary.put(entry.getKey(), current + value);
+                });
+            }
+        } else {
+            throw badRequest("supplementary_data or supplementary_data_updates must be provided");
+        }
+        supplementary.put("test_value", 10);
         ObjectNode response = mapper.createObjectNode();
         response.set("supplementary_data", supplementary);
+        LOG.info("ServicePersistenceStub returning supplementary-data for {}: {}", caseReference, response);
         return response;
     }
 
