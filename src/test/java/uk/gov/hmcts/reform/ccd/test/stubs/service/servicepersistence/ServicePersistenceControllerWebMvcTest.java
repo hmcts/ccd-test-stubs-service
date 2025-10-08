@@ -140,11 +140,14 @@ class ServicePersistenceControllerWebMvcTest {
 
     @Test
     void shouldEchoSupplementaryDataPayload() throws Exception {
-        long caseReference = 789_101_112_131_415L;
-        ObjectNode supplementary = mapper.createObjectNode();
-        supplementary.put("key", "value");
+        ObjectNode set = mapper.createObjectNode();
+        set.put("key", "value");
+        ObjectNode updates = mapper.createObjectNode();
+        updates.set("$set", set);
         ObjectNode request = mapper.createObjectNode();
-        request.set("supplementary_data", supplementary);
+        request.set("supplementary_data_updates", updates);
+
+        long caseReference = 789_101_112_131_415L;
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -156,7 +159,50 @@ class ServicePersistenceControllerWebMvcTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(request.toString()))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.supplementary_data.key").value("value"));
+            .andExpect(jsonPath("$.supplementary_data.key").value("value"))
+            .andExpect(jsonPath("$.supplementary_data.test_value").value(10));
+    }
+
+    @Test
+    void shouldApplySupplementaryDataUpdates() throws Exception {
+        ObjectNode set = mapper.createObjectNode();
+        set.put("counter", 5);
+        ObjectNode inc = mapper.createObjectNode();
+        inc.put("counter", 3);
+        ObjectNode updates = mapper.createObjectNode();
+        updates.set("$set", set);
+        updates.set("$inc", inc);
+        ObjectNode request = mapper.createObjectNode();
+        request.set("supplementary_data_updates", updates);
+
+        long caseReference = 111_111_111_111_111L;
+
+        mockMvc.perform(post("/ccd-persistence/cases")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "supplementary-updates")
+                .content(buildPayload(caseReference, "create").toString()))
+            .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/ccd-persistence/cases/{caseRef}/supplementary-data", caseReference)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.supplementary_data.counter").value(8))
+            .andExpect(jsonPath("$.supplementary_data.test_value").value(10));
+    }
+
+    @Test
+    void shouldReturnNotFoundForMissingCaseOnSupplementaryData() throws Exception {
+        long caseReference = 222_222_222_222_222L;
+        ObjectNode request = mapper.createObjectNode();
+        ObjectNode updates = mapper.createObjectNode();
+        updates.set("$set", mapper.createObjectNode().put("counter", 1));
+        request.set("supplementary_data_updates", updates);
+
+        mockMvc.perform(post("/ccd-persistence/cases/{caseRef}/supplementary-data", caseReference)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(request.toString()))
+            .andExpect(status().isNotFound());
     }
 
     private ObjectNode buildPayload(long caseReference, String eventId) {
