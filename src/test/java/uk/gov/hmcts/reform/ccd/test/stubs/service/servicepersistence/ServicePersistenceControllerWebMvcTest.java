@@ -205,6 +205,19 @@ class ServicePersistenceControllerWebMvcTest {
             .andExpect(status().isNotFound());
     }
 
+    @Test
+    void shouldReturnConflictWhenEventIdRequestsIt() throws Exception {
+        long caseReference = 333_333_333_333_333L;
+        ObjectNode payload = buildPayload(caseReference, "simulateDecentralisedConflict");
+
+        mockMvc.perform(post("/ccd-persistence/cases")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "conflict-event")
+                .content(payload.toString()))
+            .andExpect(status().isConflict())
+            .andExpect(jsonPath("$.message").value("Simulated decentralised concurrency conflict"));
+    }
+
     private ObjectNode buildPayload(long caseReference, String eventId) {
         ObjectNode caseDetails = mapper.createObjectNode();
         caseDetails.put("id", caseReference);

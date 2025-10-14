@@ -36,6 +36,7 @@ public class ServicePersistenceController {
     private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private static final String CASE_DATA_FIELD = "case_data";
+    private static final String CONFLICT_EVENT_ID = "simulateDecentralisedConflict";
 
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
@@ -62,6 +63,16 @@ public class ServicePersistenceController {
         requireText(caseDetails, "case_type_id");
         requireText(caseDetails, "jurisdiction");
         ObjectNode caseDataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
+
+        String eventId = payload.path("event_details").path("event_id").asText();
+        if (CONFLICT_EVENT_ID.equals(eventId)) {
+            LOG.info("Simulating decentralised concurrency conflict for case ref {} (eventId={})",
+                reference,
+                eventId);
+            ObjectNode conflictResponse = mapper.createObjectNode();
+            conflictResponse.put("message", "Simulated decentralised concurrency conflict");
+            return new ResponseEntity<>(conflictResponse, HttpStatus.CONFLICT);
+        }
 
         CaseRecord existing = cases.getIfPresent(reference);
         final long revision = existing == null ? 1 : existing.revision + 1;
