@@ -218,6 +218,28 @@ class ServicePersistenceControllerWebMvcTest {
             .andExpect(jsonPath("$.message").value("Simulated decentralised concurrency conflict"));
     }
 
+    @Test
+    void shouldSimulateValidationErrorsWhenFlagged() throws Exception {
+        long caseReference = 444_444_444_444_444L;
+        ObjectNode payload = buildPayload(caseReference, "createCase");
+        payload.with("case_details")
+            .with("case_data")
+            .put("TriggerValidationError", "Yes");
+
+        mockMvc.perform(post("/ccd-persistence/cases")
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Idempotency-Key", "validation-error")
+                .content(payload.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.errors[0]").value("Simulated decentralised validation error"))
+            .andExpect(jsonPath("$.warnings[0]").value("Simulated decentralised validation warning"))
+            .andExpect(jsonPath("$.ignore_warning").value(false));
+
+        mockMvc.perform(get("/ccd-persistence/cases")
+                .param("case-refs", String.valueOf(caseReference)))
+            .andExpect(status().isNotFound());
+    }
+
     private ObjectNode buildPayload(long caseReference, String eventId) {
         ObjectNode caseDetails = mapper.createObjectNode();
         caseDetails.put("id", caseReference);

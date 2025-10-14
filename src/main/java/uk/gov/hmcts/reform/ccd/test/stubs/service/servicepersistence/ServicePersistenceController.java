@@ -37,6 +37,9 @@ public class ServicePersistenceController {
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private static final String CASE_DATA_FIELD = "case_data";
     private static final String CONFLICT_EVENT_ID = "simulateDecentralisedConflict";
+    private static final String VALIDATION_ERROR_FLAG = "TriggerValidationError";
+    private static final String VALIDATION_ERROR_MESSAGE = "Simulated decentralised validation error";
+    private static final String VALIDATION_WARNING_MESSAGE = "Simulated decentralised validation warning";
 
     private final ObjectMapper mapper;
     private final Cache<Long, CaseRecord> cases;
@@ -63,6 +66,16 @@ public class ServicePersistenceController {
         requireText(caseDetails, "case_type_id");
         requireText(caseDetails, "jurisdiction");
         ObjectNode caseDataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
+
+        if (caseDataNode.hasNonNull(VALIDATION_ERROR_FLAG)
+            && "yes".equalsIgnoreCase(caseDataNode.get(VALIDATION_ERROR_FLAG).asText())) {
+            LOG.info("Simulating decentralised validation error for case ref {}", reference);
+            ObjectNode response = mapper.createObjectNode();
+            response.put("ignore_warning", false);
+            response.set("errors", mapper.createArrayNode().add(VALIDATION_ERROR_MESSAGE));
+            response.set("warnings", mapper.createArrayNode().add(VALIDATION_WARNING_MESSAGE));
+            return ResponseEntity.ok(response);
+        }
 
         String eventId = payload.path("event_details").path("event_id").asText();
         if (CONFLICT_EVENT_ID.equals(eventId)) {
