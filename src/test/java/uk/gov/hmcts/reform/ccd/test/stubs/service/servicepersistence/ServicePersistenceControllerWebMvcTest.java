@@ -222,9 +222,8 @@ class ServicePersistenceControllerWebMvcTest {
     void shouldSimulateValidationErrorsWhenFlagged() throws Exception {
         long caseReference = 444_444_444_444_444L;
         ObjectNode payload = buildPayload(caseReference, "createCase");
-        payload.with("case_details")
-            .with("case_data")
-            .put("TriggerValidationError", "Yes");
+        ObjectNode caseData = (ObjectNode) payload.get("case_details").get("case_data");
+        caseData.put("TriggerValidationError", "Yes");
 
         mockMvc.perform(post("/ccd-persistence/cases")
                 .contentType(MediaType.APPLICATION_JSON)

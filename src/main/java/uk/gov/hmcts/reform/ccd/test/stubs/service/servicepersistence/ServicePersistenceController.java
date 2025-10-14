@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,7 +34,12 @@ public class ServicePersistenceController {
     private static final Logger LOG = LoggerFactory.getLogger(ServicePersistenceController.class);
     private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
+    private static final String CASE_DETAILS_FIELD = "case_details";
     private static final String CASE_DATA_FIELD = "case_data";
+    private static final String CASE_TYPE_ID_FIELD = "case_type_id";
+    private static final String EVENT_DETAILS_FIELD = "event_details";
+    private static final String EVENT_ID_FIELD = "event_id";
+    private static final String CREATED_DATE_FIELD = "created_date";
     private static final String CONFLICT_EVENT_ID = "simulateDecentralisedConflict";
     private static final String VALIDATION_ERROR_FLAG = "TriggerValidationError";
     private static final String VALIDATION_ERROR_MESSAGE = "Simulated decentralised validation error";
@@ -60,10 +64,10 @@ public class ServicePersistenceController {
     ) {
         requireHeader(idempotencyKey, "Idempotency-Key header is required");
 
-        ObjectNode caseDetails = requireObjectNode(payload, "case_details");
-        long reference = payload.path("case_details").get("id").asLong();
+        ObjectNode caseDetails = requireObjectNode(payload, CASE_DETAILS_FIELD);
+        long reference = payload.path(CASE_DETAILS_FIELD).get("id").asLong();
 
-        requireText(caseDetails, "case_type_id");
+        requireText(caseDetails, CASE_TYPE_ID_FIELD);
         requireText(caseDetails, "jurisdiction");
         ObjectNode caseDataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
 
@@ -77,7 +81,7 @@ public class ServicePersistenceController {
             return ResponseEntity.ok(response);
         }
 
-        String eventId = payload.path("event_details").path("event_id").asText();
+        String eventId = payload.path(EVENT_DETAILS_FIELD).path(EVENT_ID_FIELD).asText();
         if (CONFLICT_EVENT_ID.equals(eventId)) {
             LOG.info("Simulating decentralised concurrency conflict for case ref {} (eventId={})",
                 reference,
@@ -106,18 +110,19 @@ public class ServicePersistenceController {
             : new ArrayList<>(existing.history.stream().map(ObjectNode::deepCopy).toList());
         history.add(buildAuditEvent(reference, payload, caseDetails));
 
-        CaseRecord record = new CaseRecord(caseDetails.deepCopy(), revision,
+        CaseRecord caseRecord = new CaseRecord(caseDetails.deepCopy(), revision,
             history.stream().map(ObjectNode::deepCopy).toList());
-        cases.put(reference, record);
+        cases.put(reference, caseRecord);
 
         ObjectNode response = mapper.createObjectNode();
-        response.set("case_details", caseDetails);
+        response.set(CASE_DETAILS_FIELD, caseDetails);
         response.put("revision", revision);
         response.put("ignore_warning", true);
 
         boolean created = existing == null;
+        String eventIdForLog = eventId.isBlank() ? "unknown" : eventId;
         LOG.info("ServicePersistenceStub processed event {} for case ref {} (idempotency={})",
-            payload.path("event_details").path("event_id").asText("unknown"),
+            eventIdForLog,
             reference,
             idempotencyKey);
 
@@ -130,13 +135,13 @@ public class ServicePersistenceController {
         List<Long> refs = parseCaseReferences(rawCaseRefs);
         return refs.stream()
             .map(ref -> {
-                CaseRecord record = cases.getIfPresent(ref);
-                if (record == null) {
+                CaseRecord storedRecord = cases.getIfPresent(ref);
+                if (storedRecord == null) {
                     throw notFound("No case stored for reference " + ref);
                 }
                 ObjectNode node = mapper.createObjectNode();
-                node.set("case_details", record.caseDetails.deepCopy());
-                node.put("revision", record.revision);
+                node.set(CASE_DETAILS_FIELD, storedRecord.caseDetails.deepCopy());
+                node.put("revision", storedRecord.revision);
                 return node;
             })
             .toList();
@@ -144,8 +149,8 @@ public class ServicePersistenceController {
 
     @GetMapping("/cases/{caseRef}/history")
     public List<ObjectNode> getHistory(@PathVariable("caseRef") long caseReference) {
-        CaseRecord record = cases.getIfPresent(caseReference);
-        return record.history.stream()
+        CaseRecord caseRecord = cases.getIfPresent(caseReference);
+        return caseRecord.history.stream()
             .map(ObjectNode::deepCopy)
             .toList();
     }
@@ -177,12 +182,14 @@ public class ServicePersistenceController {
         ObjectNode supplementary = mapper.createObjectNode();
 
         if (updates.has("$set") && updates.get("$set").isObject()) {
-            updates.with("$set").fields().forEachRemaining(entry ->
+            ObjectNode setUpdates = (ObjectNode) updates.get("$set");
+            setUpdates.fields().forEachRemaining(entry ->
                 supplementary.set(entry.getKey(), entry.getValue().deepCopy())
             );
         }
         if (updates.has("$inc") && updates.get("$inc").isObject()) {
-            updates.with("$inc").fields().forEachRemaining(entry -> {
+            ObjectNode incUpdates = (ObjectNode) updates.get("$inc");
+            incUpdates.fields().forEachRemaining(entry -> {
                 long value = entry.getValue().asLong();
                 long current = supplementary.path(entry.getKey()).asLong(0L);
                 supplementary.put(entry.getKey(), current + value);
@@ -196,18 +203,20 @@ public class ServicePersistenceController {
     }
 
     private ObjectNode buildAuditEvent(long reference, ObjectNode payload, ObjectNode caseDetails) {
-        ObjectNode eventDetails = payload.has("event_details") && payload.get("event_details").isObject()
-            ? (ObjectNode) payload.get("event_details")
+        ObjectNode eventDetails = payload.has(EVENT_DETAILS_FIELD) && payload.get(EVENT_DETAILS_FIELD).isObject()
+            ? (ObjectNode) payload.get(EVENT_DETAILS_FIELD)
             : mapper.createObjectNode();
         ObjectNode event = mapper.createObjectNode();
-        String eventTriggerId = eventDetails.path("event_id").asText("event");
+        String eventTriggerId = eventDetails.path(EVENT_ID_FIELD).asText("event");
 
         event.put("id", eventTriggerId);
         event.put("event_name", eventDetails.path("event_name").asText(eventTriggerId));
         event.put("summary", eventDetails.path("summary").asText(null));
         event.put("description", eventDetails.path("description").asText(null));
-        event.put("case_type_id", eventDetails.path("case_type").asText(caseDetails.path("case_type_id").asText(null)));
-        event.put("created_date", LocalDateTime.now(ZoneOffset.UTC).toString());
+        String caseType = eventDetails.path("case_type")
+            .asText(caseDetails.path(CASE_TYPE_ID_FIELD).asText(null));
+        event.put(CASE_TYPE_ID_FIELD, caseType);
+        event.put(CREATED_DATE_FIELD, LocalDateTime.now(ZoneOffset.UTC).toString());
         event.put("state_id", caseDetails.path("state").asText(null));
         ObjectNode dataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
         event.set("data", dataNode.deepCopy());
@@ -227,9 +236,9 @@ public class ServicePersistenceController {
         String nowIso = now.toString();
 
         if (existing == null) {
-            caseDetails.put("created_date", nowIso);
-        } else if (!caseDetails.hasNonNull("created_date")) {
-            caseDetails.put("created_date", existing.caseDetails.path("created_date").asText(nowIso));
+            caseDetails.put(CREATED_DATE_FIELD, nowIso);
+        } else if (!caseDetails.hasNonNull(CREATED_DATE_FIELD)) {
+            caseDetails.put(CREATED_DATE_FIELD, existing.caseDetails.path(CREATED_DATE_FIELD).asText(nowIso));
         }
 
         caseDetails.put("last_modified", nowIso);
@@ -271,7 +280,7 @@ public class ServicePersistenceController {
             .map(String::trim)
             .filter(token -> !token.isEmpty())
             .map(Long::valueOf)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private ResponseStatusException badRequest(String message) {
