@@ -4,7 +4,7 @@ plugins {
   id 'com.github.ben-manes.versions' version '0.52.0'
   id 'io.spring.dependency-management' version '1.1.7'
   id 'org.owasp.dependencycheck' version '11.1.1'
-  id 'org.sonarqube' version '6.0.1.5171'
+  id 'org.sonarqube' version '6.2.0.5505'
   id 'org.springframework.boot' version '3.4.1'
   id 'uk.gov.hmcts.java' version '0.12.67'
 }
@@ -136,20 +136,20 @@ repositories {
 }
 
 ext {
-  set('springCloudVersion', '2024.0.1')
+  set('springCloudVersion', '2024.0.2')
   set('spring-framework.version', '6.2.1')
   set('spring-security.version', '6.4.2')
   set('log4j2.version', '2.24.3')
   set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
-  groovyVersion = '4.0.27'
-  jettyVersion = '11.0.25'
+  groovyVersion = '4.0.28'
+  jettyVersion = '11.0.26'
   reformLogging = '6.1.9'
-  tomcatVersion = '10.1.42'
+  tomcatVersion = '10.1.44'
   // test versions
   junit = '5.11.4'
   junitPlatform = '1.13.2'
-  restAssuredVersion = '5.5.5'
+  restAssuredVersion = '5.5.6'
 }
 
 ext.libraries = [
@@ -174,7 +174,7 @@ dependencies {
   // start::CVE Vulnerability dependency overrides                                                        // MAIN PARENT DEPENDEDNCY
 
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.6.0'                  // wiremock-spring-boot
-  implementation group: 'commons-io', name: 'commons-io', version: '2.19.0'                               // wiremock-spring-boot
+  implementation group: 'commons-io', name: 'commons-io', version: '2.20.0'                               // wiremock-spring-boot
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: tomcatVersion      // spring-boot-starter-tomcat
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: tomcatVersion        // spring-boot-starter-tomcat
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: tomcatVersion // spring-boot-starter-tomcat
@@ -221,15 +221,15 @@ dependencies {
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
 
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.3.1'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.4.2'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0'
   implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
-  implementation group: 'net.minidev', name: 'json-smart', version: '2.5.2'
+  implementation group: 'net.minidev', name: 'json-smart', version: '2.6.0'
   implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.5'
   implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
-  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.6.0'
+  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.10.6'
 
 
   testImplementation libraries.junit5
@@ -238,7 +238,7 @@ dependencies {
   testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
 
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.9', classifier: 'all'
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.10', classifier: 'all'
   
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
