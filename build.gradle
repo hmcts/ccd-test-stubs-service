@@ -145,7 +145,7 @@ ext {
   groovyVersion = '4.0.29'
   jettyVersion = '11.0.26'
   reformLogging = '6.1.9'
-  tomcatVersion = '10.1.44'
+  tomcatVersion = '10.1.48'
   // test versions
   junit = '5.11.4'
   junitPlatform = '1.13.2'
