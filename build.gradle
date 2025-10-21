@@ -142,7 +142,7 @@ ext {
   set('log4j2.version', '2.24.3')
   set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
-  groovyVersion = '4.0.28'
+  groovyVersion = '4.0.29'
   jettyVersion = '11.0.26'
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.44'
