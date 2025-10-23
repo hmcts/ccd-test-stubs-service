@@ -1,18 +1,13 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.servicepersistence;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -32,6 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class ServicePersistenceController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServicePersistenceController.class);
+
     private static final String STUB_PROCESSOR_FIELD = "_stubProcessedBy";
     private static final String STUB_PROCESSOR_VALUE = "ccd-test-stubs-service";
     private static final String CASE_DETAILS_FIELD = "case_details";
@@ -45,16 +41,22 @@ public class ServicePersistenceController {
     private static final String VALIDATION_ERROR_MESSAGE = "Simulated decentralised validation error";
     private static final String VALIDATION_WARNING_MESSAGE = "Simulated decentralised validation warning";
 
+    private static final String DEFAULT_CASE_TYPE_ID = "FT_Decentralisation";
+    private static final String DEFAULT_JURISDICTION = "BEFTA_MASTER";
+    private static final String DEFAULT_STATE = "CaseCreated";
+    private static final String DEFAULT_SECURITY_CLASSIFICATION = "PUBLIC";
+    private static final String DEFAULT_EVENT_ID = "createCase";
+    private static final String DEFAULT_EVENT_NAME = "Create a case";
+    private static final String DEFAULT_TEXT_VALUE = "Decentralised case";
+    private static final int DEFAULT_VERSION = 1;
+    private static final int DEFAULT_REVISION = 1;
+    private static final long BASE_EPOCH_MILLIS = Instant.parse("2024-01-01T00:00:00Z").toEpochMilli();
+    private static final long TIMESTAMP_SPREAD_MILLIS = Duration.ofDays(365).toMillis();
+
     private final ObjectMapper mapper;
-    private final Cache<Long, CaseRecord> cases;
-    private final AtomicLong auditSequence = new AtomicLong(1);
 
     public ServicePersistenceController(ObjectMapper mapper) {
         this.mapper = mapper;
-        this.cases = Caffeine.newBuilder()
-            .maximumSize(1_000)
-            .expireAfterWrite(Duration.ofMinutes(30))
-            .build();
     }
 
     @PostMapping("/cases")
@@ -62,14 +64,13 @@ public class ServicePersistenceController {
         @RequestBody ObjectNode payload,
         @RequestHeader(value = "Idempotency-Key") String idempotencyKey
     ) {
-        requireHeader(idempotencyKey, "Idempotency-Key header is required");
+        if (idempotencyKey == null || idempotencyKey.isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Idempotency-Key header is required");
+        }
 
-        ObjectNode caseDetails = requireObjectNode(payload, CASE_DETAILS_FIELD);
-        long reference = payload.path(CASE_DETAILS_FIELD).get("id").asLong();
-
-        requireText(caseDetails, CASE_TYPE_ID_FIELD);
-        requireText(caseDetails, "jurisdiction");
-        ObjectNode caseDataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
+        ObjectNode caseDetailsPayload = payload.with(CASE_DETAILS_FIELD);
+        ObjectNode caseDataNode = caseDetailsPayload.with(CASE_DATA_FIELD);
+        long reference = caseDetailsPayload.path("id").asLong();
 
         if (caseDataNode.hasNonNull(VALIDATION_ERROR_FLAG)
             && "yes".equalsIgnoreCase(caseDataNode.get(VALIDATION_ERROR_FLAG).asText())) {
@@ -91,68 +92,27 @@ public class ServicePersistenceController {
             return new ResponseEntity<>(conflictResponse, HttpStatus.CONFLICT);
         }
 
-        CaseRecord existing = cases.getIfPresent(reference);
-        final long revision = existing == null ? 1 : existing.revision + 1;
+        ObjectNode response = buildCaseEnvelope(reference, caseDetailsPayload, caseDataNode);
 
-        caseDataNode.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
-        caseDetails.remove("data");
-        caseDetails.put("version", revision);
-        caseDetails.put("id", reference);
-
-        applyTimestampsAndDefaults(caseDetails, existing);
-        JsonNode resolvedTtl = payload.path("resolved_ttl");
-        if (!resolvedTtl.isMissingNode() && !resolvedTtl.isNull()) {
-            caseDetails.put("resolved_ttl", resolvedTtl.asText());
-        }
-
-        List<ObjectNode> history = existing == null
-            ? new ArrayList<>()
-            : new ArrayList<>(existing.history.stream().map(ObjectNode::deepCopy).toList());
-        history.add(buildAuditEvent(reference, payload, caseDetails));
-
-        CaseRecord caseRecord = new CaseRecord(caseDetails.deepCopy(), revision,
-            history.stream().map(ObjectNode::deepCopy).toList());
-        cases.put(reference, caseRecord);
-
-        ObjectNode response = mapper.createObjectNode();
-        response.set(CASE_DETAILS_FIELD, caseDetails);
-        response.put("revision", revision);
-        response.put("ignore_warning", true);
-
-        boolean created = existing == null;
-        String eventIdForLog = eventId.isBlank() ? "unknown" : eventId;
+        String eventIdForLog = eventId.isBlank() ? DEFAULT_EVENT_ID : eventId;
         LOG.info("ServicePersistenceStub processed event {} for case ref {} (idempotency={})",
             eventIdForLog,
             reference,
             idempotencyKey);
 
-        HttpStatus status = created ? HttpStatus.CREATED : HttpStatus.OK;
-        return new ResponseEntity<>(response, status);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/cases")
     public List<ObjectNode> getCases(@RequestParam("case-refs") String rawCaseRefs) {
-        List<Long> refs = parseCaseReferences(rawCaseRefs);
-        return refs.stream()
-            .map(ref -> {
-                CaseRecord storedRecord = cases.getIfPresent(ref);
-                if (storedRecord == null) {
-                    throw notFound("No case stored for reference " + ref);
-                }
-                ObjectNode node = mapper.createObjectNode();
-                node.set(CASE_DETAILS_FIELD, storedRecord.caseDetails.deepCopy());
-                node.put("revision", storedRecord.revision);
-                return node;
-            })
+        return parseCaseReferences(rawCaseRefs).stream()
+            .map(ref -> buildCaseEnvelope(ref, null, null))
             .toList();
     }
 
     @GetMapping("/cases/{caseRef}/history")
     public List<ObjectNode> getHistory(@PathVariable("caseRef") long caseReference) {
-        CaseRecord caseRecord = cases.getIfPresent(caseReference);
-        return caseRecord.history.stream()
-            .map(ObjectNode::deepCopy)
-            .toList();
+        return List.of(buildHistoryEntry(caseReference));
     }
 
     @GetMapping("/cases/{caseRef}/history/{eventId}")
@@ -160,13 +120,12 @@ public class ServicePersistenceController {
         @PathVariable("caseRef") long caseReference,
         @PathVariable("eventId") long eventId
     ) {
-        List<ObjectNode> history = getHistory(caseReference);
-
-        return history.stream()
-            .filter(event -> event.path("id").asLong() == eventId)
-            .findFirst()
-            .map(ResponseEntity::ok)
-            .orElseThrow(() -> notFound("No event " + eventId + " for case " + caseReference));
+        ObjectNode historyEntry = buildHistoryEntry(caseReference);
+        if (historyEntry.path("id").asLong() != eventId) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "No event " + eventId + " for case " + caseReference);
+        }
+        return ResponseEntity.ok(historyEntry);
     }
 
     @PostMapping("/cases/{caseRef}/supplementary-data")
@@ -174,11 +133,8 @@ public class ServicePersistenceController {
         @PathVariable("caseRef") long caseReference,
         @RequestBody ObjectNode request
     ) {
-        if (cases.getIfPresent(caseReference) == null) {
-            throw notFound("No case stored for reference " + caseReference);
-        }
         LOG.info("ServicePersistenceStub received supplementary-data update for {}: {}", caseReference, request);
-        ObjectNode updates = requireObjectNode(request, "supplementary_data_updates");
+        ObjectNode updates = request.with("supplementary_data_updates");
         ObjectNode supplementary = mapper.createObjectNode();
 
         if (updates.has("$set") && updates.get("$set").isObject()) {
@@ -195,6 +151,7 @@ public class ServicePersistenceController {
                 supplementary.put(entry.getKey(), current + value);
             });
         }
+
         supplementary.put("test_value", 10);
         ObjectNode response = mapper.createObjectNode();
         response.set("supplementary_data", supplementary);
@@ -202,77 +159,118 @@ public class ServicePersistenceController {
         return response;
     }
 
-    private ObjectNode buildAuditEvent(long reference, ObjectNode payload, ObjectNode caseDetails) {
-        ObjectNode eventDetails = payload.has(EVENT_DETAILS_FIELD) && payload.get(EVENT_DETAILS_FIELD).isObject()
-            ? (ObjectNode) payload.get(EVENT_DETAILS_FIELD)
-            : mapper.createObjectNode();
-        ObjectNode event = mapper.createObjectNode();
-        String eventTriggerId = eventDetails.path(EVENT_ID_FIELD).asText("event");
+    private ObjectNode buildCaseEnvelope(
+        long reference,
+        ObjectNode caseDetailsPayload,
+        ObjectNode requestCaseData
+    ) {
+        ObjectNode response = mapper.createObjectNode();
+        response.set(CASE_DETAILS_FIELD, buildCaseDetails(reference, caseDetailsPayload, requestCaseData));
+        response.put("revision", DEFAULT_REVISION);
+        response.put("ignore_warning", true);
+        return response;
+    }
 
-        event.put("id", eventTriggerId);
-        event.put("event_name", eventDetails.path("event_name").asText(eventTriggerId));
-        event.put("summary", eventDetails.path("summary").asText(null));
-        event.put("description", eventDetails.path("description").asText(null));
-        String caseType = eventDetails.path("case_type")
-            .asText(caseDetails.path(CASE_TYPE_ID_FIELD).asText(null));
-        event.put(CASE_TYPE_ID_FIELD, caseType);
-        event.put(CREATED_DATE_FIELD, LocalDateTime.now(ZoneOffset.UTC).toString());
-        event.put("state_id", caseDetails.path("state").asText(null));
-        ObjectNode dataNode = requireObjectNode(caseDetails, CASE_DATA_FIELD);
-        event.set("data", dataNode.deepCopy());
-        event.put("case_type_version", caseDetails.path("version").asInt(1));
-        event.put("security_classification", requireTextValue(caseDetails, "security_classification"));
+    private ObjectNode buildCaseDetails(
+        long reference,
+        ObjectNode caseDetailsPayload,
+        ObjectNode requestCaseData
+    ) {
+        ObjectNode caseDetails = mapper.createObjectNode();
+        caseDetails.put("id", reference);
+        caseDetails.put("version", DEFAULT_VERSION);
+        caseDetails.put(CASE_TYPE_ID_FIELD, determineCaseType(caseDetailsPayload));
+        caseDetails.put("jurisdiction", determineJurisdiction(caseDetailsPayload));
+        caseDetails.put("state", determineState(caseDetailsPayload));
+        caseDetails.put("security_classification", determineSecurity(caseDetailsPayload));
 
+        String timestamp = deterministicTimestamp(reference);
+        caseDetails.put(CREATED_DATE_FIELD, timestamp);
+        caseDetails.put("last_modified", timestamp);
+        caseDetails.put("last_state_modified_date", timestamp);
+
+        if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("resolved_ttl")) {
+            caseDetails.put("resolved_ttl", caseDetailsPayload.get("resolved_ttl").asText());
+        }
+
+        caseDetails.set(CASE_DATA_FIELD, buildCaseData(reference, requestCaseData));
+        caseDetails.set("data_classification", mapper.createObjectNode());
+
+        return caseDetails;
+    }
+
+    private ObjectNode buildCaseData(long reference, ObjectNode sourceCaseData) {
+        ObjectNode caseData = mapper.createObjectNode();
+        if (sourceCaseData != null) {
+            sourceCaseData.fields().forEachRemaining(entry ->
+                caseData.set(entry.getKey(), entry.getValue().deepCopy())
+            );
+        } else {
+            caseData.put("TextField", DEFAULT_TEXT_VALUE);
+        }
+        caseData.put(STUB_PROCESSOR_FIELD, STUB_PROCESSOR_VALUE);
+        return caseData;
+    }
+
+    private ObjectNode buildHistoryEntry(long reference) {
         ObjectNode wrapper = mapper.createObjectNode();
-        long nextId = auditSequence.getAndIncrement();
-        wrapper.put("id", nextId);
+        long auditId = deterministicAuditId(reference);
+        wrapper.put("id", auditId);
         wrapper.put("case_reference", reference);
-        wrapper.set("event", event);
+        wrapper.set("event", buildEvent(reference));
         return wrapper;
     }
 
-    private void applyTimestampsAndDefaults(ObjectNode caseDetails, CaseRecord existing) {
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        String nowIso = now.toString();
-
-        if (existing == null) {
-            caseDetails.put(CREATED_DATE_FIELD, nowIso);
-        } else if (!caseDetails.hasNonNull(CREATED_DATE_FIELD)) {
-            caseDetails.put(CREATED_DATE_FIELD, existing.caseDetails.path(CREATED_DATE_FIELD).asText(nowIso));
-        }
-
-        caseDetails.put("last_modified", nowIso);
-        caseDetails.put("last_state_modified_date", nowIso);
-
+    private ObjectNode buildEvent(long reference) {
+        ObjectNode event = mapper.createObjectNode();
+        event.put("id", DEFAULT_EVENT_ID);
+        event.put("event_name", DEFAULT_EVENT_NAME);
+        event.put("summary", (String) null);
+        event.put("description", (String) null);
+        event.put(CASE_TYPE_ID_FIELD, DEFAULT_CASE_TYPE_ID);
+        event.put(CREATED_DATE_FIELD, deterministicTimestamp(reference));
+        event.put("state_id", DEFAULT_STATE);
+        event.set("data", buildCaseData(reference, null));
+        event.put("case_type_version", DEFAULT_VERSION);
+        event.put("security_classification", DEFAULT_SECURITY_CLASSIFICATION);
+        return event;
     }
 
-    private ObjectNode requireObjectNode(ObjectNode parent, String fieldName) {
-        JsonNode existing = parent.get(fieldName);
-        if (existing == null || existing.isNull()) {
-            throw badRequest("Missing required object field '%s'".formatted(fieldName));
+    private String determineCaseType(ObjectNode caseDetailsPayload) {
+        if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull(CASE_TYPE_ID_FIELD)) {
+            return caseDetailsPayload.get(CASE_TYPE_ID_FIELD).asText();
         }
-        if (!existing.isObject()) {
-            throw badRequest("Field '%s' must be a JSON object".formatted(fieldName));
-        }
-        return (ObjectNode) existing;
+        return DEFAULT_CASE_TYPE_ID;
     }
 
-    private void requireText(ObjectNode node, String fieldName) {
-        JsonNode value = node.get(fieldName);
-        if (value == null || value.isNull() || value.asText().isBlank()) {
-            throw badRequest("Field '%s' must be present and non-empty".formatted(fieldName));
+    private String determineJurisdiction(ObjectNode caseDetailsPayload) {
+        if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("jurisdiction")) {
+            return caseDetailsPayload.get("jurisdiction").asText();
         }
+        return DEFAULT_JURISDICTION;
     }
 
-    private String requireTextValue(ObjectNode node, String fieldName) {
-        requireText(node, fieldName);
-        return node.get(fieldName).asText();
+    private String determineState(ObjectNode caseDetailsPayload) {
+        if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("state")) {
+            return caseDetailsPayload.get("state").asText();
+        }
+        return DEFAULT_STATE;
     }
 
-    private void requireHeader(String headerValue, String message) {
-        if (headerValue == null || headerValue.isBlank()) {
-            throw badRequest(message);
+    private String determineSecurity(ObjectNode caseDetailsPayload) {
+        if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("security_classification")) {
+            return caseDetailsPayload.get("security_classification").asText();
         }
+        return DEFAULT_SECURITY_CLASSIFICATION;
+    }
+
+    private String deterministicTimestamp(long reference) {
+        long offset = Math.floorMod(reference, TIMESTAMP_SPREAD_MILLIS);
+        return Instant.ofEpochMilli(BASE_EPOCH_MILLIS + offset).atOffset(ZoneOffset.UTC).toString();
+    }
+
+    private long deterministicAuditId(long reference) {
+        return Math.abs(reference % 1_000L) + 1;
     }
 
     private List<Long> parseCaseReferences(String raw) {
@@ -282,16 +280,4 @@ public class ServicePersistenceController {
             .map(Long::valueOf)
             .toList();
     }
-
-    private ResponseStatusException badRequest(String message) {
-        return new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
-    }
-
-    private ResponseStatusException notFound(String message) {
-        return new ResponseStatusException(HttpStatus.NOT_FOUND, message);
-    }
-
-    private record CaseRecord(ObjectNode caseDetails,
-                              long revision,
-                              List<ObjectNode> history) {}
 }
