@@ -142,10 +142,10 @@ ext {
   set('log4j2.version', '2.24.3')
   set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
-  groovyVersion = '4.0.28'
+  groovyVersion = '4.0.29'
   jettyVersion = '11.0.26'
   reformLogging = '6.1.9'
-  tomcatVersion = '10.1.44'
+  tomcatVersion = '10.1.48'
   // test versions
   junit = '5.11.4'
   junitPlatform = '1.13.2'
@@ -221,11 +221,11 @@ dependencies {
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
 
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.4.2'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.5'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0'
   implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
   implementation group: 'net.minidev', name: 'json-smart', version: '2.6.0'
-  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.5'
+  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.5.1'
   implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
