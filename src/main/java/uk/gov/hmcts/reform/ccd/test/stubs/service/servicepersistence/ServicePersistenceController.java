@@ -6,7 +6,6 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
@@ -69,8 +68,8 @@ public class ServicePersistenceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Idempotency-Key header is required");
         }
 
-        ObjectNode caseDetailsPayload = requireObjectNode(payload, CASE_DETAILS_FIELD);
-        ObjectNode caseDataNode = requireObjectNode(caseDetailsPayload, CASE_DATA_FIELD);
+        ObjectNode caseDetailsPayload = payload.with(CASE_DETAILS_FIELD);
+        ObjectNode caseDataNode = caseDetailsPayload.with(CASE_DATA_FIELD);
         long reference = caseDetailsPayload.path("id").asLong();
 
         if (caseDataNode.hasNonNull(VALIDATION_ERROR_FLAG)
@@ -113,7 +112,7 @@ public class ServicePersistenceController {
 
     @GetMapping("/cases/{caseRef}/history")
     public List<ObjectNode> getHistory(@PathVariable("caseRef") long caseReference) {
-        return List.of(buildHistoryEntry(caseReference, null));
+        return List.of(buildHistoryEntry(caseReference));
     }
 
     @GetMapping("/cases/{caseRef}/history/{eventId}")
@@ -121,7 +120,7 @@ public class ServicePersistenceController {
         @PathVariable("caseRef") long caseReference,
         @PathVariable("eventId") long eventId
     ) {
-        ObjectNode historyEntry = buildHistoryEntry(caseReference, null);
+        ObjectNode historyEntry = buildHistoryEntry(caseReference);
         if (historyEntry.path("id").asLong() != eventId) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "No event " + eventId + " for case " + caseReference);
@@ -135,7 +134,7 @@ public class ServicePersistenceController {
         @RequestBody ObjectNode request
     ) {
         LOG.info("ServicePersistenceStub received supplementary-data update for {}: {}", caseReference, request);
-        ObjectNode updates = requireObjectNode(request, "supplementary_data_updates");
+        ObjectNode updates = request.with("supplementary_data_updates");
         ObjectNode supplementary = mapper.createObjectNode();
 
         if (updates.has("$set") && updates.get("$set").isObject()) {
@@ -213,27 +212,27 @@ public class ServicePersistenceController {
         return caseData;
     }
 
-    private ObjectNode buildHistoryEntry(long reference, ObjectNode payload) {
+    private ObjectNode buildHistoryEntry(long reference) {
         ObjectNode wrapper = mapper.createObjectNode();
         long auditId = deterministicAuditId(reference);
         wrapper.put("id", auditId);
         wrapper.put("case_reference", reference);
-        wrapper.set("event", buildEvent(reference, payload));
+        wrapper.set("event", buildEvent(reference));
         return wrapper;
     }
 
-    private ObjectNode buildEvent(long reference, ObjectNode payload) {
+    private ObjectNode buildEvent(long reference) {
         ObjectNode event = mapper.createObjectNode();
-        event.put("id", determineEventId(payload));
-        event.put("event_name", determineEventName(payload));
-        event.put("summary", payload != null ? payload.path("summary").asText(null) : null);
-        event.put("description", payload != null ? payload.path("description").asText(null) : null);
-        event.put(CASE_TYPE_ID_FIELD, determineCaseType(null));
+        event.put("id", DEFAULT_EVENT_ID);
+        event.put("event_name", DEFAULT_EVENT_NAME);
+        event.put("summary", (String) null);
+        event.put("description", (String) null);
+        event.put(CASE_TYPE_ID_FIELD, DEFAULT_CASE_TYPE_ID);
         event.put(CREATED_DATE_FIELD, deterministicTimestamp(reference));
-        event.put("state_id", determineState(null));
+        event.put("state_id", DEFAULT_STATE);
         event.set("data", buildCaseData(reference, null));
         event.put("case_type_version", DEFAULT_VERSION);
-        event.put("security_classification", determineSecurity(null));
+        event.put("security_classification", DEFAULT_SECURITY_CLASSIFICATION);
         return event;
     }
 
@@ -265,24 +264,6 @@ public class ServicePersistenceController {
         return DEFAULT_SECURITY_CLASSIFICATION;
     }
 
-    private String determineEventId(ObjectNode payload) {
-        if (payload != null && payload.has(EVENT_DETAILS_FIELD)
-            && payload.get(EVENT_DETAILS_FIELD).isObject()
-            && payload.get(EVENT_DETAILS_FIELD).hasNonNull(EVENT_ID_FIELD)) {
-            return payload.get(EVENT_DETAILS_FIELD).get(EVENT_ID_FIELD).asText();
-        }
-        return DEFAULT_EVENT_ID;
-    }
-
-    private String determineEventName(ObjectNode payload) {
-        if (payload != null && payload.has(EVENT_DETAILS_FIELD)
-            && payload.get(EVENT_DETAILS_FIELD).isObject()
-            && payload.get(EVENT_DETAILS_FIELD).hasNonNull("event_name")) {
-            return payload.get(EVENT_DETAILS_FIELD).get("event_name").asText();
-        }
-        return DEFAULT_EVENT_NAME;
-    }
-
     private String deterministicTimestamp(long reference) {
         long offset = Math.floorMod(reference, TIMESTAMP_SPREAD_MILLIS);
         return Instant.ofEpochMilli(BASE_EPOCH_MILLIS + offset).atOffset(ZoneOffset.UTC).toString();
@@ -290,19 +271,6 @@ public class ServicePersistenceController {
 
     private long deterministicAuditId(long reference) {
         return Math.abs(reference % 1_000L) + 1;
-    }
-
-    private ObjectNode requireObjectNode(ObjectNode parent, String fieldName) {
-        JsonNode existing = parent.get(fieldName);
-        if (existing == null || existing.isNull()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Missing required object field '%s'".formatted(fieldName));
-        }
-        if (!existing.isObject()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Field '%s' must be a JSON object".formatted(fieldName));
-        }
-        return (ObjectNode) existing;
     }
 
     private List<Long> parseCaseReferences(String raw) {
