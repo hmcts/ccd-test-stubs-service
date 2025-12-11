@@ -143,7 +143,7 @@ ext {
   set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
   groovyVersion = '4.0.29'
-  jettyVersion = '11.0.26'
+  jettyVersion = '12.1.5'
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.49'
   // test versions
