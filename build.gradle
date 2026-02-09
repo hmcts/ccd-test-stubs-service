@@ -146,8 +146,8 @@ ext {
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.50'
   // test versions
-  junit = '5.11.4'
-  junitPlatform = '1.13.2'
+  junit = '5.14.2'
+  junitPlatform = '1.14.2'
   restAssuredVersion = '5.5.7'
 }
 
@@ -156,6 +156,7 @@ ext.libraries = [
     "org.junit.jupiter:junit-jupiter-api:${junit}",
     "org.junit.jupiter:junit-jupiter-engine:${junit}",
     "org.junit.jupiter:junit-jupiter-params:${junit}",
+    "org.junit.platform:junit-platform-launcher:${junitPlatform}",
     "org.junit.platform:junit-platform-commons:${junitPlatform}",
     "org.junit.platform:junit-platform-engine:${junitPlatform}",
     "org.apiguardian:apiguardian-api:1.1.2"
