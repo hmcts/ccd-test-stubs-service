@@ -146,8 +146,8 @@ ext {
   reformLogging = '6.1.9'
   tomcatVersion = '10.1.50'
   // test versions
-  junit = '5.14.2'
-  junitPlatform = '1.14.2'
+  junit = '5.12.2'
+  junitPlatform = '1.12.2'
   restAssuredVersion = '5.5.7'
 }
 
@@ -232,7 +232,7 @@ dependencies {
   implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.3'
   implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.10.6'
 
-
+  testImplementation(enforcedPlatform("org.junit:junit-bom:${junit}"))
   testImplementation libraries.junit5
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
