@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath localGroovy()
+    }
+}
+
 plugins {
   id 'application'
   id 'jacoco'
