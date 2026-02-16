@@ -5,7 +5,7 @@ plugins {
   id 'io.spring.dependency-management' version '1.1.7'
   id 'org.owasp.dependencycheck' version '12.1.3'
   id 'org.sonarqube' version '7.1.0.6387'
-  id 'org.springframework.boot' version '3.5.8'
+  id 'org.springframework.boot' version '3.5.10'
   id 'uk.gov.hmcts.java' version '0.12.67'
 }
 
@@ -147,7 +147,7 @@ repositories {
 }
 
 ext {
-  set('springCloudVersion', '2025.0.0')
+  set('springCloudVersion', '2025.0.1')
   set('spring-framework.version', '6.2.14')
   set('spring-security.version', '6.5.7')
   set('log4j2.version', '2.24.3')
@@ -156,10 +156,24 @@ ext {
   groovyVersion = '5.0.2'
   jettyVersion = '11.0.26'
   reformLogging = '6.1.9'
-  tomcatVersion = '10.1.49'
+  tomcatVersion = '10.1.52'
   // test versions
-  restAssuredVersion = '5.5.6'
+  junit = '5.12.2'
+  junitPlatform = '1.12.2'
+  restAssuredVersion = '5.5.7'
 }
+
+ext.libraries = [
+  junit5: [
+    "org.junit.jupiter:junit-jupiter-api:${junit}",
+    "org.junit.jupiter:junit-jupiter-engine:${junit}",
+    "org.junit.jupiter:junit-jupiter-params:${junit}",
+    "org.junit.platform:junit-platform-launcher:${junitPlatform}",
+    "org.junit.platform:junit-platform-commons:${junitPlatform}",
+    "org.junit.platform:junit-platform-engine:${junitPlatform}",
+    "org.apiguardian:apiguardian-api:1.1.2"
+  ]
+]
 
 dependencyManagement {
   imports {
@@ -214,26 +228,26 @@ dependencies {
   implementation group: 'org.eclipse.jetty.http2', name: 'http2-hpack', version: jettyVersion
 
 
-  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.6'
+  implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '10.7'
   implementation group: 'commons-beanutils', name: 'commons-beanutils', version: '1.11.0'
   implementation group: 'jakarta.el', name: 'jakarta.el-api', version: '6.0.1'
   implementation group: 'net.minidev', name: 'json-smart', version: '2.6.0'
-  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.5.1'
+  implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.6'
   implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
   implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.3'
   implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.10.6'
 
-
-  testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
+  testImplementation(enforcedPlatform("org.junit:junit-bom:${junit}"))
+  testImplementation libraries.junit5
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
 
   testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.10', classifier: 'all'
-  
+
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
 
