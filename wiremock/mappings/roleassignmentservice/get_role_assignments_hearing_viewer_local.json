@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPattern": "/am/role-assignments/actors/(18187443-7b29-47c1-bcda-6f099705e4bc|28187443-7b29-47c1-bcda-6f099705e4bc|38187443-7b29-47c1-bcda-6f099705e4bc|48187443-7b29-47c1-bcda-6f099705e4bc)"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "roleAssignmentResponse": [
+        {
+          "id": "18187443-7b29-47c1-bcda-6f099705e4bc",
+          "actorIdType": "IDAM",
+          "actorId": "{{userId}}",
+          "roleType": "ORGANISATION",
+          "roleName": "hearing-viewer",
+          "classification": "PUBLIC",
+          "grantType": "STANDARD",
+          "roleCategory": "PROFESSIONAL",
+          "readOnly": false,
+          "beginTime": "2021-01-01T00:00:00Z",
+          "endTime": "2022-01-01T00:00:00Z",
+          "created": "2020-12-23T06:37:58.096065Z",
+          "attributes": {
+            "contractType": "SALARIED",
+            "jurisdiction": "BEFTA_MASTER",
+            "caseId": "1619532860727729",
+            "region": "south-east"
+          },
+          "authorisations": []
+        }
+      ]
+    },
+    "transformers": [
+      "dynamic-role-assignments-response-transformer"
+    ]
+  }
+}
