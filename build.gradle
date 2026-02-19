@@ -243,7 +243,7 @@ dependencies {
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
   implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.3'
-  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '3.10.6'
+  implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '4.1.0'
 
   testImplementation(enforcedPlatform("org.junit:junit-bom:${junit}"))
   testImplementation libraries.junit5
