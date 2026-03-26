@@ -1,6 +1,6 @@
 java:
   ingressHost: ccd-test-stubs-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   applicationPort: 5555
-  image: "hmctspublic.azurecr.io/ccd/test-stubs-service:latest"
+  image: "hmctsprod.azurecr.io/ccd/test-stubs-service:latest"
   environment:
     WIREMOCK_SERVER_MAPPINGS_PATH: "wiremock"
