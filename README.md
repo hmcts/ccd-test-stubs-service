@@ -117,6 +117,30 @@ http://localhost:5555/idam-user
 
 The changes are not persistent, i.e. they do not survive service restarts
 
+### PRD organisation users stub
+
+The `/refdata/external/v1/organisations/users` stub supports selectable responses through the `stub-mode` query
+parameter:
+
+* default or omitted `stub-mode`: restricted caller with organisation present
+* `stub-mode=restricted-failed`: restricted caller with PRD unavailable
+* `stub-mode=unrestricted-failed`: unrestricted caller with PRD unavailable
+* `stub-mode=failed`: generic alias for PRD unavailable
+* `stub-mode=empty`: returns `200` with an empty `users` array and no `organisationIdentifier`
+
+The restricted versus unrestricted distinction is expected to come from the configured IDAM user roles via
+`/idam-user`; the PRD stub modes let AAT select the matching PRD behaviour explicitly.
+
+Examples:
+
+```bash
+curl "http://localhost:5555/refdata/external/v1/organisations/users"
+curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=restricted-failed"
+curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=unrestricted-failed"
+curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=failed"
+curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=empty"
+```
+
 ## Additional information
 
 **_dynamic-case-data-response-transformer_**: This transformer merges the case data from request payload with stubbed
