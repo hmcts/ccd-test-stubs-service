@@ -119,8 +119,12 @@ The changes are not persistent, i.e. they do not survive service restarts
 
 ### PRD organisation users stub
 
-The `/refdata/external/v1/organisations/users` stub supports selectable responses through the `stub-mode` query
-parameter:
+The `/refdata/external/v1/organisations/users` stub supports selectable responses through either:
+
+* the `stub-mode` query parameter on a direct manual call to `/refdata/external/v1/organisations/users`
+* the server-side stub-state endpoint used before CCD makes its internal PRD call
+
+Supported modes are:
 
 * default or omitted `stub-mode`: restricted caller with organisation present
 * `stub-mode=restricted-failed`: restricted caller with PRD unavailable
@@ -132,23 +136,75 @@ The restricted versus unrestricted distinction is expected to come from the conf
 `/idam-user`; the PRD stub modes let AAT select the matching PRD behaviour explicitly.
 
 For CCD-driven calls, where CCD does not append `stub-mode`, AAT can set the server-side stub state before triggering
-the CCD request:
+the CCD request. This is the intended control mechanism for CCD internal PRD calls.
+
+The stub-state endpoint is:
+
+* `POST /stub-state/prd-organisations-users`
+* `GET /stub-state/prd-organisations-users`
+
+`POST /stub-state/prd-organisations-users` accepts:
+
+```json
+{
+  "stubMode": "present | restricted-failed | unrestricted-failed"
+}
+```
+
+Example:
 
 ```bash
 curl -X POST \
   -H 'Content-Type: application/json' \
-  --data '{"stubMode":"empty"}' \
+  --data '{"stubMode":"restricted-failed"}' \
   http://localhost:5555/stub-state/prd-organisations-users
 ```
 
-The configured state is then applied automatically when CCD calls
-`/refdata/external/v1/organisations/users`. The default state is `present`, and an explicit `stub-mode` query
-parameter on a direct manual call still takes precedence over the stored state.
-
-You can inspect the current stored state with:
+`GET /stub-state/prd-organisations-users` returns the current stored mode:
 
 ```bash
 curl http://localhost:5555/stub-state/prd-organisations-users
+```
+
+Response example:
+
+```json
+{
+  "stubMode": "present"
+}
+```
+
+Mode behaviour when CCD calls `/refdata/external/v1/organisations/users`:
+
+* `present`: returns `200` with `organisationIdentifier` and the configured users payload
+* `restricted-failed`: returns `503` with `{"message":"PRD unavailable"}`
+* `unrestricted-failed`: returns `503` with `{"message":"PRD unavailable"}`
+
+The configured state is applied automatically when CCD calls `/refdata/external/v1/organisations/users`. The default
+state is `present`. If a direct manual call explicitly includes the `stub-mode` query parameter, that explicit query
+parameter takes precedence over the stored state.
+
+The stored stub state is global to the running stub-service instance and held in memory only. It is not scenario-scoped
+or user-scoped, and it does not survive service restarts. Tests that change the PRD stub state should reset it back to
+`present` when they finish to avoid contaminating later tests that hit the same instance.
+
+Examples:
+
+```bash
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"stubMode":"present"}' \
+  http://localhost:5555/stub-state/prd-organisations-users
+
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"stubMode":"restricted-failed"}' \
+  http://localhost:5555/stub-state/prd-organisations-users
+
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"stubMode":"unrestricted-failed"}' \
+  http://localhost:5555/stub-state/prd-organisations-users
 ```
 
 Examples:
@@ -160,6 +216,14 @@ curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=un
 curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=failed"
 curl "http://localhost:5555/refdata/external/v1/organisations/users?stub-mode=empty"
 ```
+
+### Preview deployment note
+
+Preview deployments of `ccd-test-stubs-service` should not be assumed to provide a full public replacement for the
+shared AAT stub service's WireMock admin surface. In particular, callers should not assume that the usual
+`/__admin/...` WireMock endpoints will be exposed through preview ingress. Use the documented application-level stub
+controls, such as `/idam-user` and `/stub-state/prd-organisations-users`, for test orchestration unless preview
+environment behaviour has been verified for the specific deployment under test.
 
 ## Additional information
 
