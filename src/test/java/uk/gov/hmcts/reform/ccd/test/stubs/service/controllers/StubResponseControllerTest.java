@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.service.PrdStubStateService;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.util.HeadersProvider;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +45,11 @@ import static org.mockito.Mockito.when;
 
 class StubResponseControllerTest {
 
+    private static final String MOCK_HTTP_SERVER_HOST = "localhost";
+    private static final String JWT_ISSUER = "http://fr-am:8080/openam/oauth2/hmcts";
+    private static final long JWT_EXPIRATION = 14400000L;
+    private static final String OAUTH_ISSUER_URL = "http://localhost:5555/o";
+
     private StubResponseController stubResponseController;
 
     @Autowired
@@ -55,11 +61,27 @@ class StubResponseControllerTest {
     @Mock
     HttpClient mockHttpClient;
 
+    private PrdStubStateService prdStubStateService;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        prdStubStateService = new PrdStubStateService("/refdata/external/v1/organisations/users");
+        stubResponseController = buildController();
+    }
+
+    private StubResponseController buildController() {
+        return new StubResponseController(
+            mockHttpClient,
+            mockHttpServer,
+            mapper,
+            prdStubStateService,
+            MOCK_HTTP_SERVER_HOST,
+            JWT_ISSUER,
+            JWT_EXPIRATION,
+            OAUTH_ISSUER_URL
+        );
     }
 
     /**
@@ -114,9 +136,7 @@ class StubResponseControllerTest {
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(200);
 
-        ResponseEntity<Map<String, String>> stateResponse =
-            stubResponseController.configurePrdOrganisationUsersStubState(Map.of("stubMode", "empty"));
-        assertThat(stateResponse.getBody().get("stubMode"), is("empty"));
+        prdStubStateService.setStubMode("empty");
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
 
@@ -140,23 +160,12 @@ class StubResponseControllerTest {
         when(mockResponse.body()).thenReturn("MOCK BODY");
         when(mockResponse.statusCode()).thenReturn(503);
 
-        stubResponseController.configurePrdOrganisationUsersStubState(Map.of("stubMode", "empty"));
+        prdStubStateService.setStubMode("empty");
 
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
 
         assertNotNull(responseEntityReturned);
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.SERVICE_UNAVAILABLE));
-    }
-
-    @Test
-    @DisplayName("Should return default PRD stub state when unset")
-    void shouldReturnDefaultPrdStubStateWhenUnset() {
-        ResponseEntity<Map<String, String>> responseEntity =
-            stubResponseController.getPrdOrganisationUsersStubState();
-
-        assertNotNull(responseEntity);
-        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
-        assertThat(responseEntity.getBody().get("stubMode"), is("present"));
     }
 
     /**
@@ -180,7 +189,7 @@ class StubResponseControllerTest {
     @Test
     @DisplayName("Test for forwardPostRequests() status OK")
     void shouldReturnStatusOK_ForwardPostRequests() throws IOException, InterruptedException {
-        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        stubResponseController = buildController();
         HttpHeaders headers = HttpHeaders.of(
             Map.of("Header-Name", List.of("Header-Value")), (s1, s2) -> true);
         HttpResponse<String> mockResponse = mock(HttpResponse.class);
@@ -210,7 +219,7 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardPostRequests() status OK - empty custom headers")
     void shouldReturnStatusOK_ForwardPostRequestsForEmptyCustomHeaders() throws IOException, InterruptedException {
         HttpResponse mockResponse = mock(HttpResponse.class);
-        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        stubResponseController = buildController();
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
 
@@ -231,7 +240,7 @@ class StubResponseControllerTest {
     void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders(Map<String, List<String>> headersMap)
         throws IOException, InterruptedException {
         HttpResponse mockResponse = mock(HttpResponse.class);
-        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        stubResponseController = buildController();
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
 
@@ -253,7 +262,7 @@ class StubResponseControllerTest {
     @DisplayName("Test for forwardPostRequests() status OK - with custom header")
     void shouldReturnStatusOK_ForwardPostRequestsForCustomHeaders() throws IOException, InterruptedException {
         HttpResponse mockResponse = mock(HttpResponse.class);
-        stubResponseController = new StubResponseController(mockHttpClient, mockHttpServer, mapper);
+        stubResponseController = buildController();
         Mockito.doReturn(mockResponse).when(mockHttpClient).send(any(), any());
         when(mockResponse.body()).thenReturn("MOCK BODY");
 

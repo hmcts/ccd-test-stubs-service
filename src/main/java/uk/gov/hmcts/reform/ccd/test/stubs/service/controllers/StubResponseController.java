@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.service.PrdStubStateService;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
@@ -47,7 +48,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import jakarta.servlet.http.HttpServletRequest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -65,39 +65,36 @@ public class StubResponseController {
     static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
     static final List<String> CUSTOM_HEADERS = List.of("Client-Context");
     static final String STUB_MODE_QUERY_PARAM = "stub-mode";
-    private static final String STUB_MODE_FIELD = "stubMode";
-
-    private final AtomicReference<String> prdOrganisationUsersStubMode = new AtomicReference<>();
-
-
-    @Value("${wiremock.server.host}")
-    private String mockHttpServerHost;
-
-    @Value("${app.jwt.issuer}")
-    private String issuer;
-
-    @Value("${app.jwt.expiration}")
-    private long expiration;
-
-    @Value("${app.oauth.issuer-url:http://localhost:5555/o}")
-    private String oauthIssuerUrl;
-
-    @Value("${app.prd.organisation-users-path:/refdata/external/v1/organisations/users}")
-    private String prdOrganisationUsersPath;
 
     @Value("classpath:userInfoOverrideRequestTemplate.json")
     private Resource userInfoRequestTemplate;
 
     private final HttpClient httpClient;
-
+    private final String mockHttpServerHost;
+    private final String issuer;
+    private final long expiration;
+    private final String oauthIssuerUrl;
     private final MockHttpServer mockHttpServer;
     private final ObjectMapper mapper;
+    private final PrdStubStateService prdStubStateService;
 
     @Autowired
-    public StubResponseController(HttpClient httpClient, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+    public StubResponseController(HttpClient httpClient,
+                                  MockHttpServer mockHttpServer,
+                                  ObjectMapper mapper,
+                                  PrdStubStateService prdStubStateService,
+                                  @Value("${wiremock.server.host}") String mockHttpServerHost,
+                                  @Value("${app.jwt.issuer}") String issuer,
+                                  @Value("${app.jwt.expiration}") long expiration,
+                                  @Value("${app.oauth.issuer-url:http://localhost:5555/o}") String oauthIssuerUrl) {
         this.httpClient = httpClient;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
+        this.prdStubStateService = prdStubStateService;
+        this.mockHttpServerHost = mockHttpServerHost;
+        this.issuer = issuer;
+        this.expiration = expiration;
+        this.oauthIssuerUrl = oauthIssuerUrl;
     }
 
     @GetMapping(value = "/login")
@@ -173,28 +170,6 @@ public class StubResponseController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
-    }
-
-    @GetMapping(value = "/stub-state/prd-organisations-users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Map<String, String>> getPrdOrganisationUsersStubState() {
-        return ResponseEntity.ok(Map.of(
-            STUB_MODE_FIELD, normaliseStubMode(prdOrganisationUsersStubMode.get())
-        ));
-    }
-
-    @PostMapping(
-        path = "/stub-state/prd-organisations-users",
-        consumes = MediaType.APPLICATION_JSON_VALUE,
-        produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<Map<String, String>> configurePrdOrganisationUsersStubState(
-        @RequestBody Map<String, String> requestBody
-    ) {
-        String requestedStubMode = requestBody == null ? null : requestBody.get(STUB_MODE_FIELD);
-        String stubMode = normaliseStubMode(requestedStubMode);
-        prdOrganisationUsersStubMode.set(stubMode);
-        logPrdOrganisationUsersStubStateUpdated();
-        return ResponseEntity.ok(Map.of(STUB_MODE_FIELD, stubMode));
     }
 
     /**
@@ -359,20 +334,12 @@ public class StubResponseController {
 
     private Map<String, String[]> enrichQueryParameters(String requestPath, Map<String, String[]> parameterMap) {
         Map<String, String[]> effectiveParameters = new HashMap<>(parameterMap);
-        if (prdOrganisationUsersPath.equals(requestPath)
+        if (prdStubStateService.isPrdOrganisationUsersPath(requestPath)
             && !effectiveParameters.containsKey(STUB_MODE_QUERY_PARAM)
-            && prdOrganisationUsersStubMode.get() != null) {
-            effectiveParameters.put(STUB_MODE_QUERY_PARAM, new String[]{prdOrganisationUsersStubMode.get()});
+            && prdStubStateService.hasStoredStubMode()) {
+            effectiveParameters.put(STUB_MODE_QUERY_PARAM, new String[]{prdStubStateService.getStubMode()});
         }
         return effectiveParameters;
-    }
-
-    private String normaliseStubMode(String stubMode) {
-        return (stubMode == null || stubMode.isBlank()) ? "present" : stubMode;
-    }
-
-    private void logPrdOrganisationUsersStubStateUpdated() {
-        LOG.info("PRD organisation users stub state updated");
     }
 
     void addUriParams(URIBuilder builder, final String scope,
