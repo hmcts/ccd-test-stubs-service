@@ -187,7 +187,7 @@ public class StubResponseController {
         String requestedStubMode = requestBody == null ? null : requestBody.get("stubMode");
         String stubMode = normaliseStubMode(requestedStubMode);
         prdOrganisationUsersStubMode.set(stubMode);
-        LOG.info("Setting PRD organisation users stub-mode to {}", stubMode);
+        LOG.info("Updating PRD organisation users stub state");
         return ResponseEntity.ok(Map.of("stubMode", stubMode));
     }
 
@@ -273,7 +273,7 @@ public class StubResponseController {
     )
     public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo)
         throws JsonProcessingException, InterruptedException {
-        LOG.info("setting stub user info to: {}", asJson(userInfo));
+        LOG.info("Updating stub user info");
 
         String request = createWiremockRequestForUserInfo(asJson(userInfo));
         String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
