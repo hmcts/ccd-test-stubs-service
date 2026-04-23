@@ -43,9 +43,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import jakarta.servlet.http.HttpServletRequest;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -62,6 +64,10 @@ public class StubResponseController {
     private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
     static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
     static final List<String> CUSTOM_HEADERS = List.of("Client-Context");
+    static final String PRD_ORGANISATION_USERS_PATH = "/refdata/external/v1/organisations/users";
+    static final String STUB_MODE_QUERY_PARAM = "stub-mode";
+
+    private final AtomicReference<String> prdOrganisationUsersStubMode = new AtomicReference<>();
 
 
     @Value("${wiremock.server.host}")
@@ -147,7 +153,7 @@ public class StubResponseController {
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-            Map<String, String[]> parameterMap = request.getParameterMap();
+            Map<String, String[]> parameterMap = enrichQueryParameters(requestPath, request.getParameterMap());
             URI uri = URI.create(getMockHttpServerUrl(requestPath, parameterMap));
 
             HttpRequest httpRequest = HttpRequest.newBuilder(uri)
@@ -161,6 +167,28 @@ public class StubResponseController {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(e.getMessage());
         }
+    }
+
+    @GetMapping(value = "/stub-state/prd-organisations-users", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> getPrdOrganisationUsersStubState() {
+        return ResponseEntity.ok(Map.of(
+            "stubMode", normaliseStubMode(prdOrganisationUsersStubMode.get())
+        ));
+    }
+
+    @PostMapping(
+        path = "/stub-state/prd-organisations-users",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<Map<String, String>> configurePrdOrganisationUsersStubState(
+        @RequestBody Map<String, String> requestBody
+    ) {
+        String requestedStubMode = requestBody == null ? null : requestBody.get("stubMode");
+        String stubMode = normaliseStubMode(requestedStubMode);
+        prdOrganisationUsersStubMode.set(stubMode);
+        LOG.info("Setting PRD organisation users stub-mode to {}", stubMode);
+        return ResponseEntity.ok(Map.of("stubMode", stubMode));
     }
 
     /**
@@ -321,6 +349,20 @@ public class StubResponseController {
                             : getMockHttpServerUrl(requestPath)
                 )
             );
+    }
+
+    private Map<String, String[]> enrichQueryParameters(String requestPath, Map<String, String[]> parameterMap) {
+        Map<String, String[]> effectiveParameters = new HashMap<>(parameterMap);
+        if (PRD_ORGANISATION_USERS_PATH.equals(requestPath)
+            && !effectiveParameters.containsKey(STUB_MODE_QUERY_PARAM)
+            && prdOrganisationUsersStubMode.get() != null) {
+            effectiveParameters.put(STUB_MODE_QUERY_PARAM, new String[]{prdOrganisationUsersStubMode.get()});
+        }
+        return effectiveParameters;
+    }
+
+    private String normaliseStubMode(String stubMode) {
+        return (stubMode == null || stubMode.isBlank()) ? "present" : stubMode;
     }
 
     void addUriParams(URIBuilder builder, final String scope,

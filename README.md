@@ -131,6 +131,26 @@ parameter:
 The restricted versus unrestricted distinction is expected to come from the configured IDAM user roles via
 `/idam-user`; the PRD stub modes let AAT select the matching PRD behaviour explicitly.
 
+For CCD-driven calls, where CCD does not append `stub-mode`, AAT can set the server-side stub state before triggering
+the CCD request:
+
+```bash
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  --data '{"stubMode":"empty"}' \
+  http://localhost:5555/stub-state/prd-organisations-users
+```
+
+The configured state is then applied automatically when CCD calls
+`/refdata/external/v1/organisations/users`. The default state is `present`, and an explicit `stub-mode` query
+parameter on a direct manual call still takes precedence over the stored state.
+
+You can inspect the current stored state with:
+
+```bash
+curl http://localhost:5555/stub-state/prd-organisations-users
+```
+
 Examples:
 
 ```bash

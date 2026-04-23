@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -95,6 +96,67 @@ class StubResponseControllerTest {
         ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
         assertNotNull(responseEntityReturned);
         assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @DisplayName("Should apply configured PRD stub state to forwarded CCD request")
+    void shouldApplyConfiguredPrdStubStateToForwardedRequest() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        when(mockRequest.getRequestURI()).thenReturn("/refdata/external/v1/organisations/users");
+        when(mockRequest.getParameterMap()).thenReturn(Collections.emptyMap());
+
+        HttpResponse<String> mockResponse = mock(HttpResponse.class);
+        when(mockHttpClient.<String>send(
+            argThat(request -> request.uri().toString().contains("stub-mode=empty")),
+            any())
+        ).thenReturn(mockResponse);
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(200);
+
+        ResponseEntity<Map<String, String>> stateResponse =
+            stubResponseController.configurePrdOrganisationUsersStubState(Map.of("stubMode", "empty"));
+        assertThat(stateResponse.getBody().get("stubMode"), is("empty"));
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
+
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.OK));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    @DisplayName("Should prefer explicit PRD stub-mode query parameter over configured state")
+    void shouldPreferExplicitPrdStubModeQueryParameter() throws IOException, InterruptedException {
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        when(mockRequest.getRequestURI()).thenReturn("/refdata/external/v1/organisations/users");
+        when(mockRequest.getParameterMap()).thenReturn(Map.of("stub-mode", new String[]{"failed"}));
+
+        HttpResponse<String> mockResponse = mock(HttpResponse.class);
+        when(mockHttpClient.<String>send(
+            argThat(request -> request.uri().toString().contains("stub-mode=failed")),
+            any())
+        ).thenReturn(mockResponse);
+        when(mockResponse.body()).thenReturn("MOCK BODY");
+        when(mockResponse.statusCode()).thenReturn(503);
+
+        stubResponseController.configurePrdOrganisationUsersStubState(Map.of("stubMode", "empty"));
+
+        ResponseEntity<Object> responseEntityReturned = stubResponseController.forwardGetRequests(mockRequest);
+
+        assertNotNull(responseEntityReturned);
+        assertThat(responseEntityReturned.getStatusCode(), is(HttpStatus.SERVICE_UNAVAILABLE));
+    }
+
+    @Test
+    @DisplayName("Should return default PRD stub state when unset")
+    void shouldReturnDefaultPrdStubStateWhenUnset() {
+        ResponseEntity<Map<String, String>> responseEntity =
+            stubResponseController.getPrdOrganisationUsersStubState();
+
+        assertNotNull(responseEntity);
+        assertThat(responseEntity.getStatusCode(), is(HttpStatus.OK));
+        assertThat(responseEntity.getBody().get("stubMode"), is("present"));
     }
 
     /**
