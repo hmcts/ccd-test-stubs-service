@@ -26,7 +26,7 @@ java {
 sourceSets {
   integrationTest {
     java {
-      compileClasspath += main.output 
+      compileClasspath += main.output
       runtimeClasspath += main.output
       srcDir file('src/integrationTest/java')
     }
@@ -157,7 +157,6 @@ ext {
   set('spring-framework.version', '6.2.14')
   set('spring-security.version', '6.5.7')
   set('log4j2.version', '2.24.3')
-  set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
   groovyVersion = '5.0.5'
   jettyVersion = '11.0.26'
@@ -200,7 +199,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aspectj'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
