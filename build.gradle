@@ -245,8 +245,8 @@ dependencies {
   implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '4.2.1'
 
   testImplementation(enforcedPlatform("org.junit:junit-bom:${junit}"))
-  testImplementation libraries.junit5
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
