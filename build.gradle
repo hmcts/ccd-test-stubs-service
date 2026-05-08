@@ -158,7 +158,7 @@ ext {
   set('spring-security.version', '6.5.7')
   set('log4j2.version', '2.24.3')
   set('snakeyaml.version', '2.3')
-  groovyVersion = '5.0.5'
+  groovyVersion = '5.0.6'
   jettyVersion = '11.0.26'
   reformLogging = '8.0.0'
   tomcatVersion = '10.1.52'
@@ -241,7 +241,7 @@ dependencies {
   implementation group: 'org.apache.groovy', name: 'groovy-json', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy', version: groovyVersion
   implementation group: 'org.apache.groovy', name: 'groovy-xml', version: groovyVersion
-  implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.3'
+  implementation group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '3.2.4'
   implementation group: 'org.wiremock.integrations', name: 'wiremock-spring-boot', version: '4.2.1'
 
   testImplementation(enforcedPlatform("org.junit:junit-bom:${junit}"))
