@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.config.ApplicationConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
@@ -18,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ServicePersistenceController.class)
+@Import(ApplicationConfig.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ServicePersistenceControllerWebMvcTest {
 
@@ -138,6 +141,7 @@ class ServicePersistenceControllerWebMvcTest {
         ObjectNode updates = mapper.createObjectNode();
         updates.set("$set", set);
         updates.set("$inc", inc);
+        //TODO: Updating below may solve the failing test ???
         ObjectNode request = mapper.createObjectNode();
         request.set("supplementary_data_updates", updates);
 
