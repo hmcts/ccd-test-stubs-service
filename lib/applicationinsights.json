@@ -1,5 +1,18 @@
 {
   "role": {
     "name": "ccd-test-stubs-service"
-  }
+  },
+  "samplingOverrides": [
+    {
+      "telemetryType": "request",
+      "attributes": [
+        {
+          "key": "http.url",
+          "value": "https?://[^/]+/health.*",
+          "matchType": "regexp"
+        }
+      ],
+      "percentage": 1
+    }
+  ]
 }
