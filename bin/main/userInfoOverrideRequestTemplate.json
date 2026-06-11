@@ -1,0 +1,13 @@
+{
+  "request": {
+    "url": "/o/userinfo",
+    "method": "GET"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": $USER_INFO_BODY_PLACEHOLDER
+  }
+}
