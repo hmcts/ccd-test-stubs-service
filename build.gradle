@@ -249,6 +249,7 @@ dependencies {
   testImplementation libraries.junit6
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'io.rest-assured', name: 'rest-assured', version: restAssuredVersion
+  testImplementation group: 'io.rest-assured', name: 'rest-assured-common', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'json-path', version: restAssuredVersion
   testImplementation group: 'io.rest-assured', name: 'xml-path', version: restAssuredVersion
 
