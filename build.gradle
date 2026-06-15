@@ -166,7 +166,7 @@ ext {
   // test versions
   junit = '6.1.0'
   junitPlatform = '6.1.0'
-  restAssuredVersion = '5.5.7'
+  restAssuredVersion = '6.0.0'
 }
 
 ext.libraries = [
