@@ -160,7 +160,8 @@ ext {
   set('jackson.version', '2.18.2')
   set('snakeyaml.version', '2.3')
   groovyVersion = '5.0.7'
-  jettyVersion = '12.1.11'
+  // Keep aligned with the runtime version used by wiremock-spring-boot 4.2.2.
+  jettyVersion = '12.1.6'
   reformLogging = '8.0.0'
   tomcatVersion = '10.1.52'
   // test versions
