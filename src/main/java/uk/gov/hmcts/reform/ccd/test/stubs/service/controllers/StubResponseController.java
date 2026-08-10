@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import uk.gov.hmcts.reform.ccd.test.stubs.service.service.PrdStubStateService;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.mock.server.MockHttpServer;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.JWTokenGenerator;
 import uk.gov.hmcts.reform.ccd.test.stubs.service.token.KeyGenUtil;
@@ -43,6 +44,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,30 +64,37 @@ public class StubResponseController {
     private static final Logger LOG = LoggerFactory.getLogger(StubResponseController.class);
     static final String WIREMOCK_STUB_MAPPINGS_ENDPOINT = "/__admin/mappings";
     static final List<String> CUSTOM_HEADERS = List.of("Client-Context");
-
-
-    @Value("${wiremock.server.host}")
-    private String mockHttpServerHost;
-
-    @Value("${app.jwt.issuer}")
-    private String issuer;
-
-    @Value("${app.jwt.expiration}")
-    private long expiration;
+    static final String STUB_MODE_QUERY_PARAM = "stub-mode";
 
     @Value("classpath:userInfoOverrideRequestTemplate.json")
     private Resource userInfoRequestTemplate;
 
     private final HttpClient httpClient;
-
+    private final String mockHttpServerHost;
+    private final String issuer;
+    private final long expiration;
+    private final String oauthIssuerUrl;
     private final MockHttpServer mockHttpServer;
     private final ObjectMapper mapper;
+    private final PrdStubStateService prdStubStateService;
 
     @Autowired
-    public StubResponseController(HttpClient httpClient, MockHttpServer mockHttpServer, ObjectMapper mapper) {
+    public StubResponseController(HttpClient httpClient,
+                                  MockHttpServer mockHttpServer,
+                                  ObjectMapper mapper,
+                                  PrdStubStateService prdStubStateService,
+                                  @Value("${wiremock.server.host}") String mockHttpServerHost,
+                                  @Value("${app.jwt.issuer}") String issuer,
+                                  @Value("${app.jwt.expiration}") long expiration,
+                                  @Value("${app.oauth.issuer-url:http://localhost:5555/o}") String oauthIssuerUrl) {
         this.httpClient = httpClient;
         this.mockHttpServer = mockHttpServer;
         this.mapper = mapper;
+        this.prdStubStateService = prdStubStateService;
+        this.mockHttpServerHost = mockHttpServerHost;
+        this.issuer = issuer;
+        this.expiration = expiration;
+        this.oauthIssuerUrl = oauthIssuerUrl;
     }
 
     @GetMapping(value = "/login")
@@ -147,7 +156,7 @@ public class StubResponseController {
     public ResponseEntity<Object> forwardGetRequests(HttpServletRequest request) throws InterruptedException {
         try {
             String requestPath = new AntPathMatcher().extractPathWithinPattern("**", request.getRequestURI());
-            Map<String, String[]> parameterMap = request.getParameterMap();
+            Map<String, String[]> parameterMap = enrichQueryParameters(requestPath, request.getParameterMap());
             URI uri = URI.create(getMockHttpServerUrl(requestPath, parameterMap));
 
             HttpRequest httpRequest = HttpRequest.newBuilder(uri)
@@ -245,7 +254,7 @@ public class StubResponseController {
     )
     public ResponseEntity<String> configureUser(@RequestBody IdamUserInfo userInfo)
         throws JsonProcessingException, InterruptedException {
-        LOG.info("setting stub user info to: {}", asJson(userInfo));
+        LOG.info("Updating stub user info");
 
         String request = createWiremockRequestForUserInfo(asJson(userInfo));
         String requestUrl = getMockHttpServerUrl(WIREMOCK_STUB_MAPPINGS_ENDPOINT);
@@ -323,15 +332,24 @@ public class StubResponseController {
             );
     }
 
+    private Map<String, String[]> enrichQueryParameters(String requestPath, Map<String, String[]> parameterMap) {
+        Map<String, String[]> effectiveParameters = new HashMap<>(parameterMap);
+        if (prdStubStateService.isPrdOrganisationUsersPath(requestPath)
+            && !effectiveParameters.containsKey(STUB_MODE_QUERY_PARAM)
+            && prdStubStateService.hasStoredStubMode()) {
+            effectiveParameters.put(STUB_MODE_QUERY_PARAM, new String[]{prdStubStateService.getStubMode()});
+        }
+        return effectiveParameters;
+    }
+
     void addUriParams(URIBuilder builder, final String scope,
                       final String state,
                       final String clientId) {
         if ("xuiwebapp".equalsIgnoreCase(clientId)
             || "xui_webapp".equalsIgnoreCase(clientId)) {
-            String localIss = "http://localhost:5555/o";
             builder.addParameter("scope", scope);
             builder.addParameter("state", state);
-            builder.addParameter("iss", localIss);
+            builder.addParameter("iss", oauthIssuerUrl);
         }
     }
 }

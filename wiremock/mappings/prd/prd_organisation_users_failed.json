@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/refdata/external/v1/organisations/users",
+    "queryParameters": {
+      "stub-mode": {
+        "equalTo": "failed"
+      }
+    }
+  },
+  "response": {
+    "status": 503,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "message": "PRD unavailable"
+    }
+  }
+}
