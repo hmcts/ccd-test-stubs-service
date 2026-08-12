@@ -17,6 +17,8 @@ class WireMockServerConfigTest {
 
         WireMockServer wireMockServer = config.wireMockServer();
         assertThat(wireMockServer.getOptions().filesRoot().getPath(), is(directory));
+        assertThat(wireMockServer.getOptions().getHttp2PlainDisabled(), is(true));
+        assertThat(wireMockServer.getOptions().getHttp2TlsDisabled(), is(true));
     }
 
     @Test
