@@ -55,6 +55,8 @@ public class WireMockServerConfig {
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
+                .http2PlainDisabled(true)
+                .http2TlsDisabled(true)
                 .usingFilesUnderDirectory(mappingsPath)
                 .templatingEnabled(true)
                 .extensions(extension1, extension2, extension3, extension4, extension5, extension6);
@@ -63,6 +65,8 @@ public class WireMockServerConfig {
             return options()
                 .dynamicHttpsPort()
                 .dynamicPort()
+                .http2PlainDisabled(true)
+                .http2TlsDisabled(true)
                 .usingFilesUnderClasspath(mappingsPath)
                 .templatingEnabled(true)
                 .extensions(extension1, extension2, extension3, extension4, extension5, extension6);
