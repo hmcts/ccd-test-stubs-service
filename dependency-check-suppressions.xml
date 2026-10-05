@@ -25,4 +25,21 @@
         <cve>CVE-2026-59313</cve>
         <cve>CVE-2026-59314</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        CCD-8336: Handlebars 4.3.1 is pulled transitively by WireMock. Newer Handlebars versions are not available
+        to the Jenkins build repositories used by this service, so this finding is suppressed against the embedded
+        Commons Lang metadata path only.
+        ]]></notes>
+        <filePath regex="true">.*handlebars-4\.3\.1\.jar/META-INF/maven/org\.apache\.commons/commons-lang3/pom\.xml$</filePath>
+        <cve>CVE-2025-48924</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[
+        CCD-8336: Jackson is kept on the Spring Boot 3.5.16 managed version because newer Jackson versions are not
+        available to the Jenkins build repositories used by this service.
+        ]]></notes>
+        <packageUrl>pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.21.4</packageUrl>
+        <cve>CVE-2026-54515</cve>
+    </suppress>
 </suppressions>
