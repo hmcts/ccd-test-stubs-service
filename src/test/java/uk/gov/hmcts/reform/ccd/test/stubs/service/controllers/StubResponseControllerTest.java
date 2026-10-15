@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 
 import org.apache.hc.core5.net.URIBuilder;

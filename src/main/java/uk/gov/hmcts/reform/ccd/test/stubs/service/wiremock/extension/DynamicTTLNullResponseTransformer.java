@@ -1,6 +1,6 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.ObjectNode;
 import com.google.common.annotations.VisibleForTesting;
 
 public class DynamicTTLNullResponseTransformer extends AbstractTTLResponseTransformer {
