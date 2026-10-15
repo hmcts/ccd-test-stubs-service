@@ -3,6 +3,8 @@
 !gradle/wrapper/gradle-wrapper.jar
 applicationinsights-agent-*.jar
 *.log
+/bin/
+!/bin/run-in-docker.sh
 
 ### STS ###
 .apt_generated

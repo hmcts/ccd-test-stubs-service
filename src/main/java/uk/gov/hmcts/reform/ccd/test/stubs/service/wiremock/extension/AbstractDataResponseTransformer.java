@@ -1,14 +1,14 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.extension.Parameters;
 import com.github.tomakehurst.wiremock.http.Request;
 import com.github.tomakehurst.wiremock.http.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import tools.jackson.core.JacksonException;
 
 public abstract class AbstractDataResponseTransformer extends AbstractDynamicResponseTransformer {
 
@@ -25,14 +25,14 @@ public abstract class AbstractDataResponseTransformer extends AbstractDynamicRes
             if (responseNode.has(jsonNodeName) && requestNode.has(jsonNodeName)) {
                 ObjectNode requestCaseDataNode = (ObjectNode) requestNode.get(jsonNodeName);
                 ObjectNode responseCaseDataNode = (ObjectNode) responseNode.get(jsonNodeName);
-                requestCaseDataNode.fields().forEachRemaining(entry -> {
+                requestCaseDataNode.properties().forEach(entry -> {
                     if (!responseCaseDataNode.has(entry.getKey())) {
                         responseCaseDataNode.set(entry.getKey(), entry.getValue());
                     }
                 });
                 return responseNode.toString();
             }
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             LOG.error("Exception deserialising response body: {}", e.getMessage());
         }
 

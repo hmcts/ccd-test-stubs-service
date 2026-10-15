@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.wiremock.extension;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.node.StringNode;
 import com.google.common.annotations.VisibleForTesting;
 
 /*
@@ -38,7 +38,7 @@ public class DynamicTTLUppercaseResponseTransformer extends AbstractTTLResponseT
                 } else {
                     responseTTLNode.set(
                             TTL_SUSPENDED,
-                            new TextNode(responseTTLNode.get(TTL_SUSPENDED).asText().toUpperCase())
+                            new StringNode(responseTTLNode.get(TTL_SUSPENDED).stringValue().toUpperCase())
                     );
                 }
             }
