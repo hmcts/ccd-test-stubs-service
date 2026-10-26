@@ -1,7 +1,7 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.RSAKey;
 import io.micrometer.core.instrument.util.IOUtils;

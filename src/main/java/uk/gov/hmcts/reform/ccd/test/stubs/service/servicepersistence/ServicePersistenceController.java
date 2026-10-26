@@ -6,8 +6,6 @@ import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -21,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 @RestController
 @RequestMapping("/ccd-persistence")
@@ -68,12 +68,12 @@ public class ServicePersistenceController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Idempotency-Key header is required");
         }
 
-        ObjectNode caseDetailsPayload = payload.with(CASE_DETAILS_FIELD);
-        ObjectNode caseDataNode = caseDetailsPayload.with(CASE_DATA_FIELD);
+        ObjectNode caseDetailsPayload = payload.withObject(CASE_DETAILS_FIELD);
+        ObjectNode caseDataNode = caseDetailsPayload.withObject(CASE_DATA_FIELD);
         long reference = caseDetailsPayload.path("id").asLong();
 
         if (caseDataNode.hasNonNull(VALIDATION_ERROR_FLAG)
-            && "yes".equalsIgnoreCase(caseDataNode.get(VALIDATION_ERROR_FLAG).asText())) {
+            && "yes".equalsIgnoreCase(caseDataNode.get(VALIDATION_ERROR_FLAG).stringValue())) {
             LOG.info("Simulating decentralised validation error for case ref {}", reference);
             ObjectNode response = mapper.createObjectNode();
             response.put("ignore_warning", false);
@@ -82,7 +82,7 @@ public class ServicePersistenceController {
             return ResponseEntity.ok(response);
         }
 
-        String eventId = payload.path(EVENT_DETAILS_FIELD).path(EVENT_ID_FIELD).asText();
+        String eventId = payload.path(EVENT_DETAILS_FIELD).path(EVENT_ID_FIELD).stringValue();
         if (CONFLICT_EVENT_ID.equals(eventId)) {
             LOG.info("Simulating decentralised concurrency conflict for case ref {} (eventId={})",
                 reference,
@@ -134,18 +134,18 @@ public class ServicePersistenceController {
         @RequestBody ObjectNode request
     ) {
         LOG.info("ServicePersistenceStub received supplementary-data update for {}: {}", caseReference, request);
-        ObjectNode updates = request.with("supplementary_data_updates");
+        ObjectNode updates = request.withObject("supplementary_data_updates");
         ObjectNode supplementary = mapper.createObjectNode();
 
         if (updates.has("$set") && updates.get("$set").isObject()) {
             ObjectNode setUpdates = (ObjectNode) updates.get("$set");
-            setUpdates.fields().forEachRemaining(entry ->
+            setUpdates.properties().forEach(entry ->
                 supplementary.set(entry.getKey(), entry.getValue().deepCopy())
             );
         }
         if (updates.has("$inc") && updates.get("$inc").isObject()) {
             ObjectNode incUpdates = (ObjectNode) updates.get("$inc");
-            incUpdates.fields().forEachRemaining(entry -> {
+            incUpdates.properties().forEach(entry -> {
                 long value = entry.getValue().asLong();
                 long current = supplementary.path(entry.getKey()).asLong(0L);
                 supplementary.put(entry.getKey(), current + value);
@@ -190,7 +190,7 @@ public class ServicePersistenceController {
         caseDetails.put("last_state_modified_date", timestamp);
 
         if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("resolved_ttl")) {
-            caseDetails.put("resolved_ttl", caseDetailsPayload.get("resolved_ttl").asText());
+            caseDetails.put("resolved_ttl", caseDetailsPayload.get("resolved_ttl").stringValue());
         }
 
         caseDetails.set(CASE_DATA_FIELD, buildCaseData(reference, requestCaseData));
@@ -202,7 +202,7 @@ public class ServicePersistenceController {
     private ObjectNode buildCaseData(long reference, ObjectNode sourceCaseData) {
         ObjectNode caseData = mapper.createObjectNode();
         if (sourceCaseData != null) {
-            sourceCaseData.fields().forEachRemaining(entry ->
+            sourceCaseData.properties().forEach(entry ->
                 caseData.set(entry.getKey(), entry.getValue().deepCopy())
             );
         } else {
@@ -238,28 +238,28 @@ public class ServicePersistenceController {
 
     private String determineCaseType(ObjectNode caseDetailsPayload) {
         if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull(CASE_TYPE_ID_FIELD)) {
-            return caseDetailsPayload.get(CASE_TYPE_ID_FIELD).asText();
+            return caseDetailsPayload.get(CASE_TYPE_ID_FIELD).stringValue();
         }
         return DEFAULT_CASE_TYPE_ID;
     }
 
     private String determineJurisdiction(ObjectNode caseDetailsPayload) {
         if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("jurisdiction")) {
-            return caseDetailsPayload.get("jurisdiction").asText();
+            return caseDetailsPayload.get("jurisdiction").stringValue();
         }
         return DEFAULT_JURISDICTION;
     }
 
     private String determineState(ObjectNode caseDetailsPayload) {
         if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("state")) {
-            return caseDetailsPayload.get("state").asText();
+            return caseDetailsPayload.get("state").stringValue();
         }
         return DEFAULT_STATE;
     }
 
     private String determineSecurity(ObjectNode caseDetailsPayload) {
         if (caseDetailsPayload != null && caseDetailsPayload.hasNonNull("security_classification")) {
-            return caseDetailsPayload.get("security_classification").asText();
+            return caseDetailsPayload.get("security_classification").stringValue();
         }
         return DEFAULT_SECURITY_CLASSIFICATION;
     }

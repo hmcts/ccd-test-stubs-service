@@ -1,11 +1,12 @@
 package uk.gov.hmcts.reform.ccd.test.stubs.service.servicepersistence;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
+import tools.jackson.databind.JsonNode;
+
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,17 +55,17 @@ class ServicePersistenceControllerWebMvcTest {
             .getResponse()
             .getContentAsString();
 
-        JsonNode cases = mapper.readTree(casesJson);
+        tools.jackson.databind.JsonNode cases = mapper.readTree(casesJson);
         assertThat(cases).hasSize(1);
         JsonNode caseDetails = cases.get(0).path("case_details");
         assertThat(caseDetails.path("id").asLong()).isEqualTo(caseReference);
         assertThat(caseDetails.path("version").asInt()).isEqualTo(1);
-        assertThat(caseDetails.path("case_data").path(STUB_MARKER_FIELD).asText()).isEqualTo(STUB_MARKER_VALUE);
-        assertThat(caseDetails.path("created_date").asText()).isNotBlank();
-        assertThat(caseDetails.path("last_modified").asText()).isNotBlank();
-        assertThat(caseDetails.path("last_state_modified_date").asText()).isNotBlank();
-        assertThat(caseDetails.path("state").asText()).isNotBlank();
-        assertThat(caseDetails.path("security_classification").asText()).isNotBlank();
+        assertThat(caseDetails.path("case_data").path(STUB_MARKER_FIELD).stringValue()).isEqualTo(STUB_MARKER_VALUE);
+        assertThat(caseDetails.path("created_date").stringValue()).isNotBlank();
+        assertThat(caseDetails.path("last_modified").stringValue()).isNotBlank();
+        assertThat(caseDetails.path("last_state_modified_date").stringValue()).isNotBlank();
+        assertThat(caseDetails.path("state").stringValue()).isNotBlank();
+        assertThat(caseDetails.path("security_classification").stringValue()).isNotBlank();
 
         String historyJson = mockMvc.perform(get("/ccd-persistence/cases/{caseRef}/history", caseReference))
             .andExpect(status().isOk())
@@ -76,9 +77,9 @@ class ServicePersistenceControllerWebMvcTest {
         assertThat(history).hasSize(1);
         JsonNode firstEvent = history.get(0);
         assertThat(firstEvent.path("case_reference").asLong()).isEqualTo(caseReference);
-        assertThat(firstEvent.path("event").path("id").asText()).isEqualTo("createCase");
+        assertThat(firstEvent.path("event").path("id").stringValue()).isEqualTo("createCase");
         assertThat(firstEvent.path("id").asLong()).isEqualTo(556L);
-        assertThat(firstEvent.path("event").path("data").path(STUB_MARKER_FIELD).asText())
+        assertThat(firstEvent.path("event").path("data").path(STUB_MARKER_FIELD).stringValue())
             .isEqualTo(STUB_MARKER_VALUE);
     }
 
