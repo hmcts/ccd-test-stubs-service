@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -230,10 +231,35 @@ public class ServicePersistenceController {
         event.put(CASE_TYPE_ID_FIELD, DEFAULT_CASE_TYPE_ID);
         event.put(CREATED_DATE_FIELD, deterministicTimestamp(reference));
         event.put("state_id", DEFAULT_STATE);
-        event.set("data", buildCaseData(reference, null));
+        event.set("data", buildHistoryData(reference));
         event.put("case_type_version", DEFAULT_VERSION);
         event.put("security_classification", DEFAULT_SECURITY_CLASSIFICATION);
         return event;
+    }
+
+    private ObjectNode buildHistoryData(long reference) {
+        ObjectNode data = buildCaseData(reference, null);
+        // F-1047 models historical children removed from the current case definition.
+        // These roots are readable only by the dedicated functional-test reader role.
+        ObjectNode party = mapper.createObjectNode();
+        party.put("name", "History party");
+        party.put("retiredSecret", "Retired party secret");
+        party.putObject("address")
+            .put("postcode", "EX1 1AA")
+            .put("retiredSecret", "Retired address secret");
+        ArrayNode documents = mapper.createArrayNode();
+        for (int index = 1; index <= 2; index++) {
+            ObjectNode document = documents.addObject();
+            document.put("id", "10470000-0000-0000-0000-00000000000" + index);
+            document.putObject("value")
+                .put("title", "History document " + index)
+                .put("retiredSecret", "Retired document secret " + index);
+        }
+        data.set("HistoryParty", party);
+        data.set("HistoryPartyWithACL", party.deepCopy());
+        data.set("HistoryDocuments", documents);
+        data.set("HistoryDocumentsWithACL", documents.deepCopy());
+        return data;
     }
 
     private String determineCaseType(ObjectNode caseDetailsPayload) {
