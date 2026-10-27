@@ -238,7 +238,6 @@ public class ServicePersistenceController {
     }
 
     private ObjectNode buildHistoryData(long reference) {
-        ObjectNode data = buildCaseData(reference, null);
         // F-1047 models historical children removed from the current case definition.
         // These roots are readable only by the dedicated functional-test reader role.
         ObjectNode party = mapper.createObjectNode();
@@ -255,6 +254,7 @@ public class ServicePersistenceController {
                 .put("title", "History document " + index)
                 .put("retiredSecret", "Retired document secret " + index);
         }
+        ObjectNode data = buildCaseData(reference, null);
         data.set("HistoryParty", party);
         data.set("HistoryPartyWithACL", party.deepCopy());
         data.set("HistoryDocuments", documents);
