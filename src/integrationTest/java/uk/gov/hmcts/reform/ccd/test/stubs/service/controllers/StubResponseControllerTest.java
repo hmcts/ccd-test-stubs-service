@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.assertj.core.util.Lists;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.Matchers.not;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,16 @@ class StubResponseControllerTest {
         mockMvc.perform(post("/callback_about_to_start").characterEncoding("UTF-8"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.data.CallbackText").value("test"));
+    }
+
+    @DisplayName("Should render WireMock response templates with date helpers")
+    @Test
+    void renderResponseTemplate() throws Exception {
+        mockMvc.perform(post("/callback_nextHearingDate").characterEncoding("UTF-8"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.nextHearingDetails.hearingID").value(123456))
+            .andExpect(jsonPath("$.data.nextHearingDetails.hearingDateTime")
+                .value(matchesPattern("\\d{4}-04-23T10:00:00\\.000")));
     }
 
     @DisplayName("Should return http client error for invalid get operation")
