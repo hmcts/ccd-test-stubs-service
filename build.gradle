@@ -186,6 +186,7 @@ dependencyManagement {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
   }
   dependencies {
+    dependency 'org.apache.commons:commons-lang3:3.21.0'
     dependency 'org.apache.httpcomponents.core5:httpcore5:5.4.4'
     dependency 'org.apache.httpcomponents.core5:httpcore5-h2:5.4.4'
   }
