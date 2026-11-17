@@ -83,6 +83,34 @@ class ServicePersistenceControllerWebMvcTest {
     }
 
     @Test
+    void shouldSupplyUnknownNestedHistoricalFieldsForPruningRegression() throws Exception {
+        String response = mockMvc.perform(get("/ccd-persistence/cases/{caseRef}/history", 111_222_333_444_555L))
+            .andExpect(status().isOk())
+            .andReturn().getResponse().getContentAsString();
+
+        JsonNode data = mapper.readTree(response).get(0).path("event").path("data");
+        for (String field : new String[]{"HistoryParty", "HistoryPartyWithACL"}) {
+            JsonNode party = data.path(field);
+            assertThat(party.path("name").asText()).isEqualTo("History party");
+            assertThat(party.path("retiredSecret").asText()).isEqualTo("Retired party secret");
+            assertThat(party.path("address").path("postcode").asText()).isEqualTo("EX1 1AA");
+            assertThat(party.path("address").path("retiredSecret").asText()).isEqualTo("Retired address secret");
+        }
+        for (String field : new String[]{"HistoryDocuments", "HistoryDocumentsWithACL"}) {
+            JsonNode documents = data.path(field);
+            assertThat(documents).hasSize(2);
+            for (int index = 0; index < documents.size(); index++) {
+                assertThat(documents.get(index).path("id").asText())
+                    .isEqualTo("10470000-0000-0000-0000-00000000000" + (index + 1));
+                assertThat(documents.get(index).path("value").path("title").asText())
+                    .isEqualTo("History document " + (index + 1));
+                assertThat(documents.get(index).path("value").path("retiredSecret").asText())
+                    .isEqualTo("Retired document secret " + (index + 1));
+            }
+        }
+    }
+
+    @Test
     void shouldReturnSameRevisionForRepeatedCalls() throws Exception {
         long caseReference = 200_300_400_500_600L;
 
