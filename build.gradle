@@ -191,7 +191,7 @@ dependencyManagement {
     mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
   }
   dependencies {
-    dependency 'org.apache.commons:commons-lang3:3.21.0'
+    dependency 'org.apache.commons:commons-lang3:3.22.0'
     // WireMock's Handlebars 4.3.1 embeds Commons Lang 3.12.0 (CVE-2025-48924).
     // Keep handlebars-helpers at WireMock's version: newer helpers moved packages.
     dependency 'com.github.jknack:handlebars:4.5.4'
@@ -219,7 +219,7 @@ dependencies {
     implementation("org.apache.tomcat.embed:tomcat-embed-websocket:${tomcatVersion}") {
       because 'resolves Tomcat CVEs reported against the Spring Boot managed version'
     }
-    implementation('org.apache.commons:commons-lang3:3.21.0') {
+    implementation('org.apache.commons:commons-lang3:3.22.0') {
       because 'resolves Commons Lang CVEs from transitive dependencies'
     }
   }
