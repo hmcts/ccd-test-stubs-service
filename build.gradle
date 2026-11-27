@@ -203,9 +203,9 @@ dependencyManagement {
 dependencies {
 
   implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-  implementation platform("org.eclipse.jetty.ee10:jetty-ee10-bom:12.1.12")
+  implementation platform("org.eclipse.jetty.ee10:jetty-ee10-bom:12.1.15")
   testImplementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-  testImplementation platform("org.eclipse.jetty.ee10:jetty-ee10-bom:12.1.12")
+  testImplementation platform("org.eclipse.jetty.ee10:jetty-ee10-bom:12.1.15")
 
   // start::CVE Vulnerability dependency overrides                                                        // MAIN PARENT DEPENDEDNCY
 
