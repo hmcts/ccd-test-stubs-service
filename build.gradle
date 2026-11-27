@@ -191,6 +191,7 @@ dependencyManagement {
     mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
   }
   dependencies {
+    dependency 'com.fasterxml.jackson.core:jackson-databind:2.21.5'
     dependency 'org.apache.commons:commons-lang3:3.21.0'
     // WireMock's Handlebars 4.3.1 embeds Commons Lang 3.12.0 (CVE-2025-48924).
     // Keep handlebars-helpers at WireMock's version: newer helpers moved packages.
